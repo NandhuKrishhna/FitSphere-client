@@ -1,80 +1,134 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { Lock, Mail} from "lucide-react";
-import Input from "../components/Input";
+"use client"
 
+import { useState } from "react"
+import { Eye, EyeOff, Lock, Mail } from "lucide-react"
+import { motion } from "framer-motion"
+import { Link } from "react-router-dom"
 
-const BoxStyled = styled(motion.div)`
-  max-width: 28rem;
-  width: 100%;
-  background: rgba(75, 85, 99, 0.5);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-`;
+export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
 
-const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    console.log("Login attempt with:", { email, password })
+  }
 
-  const handleSignUp = (e: React.FormEvent) => {
-    e.preventDefault();
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  }
 
-  };
+  const childVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+      },
+    },
+  }
 
   return (
-    <BoxStyled
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-md w-full bg-indigo-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
-    >
-      <div className="p-8">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black bg-clip-text">
-          Welcome Back
-        </h2>
-        <form onSubmit={handleSignUp}>
-          <Input
-            icon={Mail}
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            icon={Lock}
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <motion.button
-            className="mt-5 w-full py-3 px-4 bg-indigo-500 text-white font-bold rounded-lg shadow-lg hover:from-black-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:indigo-green-500 focus:ring-offset-2 transition duration-200"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
+    <div className="min-h-screen flex items-center justify-center">
+      <motion.div className="w-full max-w-md mx-4" variants={containerVariants} initial="hidden" animate="visible">
+        <motion.div
+          className="bg-zinc-900 rounded-xl border border-zinc-800 text-white shadow-lg overflow-hidden"
+          variants={childVariants}
+        >
+          <div className="p-6">
+            <motion.h2 className="text-2xl font-semibold mb-2" variants={childVariants}>
+              Login to your account
+            </motion.h2>
+            <motion.p className="text-zinc-400 text-sm mb-6" variants={childVariants}>
+              Enter your email and password to access your account
+            </motion.p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <motion.div className="space-y-2" variants={childVariants}>
+                <label htmlFor="email" className="text-sm font-medium text-zinc-300">
+                  Email
+                </label>
+                <div className="relative">
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Enter your email"
+                    required
+                  />
+                  <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500" size={18} />
+                </div>
+              </motion.div>
+              <motion.div className="space-y-2" variants={childVariants}>
+                <label htmlFor="password" className="text-sm font-medium text-zinc-300">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </motion.div>
+              <motion.div className="flex items-center justify-between" variants={childVariants}>
+            
+                <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-400">
+                  Forgot password?
+                </Link>
+              </motion.div>
+              <motion.button
+                type="submit"
+                className="w-full py-2 px-4 bg-indigo-500 hover:bg-indigo-600 rounded-md text-white font-medium transition duration-300"
+                variants={childVariants}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Lock className="inline-block mr-2 h-4 w-4" />
+                Login
+              </motion.button>
+            </form>
+          </div>
+          <motion.div className="border-t border-zinc-800 p-6" variants={childVariants}>
+            <p className="text-sm text-center text-zinc-400">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-indigo-500 hover:text-indigo-400 font-medium">
+                Sign up
+              </Link>
+            </p>
+          </motion.div>
+        </motion.div>
+        
+      </motion.div>
+    </div>
+  )
+}
 
-          >
-        Sign In
-          </motion.button>
-        </form>
-      </div>
-      <div className="px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center">
-        <p className="text-sm text-gray-400">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-indigo-400 font-bold hover:underline">
-            Sign Up
-          </Link>
-        </p>
-      </div>
-      <div>
-      </div>
-    </BoxStyled>
-  );
-};
-
-export default LoginPage;

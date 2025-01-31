@@ -8,9 +8,12 @@ export default {
     extend: {
       fontFamily: {
         satoshi: ["Satoshi", "Arial", "sans-serif"],
-
       },
+    },
   },
-  plugins: [],
-}
-}
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: ["light", "dark", "cupcake"],
+    
+  },
+};
