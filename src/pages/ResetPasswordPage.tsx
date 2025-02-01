@@ -1,14 +1,14 @@
 
-import { useState } from "react"
-import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import { motion } from "framer-motion"
-import { Link } from "react-router-dom"
-import useLoginHook from "../hooks/LoginHook"
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import useSetNewPasswordHook from "../hooks/SetNewPasswordHook";
+import PasswordStrengthChecker from "../components/PasswordStrengthChecker";
 
-export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const {email , setEmail , password , setPassword , handleSubmit} = useLoginHook()
-
+const ResetPasswordPage = () => {
+   const [showPassword, setShowPassword] = useState(false)
+   const {handleSubmit ,password , setPassword , confirmPassword , setConfirmPassword , isLoading} = useSetNewPasswordHook()
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -47,29 +47,13 @@ export default function LoginPage() {
         >
           <div className="p-6">
             <motion.h2 className="text-2xl font-semibold mb-2" variants={childVariants}>
-              Login to your account
+            Set New Password
             </motion.h2>
             <motion.p className="text-zinc-400 text-sm mb-6" variants={childVariants}>
-              Enter your email and password to access your account
+            Enter your email address to receive password reset instructions
             </motion.p>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <motion.div className="space-y-2" variants={childVariants}>
-                <label htmlFor="email" className="text-sm font-medium text-zinc-300">
-                  Email
-                </label>
-                <div className="relative">
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Enter your email"
-                  />
-                  <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500" size={18} />
-                </div>
-              </motion.div>
-              <motion.div className="space-y-2" variants={childVariants}>
+            <motion.div className="space-y-2" variants={childVariants}>
                 <label htmlFor="password" className="text-sm font-medium text-zinc-300">
                   Password
                 </label>
@@ -90,13 +74,31 @@ export default function LoginPage() {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                <PasswordStrengthChecker password={password} />
               </motion.div>
-              <motion.div className="flex items-center justify-between" variants={childVariants}>
-            
-                <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-400">
-                  Forgot password?
-                </Link>
+              <motion.div className="space-y-2" variants={childVariants}>
+                <label htmlFor="password" className="text-sm font-medium text-zinc-300">
+                ConfirmPassword
+                </label>
+                <div className="relative">
+                  <input
+                    id="confirm-password"
+                    type={showPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </motion.div>
+
               <motion.button
                 type="submit"
                 className="w-full py-2 px-4 bg-indigo-500 hover:bg-indigo-600 rounded-md text-white font-medium transition duration-300"
@@ -104,8 +106,8 @@ export default function LoginPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Lock className="inline-block mr-2 h-4 w-4" />
-                Login
+              
+                {isLoading? <span className="loading loading-ring loading-md"></span> : "Send Verification Code"}
               </motion.button>
             </form>
           </div>
@@ -124,3 +126,4 @@ export default function LoginPage() {
   )
 }
 
+export default ResetPasswordPage

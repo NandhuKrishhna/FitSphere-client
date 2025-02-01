@@ -1,17 +1,18 @@
 import { createSlice , PayloadAction } from "@reduxjs/toolkit";import { AuthUser } from "../../types/auth.types";
-;
 
 
 interface AuthState {
     user : AuthUser | null;
     accessToken : string,
-    isSignIn : boolean
+    isSignIn : boolean,
+    isOtpVerified : boolean
 }
 
 const intialState : AuthState = {
     user : null,
     accessToken : "",
-    isSignIn : false
+    isSignIn : false,
+    isOtpVerified : false
 };
 export const authSlice = createSlice({
     name : "auth",
@@ -25,9 +26,12 @@ export const authSlice = createSlice({
         },
         setSignIn : (state , action : PayloadAction<boolean>) => {
             state.isSignIn = action.payload;
+        },
+        setOtpVerified  : (state , action : PayloadAction<boolean>) => {
+            state.isOtpVerified = action.payload
         }
     }
 });
 
-export const { setUser  , setToken , setSignIn} = authSlice.actions;
+export const { setUser  , setToken , setSignIn , setOtpVerified} = authSlice.actions;
 export default authSlice.reducer;
