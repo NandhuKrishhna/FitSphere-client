@@ -1,16 +1,17 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/Users/SignUpPage";
+import LoginPage from "./pages/Users/LoginPage";
 
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/Users/LandingPage";
 import { Toaster } from "react-hot-toast";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/Users/HomePage";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import VerifyOtpPage from "./pages/VerifyOtpPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import ResetPasswordOtp from "./pages/ResetPasswordOtp";
+import VerifyOtpPage from "./pages/Users/VerifyOtpPage";
+import ForgotPasswordPage from "./pages/Users/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/Users/ResetPasswordPage";
+import ResetPasswordOtp from "./pages/Users/ResetPasswordOtp";
+import DoctorRoutes from "./routes/DoctorRoutes";
 
 function App() {
   const location = useLocation();
@@ -39,6 +40,7 @@ function App() {
         <Route path="/verify-reset-otp" element={isSignedIn ? <Navigate to="/home" replace /> : <ResetPasswordOtp />}  />
         <Route path="/reset/new-password" element={isOtpVerified ? <ResetPasswordPage /> : <Navigate to="/login" replace />} />
 
+        {DoctorRoutes()}
         <Route path="/home" element={isSignedIn? <HomePage/> : <Navigate to="/login" /> } />
         
       </Routes>

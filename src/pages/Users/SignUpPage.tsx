@@ -2,9 +2,9 @@ import type React from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { User, Mail, Eye, EyeOff } from "lucide-react";
-import PasswordStrengthChecker from "../components/PasswordStrengthChecker";
+import PasswordStrengthChecker from "../../components/PasswordStrengthChecker";
 import { Link } from "react-router-dom";
-import useSignUp from "../hooks/signUpHook";
+import useSignUp from "../../hooks/signUpHook";
 const SignupForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const {

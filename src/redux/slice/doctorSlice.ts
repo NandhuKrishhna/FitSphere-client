@@ -6,20 +6,22 @@ interface AuthState {
     user : AuthUser | null;
     accessToken : string,
     isSignIn : boolean,
-    isOtpVerified : boolean
+    isOtpVerified : boolean,
+    isApproved : boolean
 }
 
 const intialState : AuthState = {
     user : null,
     accessToken : "",
     isSignIn : false,
-    isOtpVerified : false
+    isOtpVerified : false,
+    isApproved : false
 };
-export const authSlice = createSlice({
+export const doctorSlice = createSlice({
     name : "auth",
     initialState : intialState,
     reducers : {
-        setUser : (state , action : PayloadAction<AuthUser>) => {
+        setDoctor : (state , action : PayloadAction<AuthUser>) => {
             state.user = action.payload;
         },
         setToken : (state , action : PayloadAction<string>) => {
@@ -30,9 +32,17 @@ export const authSlice = createSlice({
         },
         setOtpVerified  : (state , action : PayloadAction<boolean>) => {
             state.isOtpVerified = action.payload
+        },
+        setDoctorApprove : (state , action : PayloadAction<boolean>) => {
+            state.isApproved = action.payload
         }
     }
 });
 
-export const { setUser  , setToken , setSignIn , setOtpVerified} = authSlice.actions;
-export default authSlice.reducer;
+export const { setDoctor  , 
+    setToken , 
+    setSignIn , 
+    setOtpVerified,
+    setDoctorApprove
+} = doctorSlice.actions;
+export default doctorSlice.reducer;

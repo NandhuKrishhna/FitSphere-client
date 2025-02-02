@@ -1,13 +1,13 @@
 
 import { useState, useRef, type KeyboardEvent, type ClipboardEvent, useEffect } from "react"
 import { Lock } from "lucide-react"
-import useResetPasswordHook from "../hooks/verifyResetPasswordOtpHook"
+import useVerificationCodeHook from "../../hooks/verifyEmailOtpHook"
 
-export default function ResetPasswordOtp() {
+export default function OTPVerificationPage() {
+  const {otp , setOtp , handleSubmit , isLoading ,}  = useVerificationCodeHook()
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const [timeLeft, setTimeLeft] = useState(300) 
   const [canResend, setCanResend] = useState(false)
-  const {otp , setOtp , handleSubmit , isLoading ,} = useResetPasswordHook()
 
 
  useEffect(() => {
@@ -68,6 +68,7 @@ const formatTime = (time: number) => {
     }
   }
   
+ 
 
   const handleResendCode = async () => {
 
@@ -78,7 +79,7 @@ const formatTime = (time: number) => {
     <div className="h-screen flex items-center justify-center">
       <div className="w-full max-w-md mx-4 bg-zinc-900 text-white border border-zinc-800 rounded-lg shadow-lg">
         <div className="p-6">
-          <h2 className="text-2xl font-semibold mb-2">Reset your password</h2>
+          <h2 className="text-2xl font-semibold mb-2">Enter OTP</h2>
           <p className="text-zinc-400 text-sm mb-6">
             Enter the 6-digit code sent to your email. This code is valid for the next 5 minutes.
           </p>

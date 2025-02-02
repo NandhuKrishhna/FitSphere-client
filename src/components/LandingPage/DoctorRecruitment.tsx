@@ -33,7 +33,7 @@ export default function DoctorRecruitment() {
             </p>
           </div>
           <Button 
-            onClick={()=>{navigate('/doctor-register')}}
+            onClick={()=>{navigate('/doctor/signup')}}
             size="lg"
             className="w-fit bg-[#8B7EF8] hover:bg-[#7A6AF6] text-white px-8"
           >

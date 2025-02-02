@@ -1,7 +1,7 @@
 import {  Mail } from "lucide-react"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
-import useForgotPasswordHook from "../hooks/enterForgotPasswordHook"
+import useForgotPasswordHook from "../../hooks/enterForgotPasswordHook"
 const ForgotPasswordPage = () => {
    const {handleSubmit, email, setEmail , isLoading} = useForgotPasswordHook();
   
