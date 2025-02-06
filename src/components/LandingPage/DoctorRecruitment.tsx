@@ -1,7 +1,9 @@
 
 import { HeartPulse } from 'lucide-react'
+
 import { useNavigate } from 'react-router-dom'
 import Button from './Button'
+
 export default function DoctorRecruitment() {
   const navigate = useNavigate()
   return (
@@ -33,7 +35,7 @@ export default function DoctorRecruitment() {
             </p>
           </div>
           <Button 
-            onClick={()=>{navigate('/doctor/signup')}}
+            onClick={()=>{navigate('/doctor-register')}}
             size="lg"
             className="w-fit bg-[#8B7EF8] hover:bg-[#7A6AF6] text-white px-8"
           >

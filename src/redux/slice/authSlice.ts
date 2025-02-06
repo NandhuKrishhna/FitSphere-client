@@ -1,7 +1,6 @@
 import { createSlice , PayloadAction } from "@reduxjs/toolkit";
 import { AuthUser } from "../../types/auth.types";
 
-
 interface AuthState {
     user : AuthUser | null;
     accessToken : string,
@@ -19,7 +18,7 @@ export const authSlice = createSlice({
     name : "auth",
     initialState : intialState,
     reducers : {
-        setUser : (state , action : PayloadAction<AuthUser>) => {
+        setUser : (state , action : PayloadAction<AuthUser | null>) => {
             state.user = action.payload;
         },
         setToken : (state , action : PayloadAction<string>) => {

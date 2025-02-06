@@ -4,11 +4,13 @@ import type React from "react";
 import { useRegisterAsDoctorMutation } from "../../redux/api/doctorApi";
 import { professionalSchema } from "../../types/Validations/registerAsDoctorForm";
 import RegistrationSuccessPopup from "../../components/RegistrationSuccessPop";
+import { Camera } from "lucide-react";
 
 type ProfessionalDetails = z.infer<typeof professionalSchema>;
 
 export default function ProfessionalDetailsForm() {
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [selectedImg, setSelectedImg] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState<ProfessionalDetails>({
     experience: "0",
     consultationFees: "0",
@@ -19,9 +21,10 @@ export default function ProfessionalDetailsForm() {
     consultationLanguages: "",
     primarySpecialty: "",
     medicalLicenseNumber: "",
-    gender: "Female",
+    gender: "Male",
     professionalTitle: "",
     bio: "",
+    profilePicture: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -48,10 +51,22 @@ export default function ProfessionalDetailsForm() {
   };
 
   const [registerAsDoctor, { isLoading }] = useRegisterAsDoctorMutation();
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64Image = reader.result as string;
+      setSelectedImg(base64Image);
+      setFormData((prev) => ({ ...prev, profilePicture: base64Image }));
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form..."); // Log submission event
-
     try {
       professionalSchema.parse(formData);
       console.log("Form data is valid:", formData);
@@ -60,7 +75,7 @@ export default function ProfessionalDetailsForm() {
       console.log("Registration successful:", response);
       setShowSuccess(true);
     } catch (error) {
-      console.error("Submission failed:", error); // Log error
+      console.error("Submission failed:", error);
       if (error instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
@@ -265,7 +280,6 @@ export default function ProfessionalDetailsForm() {
                 >
                   <option value="Female">Female</option>
                   <option value="Male">Male</option>
-                  <option value="Other">Other</option>
                 </select>
                 {errors.gender && (
                   <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
@@ -333,6 +347,40 @@ export default function ProfessionalDetailsForm() {
               )}
             </div>
           </div>
+          {/*  Image uploaded */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Certificates
+            </label>
+            <div className="bg-[#1c1c1c] w-48 h-48 rounded-md relative flex items-center justify-center overflow-hidden">
+              {/* Hidden File Input */}
+              <input
+                type="file"
+                accept="image/*"
+                id="certificateUpload"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+              {/* Display Selected Image */}
+              {selectedImg ? (
+                <img
+                  src={selectedImg}
+                  alt="Selected Certificate"
+                  className="absolute w-full h-full object-cover"
+                />
+              ) : (
+                <p className="text-gray-500 text-sm">No Image</p>
+              )}
+              {/* Clickable Label for File Input */}
+              <label
+                htmlFor="certificateUpload"
+                className="bg-indigo-400 w-10 h-10 rounded-full flex items-center justify-center absolute bottom-1 right-1 p-2 cursor-pointer"
+              >
+                <Camera className="text-black w-6 h-6" />
+              </label>
+            </div>
+            <p>Click the camera icon to upload your certificates</p>
+          </div>
 
           <button
             type="submit"
@@ -353,7 +401,10 @@ export default function ProfessionalDetailsForm() {
           </p>
         </p>
       </div>
-      <RegistrationSuccessPopup isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
+      <RegistrationSuccessPopup
+        isOpen={showSuccess}
+        onClose={() => setShowSuccess(false)}
+      />
     </div>
   );
 }

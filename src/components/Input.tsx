@@ -1,44 +1,33 @@
-import React, { FC, useState } from "react";
-import { Lock, Unlock } from "lucide-react"; // Importing Lock and Unlock icons
+import { FC } from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  icon: React.ComponentType<{ className?: string }>;
-  isPassword?: boolean; // Flag to indicate if the input is a password field
+interface InputFieldProps {
+  id: string;
+  type?: string;
+  placeholder: string;
+  icon?: React.ReactNode;
+  register: UseFormRegisterReturn;
 }
 
-const Input: FC<InputProps> = ({ icon: Icon, isPassword, ...props }) => {
-  const [showPassword, setShowPassword] = useState(false);
+const InputField: FC<InputFieldProps> = ({ id, type = "text", placeholder, icon, register }) => {
+      return(
+        <div className="space-y-2">
+        <label htmlFor={id} className="text-sm font-medium text-zinc-300">
+        {placeholder}
+        </label>
+        <div className="relative">
+          <input
+           id={id}
+          type={type}
+          {...register}
+          placeholder={placeholder}
+          className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+           />
+             {icon && <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500">{icon}</div>}
+        </div>
+        </div>
+      )
+}
 
-  return (
-    <div className="relative mb-6">
-      {/* Icon on the left */}
-      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-        <Icon className="text-black size-4" />
-      </div>
 
-      {/* Input field */}
-      <input
-        {...props}
-        type={isPassword && !showPassword ? "password" : "text"} // Toggle password visibility
-        className="w-full pl-10 pr-10 py-2 bg-gray-800 bg-opacity-50 rounded-lg text-sm text-white placeholder-gray-400 transition duration-200"
-      />
-
-      {/* Toggle button */}
-      {isPassword && (
-        <button
-          type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-200"
-        >
-          {showPassword ? (
-            <Unlock className="w-5 h-5" /> 
-          ) : (
-            <Lock className="w-5 h-5" /> 
-          )}
-        </button>
-      )}
-    </div>
-  );
-};
-
-export default Input;
+export default InputField

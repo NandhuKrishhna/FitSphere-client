@@ -1,7 +1,10 @@
-import { useState } from "react";
+
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "../redux/api/apiSlice";
+import { EmailData, emailScheme } from "../types/Validations/registerAsDoctorForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 interface ErrorResponse {
     data: {
       errors?: Array<{ path: string; message: string }>;
@@ -9,25 +12,19 @@ interface ErrorResponse {
     };
     status: number;
   }
-const useForgotPasswordHook = () => {
-  const [email, setEmail] = useState("");
+const  useForgotPasswordHook = () => {
+
   const navigate = useNavigate();
  const [resetPassword , {isLoading}] =  useResetPasswordMutation()
+  const {register, handleSubmit , formState: { errors },} = useForm<EmailData>({resolver: zodResolver(emailScheme),});
 
-  const validateForm = ()=> {
-    if (!email) return toast.error("Please enter your email");
-    return true
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = validateForm()
-    if (success === true) {
+  const onSubmit = async (data: EmailData) => {
+    
       try {
-        const res = await resetPassword({ email}).unwrap();
+        const res = await resetPassword(data).unwrap();
         console.log(res);
         toast.success(res.message);
-        setEmail("");
+
         navigate("/verify-reset-otp");
       } catch (err) {
         const error = err as ErrorResponse;
@@ -44,16 +41,16 @@ const useForgotPasswordHook = () => {
           return; 
         }
         toast.error("An unexpected error occurred. Please try again.");
-      }
+      
     }
   };
   
   
 
   return {
-    email,
-    setEmail,
-    handleSubmit,
+    register,
+    errors,
+    handleSubmit : handleSubmit(onSubmit),
     isLoading
   };
 };

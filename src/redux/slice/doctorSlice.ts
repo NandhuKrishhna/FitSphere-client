@@ -8,6 +8,7 @@ interface AuthState {
     isSignIn : boolean,
     isOtpVerified : boolean,
     isApproved : boolean
+    
 }
 
 const intialState : AuthState = {

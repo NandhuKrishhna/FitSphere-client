@@ -5,48 +5,19 @@ import { User, Mail, Eye, EyeOff } from "lucide-react";
 import PasswordStrengthChecker from "../../components/PasswordStrengthChecker";
 import { Link } from "react-router-dom";
 import useSignUp from "../../hooks/signUpHook";
+import { childVariants, containerVariants } from "../../framer-motion/form-motion";
+import InputField from "../../components/Input";
 const SignupForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const {
-    name,
-    email,
-    password,
-    confirmPassword,
-    setName,
-    setEmail,
-    setPassword,
-    setConfirmPassword,
+    register,
     handleSubmit,
     isLoading,
+    errors,
+    watch,
   } = useSignUp();
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-        when: "beforeChildren",
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-      },
-    },
-  };
+ console.log(errors)
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -75,101 +46,52 @@ const SignupForm: React.FC = () => {
             </motion.p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <motion.div className="space-y-2" variants={childVariants}>
-                <label
-                  htmlFor="name"
-                  className="text-sm font-medium text-zinc-300"
-                >
-                  Full Name
-                </label>
-                <div className="relative">
-                  <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Enter your full name"
-                  />
-                  <User
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500"
-                    size={18}
-                  />
-                </div>
+              <InputField id="name" placeholder="Full Name" register={register("name")}  icon={<User size={18} />} />
+              {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
               </motion.div>
 
               <motion.div className="space-y-2" variants={childVariants}>
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium text-zinc-300"
-                >
-                  Email
-                </label>
-                <div className="relative">
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Enter your email"
-                  />
-                  <Mail
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500"
-                    size={18}
-                  />
-                </div>
+              <InputField id="email" placeholder="Email" type="email" register={register("email")} icon={<Mail size={18} />} />
+                
+                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
               </motion.div>
-
               <motion.div className="space-y-2" variants={childVariants}>
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium text-zinc-300"
-                >
-                  Password
-                </label>
                 <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Create a strong password"
-                  />
+                <InputField
+                  id="password"
+                  placeholder="Create a strong password"
+                  type={showPassword ? "text" : "password"}
+                  register={register("password")}
+                />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                    className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                <PasswordStrengthChecker password={password} />
+                <PasswordStrengthChecker password={watch("password")} />
+                {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
               </motion.div>
               <motion.div className="space-y-2" variants={childVariants}>
-                <label
-                  htmlFor="confirmPassword"
-                  className="text-sm font-medium text-zinc-300"
-                >
-                  Confirm Password
-                </label>
+        
                 <div className="relative">
-                  <input
-                    id="confirmPassword"
-                    type={showPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Confirm your password"
-                  />
+                <InputField
+                  id="confirmPassword"
+                  placeholder="Confirm your password"
+                  type={showPassword ? "text" : "password"}
+                  register={register("confirmPassword")}
+                />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                    className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
               </motion.div>
               <motion.p
                 className="text-xs text-zinc-400"

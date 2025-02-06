@@ -50,6 +50,13 @@ export const authApi = createApi({
         method: "POST",
         body: data
       })
+    }),
+
+    logout: builder.query({
+      query: () => ({
+        url :"/logout",
+        method: "GET",
+      })
     })
   })
 });
@@ -61,6 +68,7 @@ export const {
    useLoginMutation ,
    useResetPasswordMutation,
    useVerifyResetPasswordCodeMutation,
-   useResetNewPasswordMutation
+   useResetNewPasswordMutation,
+    useLazyLogoutQuery
 
     } = authApi;

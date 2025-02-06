@@ -1,0 +1,43 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import AdminLoginPage from "../pages/Admin/AdminLoginPage";
+import UserManagementDashboard from "../pages/Admin/UserManagementPage";
+import DoctorManagementDashboard from "../pages/Admin/DoctorManagementPage";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import NotificationPage from "../pages/Admin/NotificationPage";
+
+
+
+
+const AdminRoutes = () => {
+  const isAdmin = useSelector((state: RootState) => state.admin.admin);
+
+  return (
+    <Routes>
+      <Route
+        path="/admin/login"
+        element={
+          isAdmin ? (
+            <Navigate to="/admin/users-management" replace />
+          ) : (
+            <div className="min-h-screen bg-gradient-to-br from-gray-500 to-black text-gray-500 flex items-center justify-center relative overflow-hidden">
+              <AdminLoginPage />
+            </div>
+          )
+        }
+      />
+      <Route
+        path="/admin/users-management"
+        element={isAdmin ? <UserManagementDashboard /> : <Navigate to="/admin/login" replace />}
+      />
+      <Route
+        path="/admin/doctors-management"
+        element={isAdmin ? <DoctorManagementDashboard /> : <Navigate to="/admin/login" replace />}
+      />
+       <Route path="/admin/notifications" element={isAdmin ? <NotificationPage /> : <Navigate to="/admin/login" replace />} />
+    </Routes>
+  );
+};
+  
+  export default AdminRoutes;
+  

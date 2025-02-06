@@ -1,10 +1,13 @@
-import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSignUpMutation } from "../../redux/api/doctorApi";
 import { setDoctor } from "../../redux/slice/doctorSlice";
 import { setToken } from "../../redux/slice/authSlice";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userRegisterSchema } from "../../types/Validations/registerAsDoctorForm";
+import { FormData } from "../../types/Validations/registerAsDoctorForm";
 interface ErrorResponse {
     data: {
       errors?: Array<{ path: string; message: string }>;
@@ -13,73 +16,39 @@ interface ErrorResponse {
     status: number;
   }
 const useDoctorSignUp = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
- const [signUp, {isLoading}] = useSignUpMutation();
-  // Validation Logic
-  const validateForm = () => {
-    if (!name || !email || !password || !confirmPassword) {
-      toast.error("Please fill in all fields");
-      return false;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return false;
-    }
-    if(password.length < 6){
-      toast.error("Password must be at least 6 characters long");
-      return false;
-    }
-    return true;
-  };
+  const [signUp, { isLoading }] = useSignUpMutation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      try {
-        const res = await signUp({ name, email, password, confirmPassword }).unwrap();
+  const {register,handleSubmit, watch , formState: { errors },} = useForm<FormData>({resolver: zodResolver(userRegisterSchema),});
+  const onSubmit = async (data: FormData) => {
+    try {
+      const res = await signUp(data).unwrap();
         console.log(res);
         toast.success(res.message);
         dispatch(setDoctor(res.user));
         dispatch(setToken(res.accessToken));
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
         navigate("/doctor/verify/otp");
-      } catch (err) {
-        console.log(err)
-        const error = err as ErrorResponse;
-        if (error.data?.errors) {
-          const fieldErrors: Record<string, string> = {};
-          error.data.errors.forEach((err: { path: string; message: string }) => {
-            fieldErrors[err.path] = err.message;
-          });
-          toast.error(fieldErrors.name || fieldErrors.email || fieldErrors.password || fieldErrors.confirmPassword);
-        } else if (error.status === 409 && error.data?.message) {
-          toast.error(error.data.message); 
-        } else {
-          toast.error("An unexpected error occurred. Please try again.");
-        }
+    } catch (err) {
+      const error = err as ErrorResponse;
+      if (error.data?.errors) {
+        error.data.errors.forEach((err) => {
+          toast.error(err.message);
+        });
+      } else if (error.status === 409 && error.data?.message) {
+        toast.error(error.data.message);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
       }
     }
   };
 
   return {
-    name,
-    email,
-    password,
-    confirmPassword,
-    setName,
-    setEmail,
-    setPassword,
-    setConfirmPassword,
-    handleSubmit,
-    isLoading
+    register,
+    handleSubmit: handleSubmit(onSubmit),
+    errors,
+    isLoading,
+    watch
   };
 };
  

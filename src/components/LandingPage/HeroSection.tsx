@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import Button from "./Button.tsx";
-
+import Button from "./Button";
 
 export default function HeroSection() {
   const navigate = useNavigate()

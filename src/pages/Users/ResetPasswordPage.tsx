@@ -5,38 +5,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import useSetNewPasswordHook from "../../hooks/setNewPasswordHook";
 import PasswordStrengthChecker from "../../components/PasswordStrengthChecker";
+import { childVariants, containerVariants } from "../../framer-motion/form-motion";
+import InputField from "../../components/Input";
 
 const ResetPasswordPage = () => {
    const [showPassword, setShowPassword] = useState(false)
-   const {handleSubmit ,password , setPassword , confirmPassword , setConfirmPassword , isLoading} = useSetNewPasswordHook()
-  const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 10,  
-        when: "beforeChildren",
-        staggerChildren: 0.05,
-      },
-    },
-  }
-  
-  const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 500, 
-        damping: 15,   
-      },
-    },
-  }
-  
+   const {handleSubmit , errors , watch , register, isLoading} = useSetNewPasswordHook()
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -54,49 +28,43 @@ const ResetPasswordPage = () => {
             </motion.p>
             <form onSubmit={handleSubmit} className="space-y-4">
             <motion.div className="space-y-2" variants={childVariants}>
-                <label htmlFor="password" className="text-sm font-medium text-zinc-300">
-                  Password
-                </label>
                 <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Enter your password"
-                  />
+                <InputField
+                  id="password"
+                  placeholder="Create a strong password"
+                  type={showPassword ? "text" : "password"}
+                  register={register("password")}
+                />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                    className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                <PasswordStrengthChecker password={password} />
+                <PasswordStrengthChecker password={watch("password")} />
+                {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+
               </motion.div>
               <motion.div className="space-y-2" variants={childVariants}>
-                <label htmlFor="password" className="text-sm font-medium text-zinc-300">
-                ConfirmPassword
-                </label>
                 <div className="relative">
-                  <input
-                    id="confirm-password"
-                    type={showPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full py-2 px-3 bg-zinc-800 rounded-md text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Enter your password"
-                  />
+                <InputField
+                  id="confirmPassword"
+                  placeholder="Create a strong password"
+                  type={showPassword ? "text" : "password"}
+                  register={register("confirmPassword")}
+                />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                    className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+
               </motion.div>
 
               <motion.button
@@ -107,7 +75,7 @@ const ResetPasswordPage = () => {
                 whileTap={{ scale: 0.95 }}
               >
               
-                {isLoading? <span className="loading loading-ring loading-md"></span> : "Send Verification Code"}
+                {isLoading? <span className="loading loading-ring loading-md"></span> : "Reset Password"}
               </motion.button>
             </form>
           </div>
