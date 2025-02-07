@@ -1,26 +1,20 @@
-import type React from "react"
-import { useState } from "react"
-import { ChevronLeft, ChevronRight, Home, Settings, Users, LogOut } from "lucide-react"
-import { Link } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { RootState } from "../redux/store"
-import { useAdminLogout } from "../hooks/Admin/adminLogoutHook"
-
+import type React from "react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, Home, Settings, Users, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { useAdminLogout } from "../hooks/Admin/adminLogoutHook";
 
 const Sidebar = ({
   expanded,
   setExpanded,
 }: { expanded: boolean; setExpanded: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const isAdmin = useSelector((state: RootState) => state.admin.admin);
-  // console.log(isAdmin)
+
   return (
     <div
-      className={`
-        h-screen bg-[#25262b] border-r border-[#3a3b40]
-        shadow-xl transition-all duration-300 ease-in-out
-        ${expanded ? "w-64" : "w-20"}
-        flex flex-col
-      `}
+      className={`min-h-screen bg-[#25262b] border-r border-[#3a3b40] shadow-xl transition-all duration-300 ease-in-out flex flex-col ${expanded ? "w-64" : "w-20"}`}
     >
       <div className="flex justify-between items-center p-4 border-b border-[#3a3b40]">
         {expanded && (
@@ -86,21 +80,20 @@ const Sidebar = ({
         </ul>
       </nav>
 
-      <SidebarProfile 
-  user={isAdmin ?? { name: "Guest User", email: "No Email", profilePicture: "" }} 
-  expanded={expanded} 
-/>
-
+      <SidebarProfile
+        user={isAdmin ?? { name: "Guest User", email: "No Email", profilePicture: "" }}
+        expanded={expanded}
+      />
     </div>
-  )
-}
+  );
+};
 
 export const SidebarProfile = ({
   user,
   expanded,
 }: { user: { profilePicture?: string; name: string; email: string }; expanded: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {handleLogout , isLoading}  = useAdminLogout()
+  const { handleLogout, isLoading } = useAdminLogout();
   const userName = user?.name || "Guest User";
   const profilePic = user?.profilePicture;
   const userEmail = user?.email || "No Email Provided";
@@ -137,7 +130,7 @@ export const SidebarProfile = ({
         {expanded && (
           <div className="ml-3">
             <p className="font-medium text-white">{userName}</p>
-            <p className="text-sm text-gray-400">{userEmail}</p> {/* 👈 Now shows email */}
+            <p className="text-sm text-gray-400">{userEmail}</p>
           </div>
         )}
       </div>
@@ -160,10 +153,10 @@ export const SidebarProfile = ({
               >
                 <LogOut size={18} />
                 {isLoading ? (
-                      <span className="loading loading-spinner loading-sm"></span>
-                    ) : (
-                      "Logout"
-                    )}
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  "Logout"
+                )}
               </button>
             </div>
           </div>
@@ -173,5 +166,4 @@ export const SidebarProfile = ({
   );
 };
 
-export default Sidebar
-
+export default Sidebar;

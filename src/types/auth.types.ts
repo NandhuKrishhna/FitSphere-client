@@ -12,39 +12,48 @@ export type Admin = {
   profilePic : string;
 }
 
-interface DoctorRegistrationMetadata {
-  doctorName: string;
-  newDoctorDetails: {
-    doctorId: string;
-    bio: string;
-    experience: string;
-    consultationFees: string;
-    contactPhoneNumber: string;
-    professionalEmail: string;
-    officeAddress: string;
-    clinicLocations: string;
-    consultationLanguages: string;
-    primarySpecialty: string;
-    medicalLicenseNumber: string;
-    profilePicture: string;
-    gender: string;
-    professionalTitle: string;
-    _id: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
+export interface DoctorRegistrationMetadata {
+  doctorName?: string;
+  newDoctorDetails?: {
+    primarySpecialty?: string;
+    bio?: string;
+    experience?: number;
+    consultationFees?: number;
+    professionalEmail?: string;
+    contactPhoneNumber?: string;
+    clinicLocations?: string;
+    medicalLicenseNumber?: string;
+    profilePicture?: string;
+    gender?:string;
+    officeAddress?:string;
+    consultationLanguages?:string;
+    
   };
 }
+
 
 export interface Notification {
   _id: string;
   userId: string;
-  type: 'doctor_registration';
   message: string;
-  status: 'pending' | 'approved' | 'rejected';
-  metadata: DoctorRegistrationMetadata;
   read: boolean;
   createdAt: string;
-  updatedAt: string;
-  __v: number;
+  metadata?: DoctorRegistrationMetadata;
 }
+export type UserType = {
+  _id: string;
+  name: string;
+  email: string;
+  profilePic?: string;
+  isActive: boolean;
+  isPremium: boolean;
+  isVerfied: boolean;
+  role: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+export type UserResponse = {
+  success: boolean;
+  users: UserType[];
+};

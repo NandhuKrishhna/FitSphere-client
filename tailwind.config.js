@@ -1,9 +1,11 @@
+const {heroui} = require('@heroui/theme');
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: [
-	  "./index.html",
-	  "./src/**/*.{js,ts,jsx,tsx}",
-	],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@heroui/theme/dist/components/(dropdown|menu|divider|popover|button|ripple|spinner).js"
+  ],
 	theme: {
 	  extend: {
 		fontFamily: {
@@ -11,7 +13,7 @@ export default {
 		},
 	  },
 	},
-	plugins: [require("daisyui")],
+  plugins: [require("daisyui"),heroui()],
 	daisyui: {
 	  themes: ["light", "dark"],
 	  

@@ -1,10 +1,11 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, } from "react-router-dom";
 import AdminLoginPage from "../pages/Admin/AdminLoginPage";
 import UserManagementDashboard from "../pages/Admin/UserManagementPage";
-import DoctorManagementDashboard from "../pages/Admin/DoctorManagementPage";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import NotificationPage from "../pages/Admin/NotificationPage";
+import TUserManagement from "../pages/Admin/TUserManagement";
+import DoctorManagement from "../pages/Admin/DoctorManagementPage";
 
 
 
@@ -13,7 +14,7 @@ const AdminRoutes = () => {
   const isAdmin = useSelector((state: RootState) => state.admin.admin);
 
   return (
-    <Routes>
+    <>
       <Route
         path="/admin/login"
         element={
@@ -32,10 +33,12 @@ const AdminRoutes = () => {
       />
       <Route
         path="/admin/doctors-management"
-        element={isAdmin ? <DoctorManagementDashboard /> : <Navigate to="/admin/login" replace />}
+        element={isAdmin ? <DoctorManagement /> : <Navigate to="/admin/login" replace />}
       />
        <Route path="/admin/notifications" element={isAdmin ? <NotificationPage /> : <Navigate to="/admin/login" replace />} />
-    </Routes>
+       <Route path="/testUser" element={<TUserManagement />} />
+       {/* <Route path="/test" element={</>} /> */}
+    </>
   );
 };
   

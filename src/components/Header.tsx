@@ -39,7 +39,7 @@ export default function Header() {
               Recipes
             </Link>
             <Link
-              to="/doctors"
+              to="/book-doctors"
               className="text-white hover:text-purple-400 transition-colors"
             >
               Doctors

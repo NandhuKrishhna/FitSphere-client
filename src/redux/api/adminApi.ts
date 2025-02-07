@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:5000/api/admin";
 export const adminApi = createApi({
     reducerPath: "adminApi",
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL, credentials: "include" }),
-    tagTypes: ["doctors"],
+    tagTypes: ["doctors" , "users" , "notification"],
     endpoints: (builder) => ({
         adminLogin: builder.mutation({
             query: (data) => ({
@@ -19,6 +19,7 @@ export const adminApi = createApi({
                 url: "/users",
                 method: "GET",
             }),
+            providesTags :["users"]
         }),
         getAllDoctors : builder.query({
             query: () => ({
@@ -38,7 +39,8 @@ export const adminApi = createApi({
             query : () => ({
                 url: "/notification",
                 method: "GET",
-            })
+            }),
+            providesTags:["notification"]
         }),
         approveRequest : builder.mutation({
             query : (data) => ({
@@ -55,8 +57,33 @@ export const adminApi = createApi({
                 body: data,
             }),
             invalidatesTags: ["doctors"],
+        }),
+
+        doctorManagement : builder.query({
+            query: () =>({
+                url:"/doctorDetails",
+                method:"GET"
+
+            })
+        }),
+
+        unblockUsers : builder.mutation({
+            query : (data) =>({
+                url:"unblock-user",
+                method : "POST",
+                body : data
+            }),
+            invalidatesTags:["users"]
+        }),
+        blockUsers : builder.mutation({
+            query : (data) =>({
+                url:"block-user",
+                method : "POST",
+                body : data
+            }),
+            invalidatesTags:["users" , "notification"]
         })
-    }),
+    })
    
 });
 
@@ -67,5 +94,8 @@ export const { useAdminLoginMutation,
     useLazyAdminLogoutQuery,
     useGetNotificationQuery,
     useApproveRequestMutation,
-    useRejectRequestMutation
+    useRejectRequestMutation,
+    useDoctorManagementQuery,
+    useBlockUsersMutation,
+    useUnblockUsersMutation
  } = adminApi;
