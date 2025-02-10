@@ -11,7 +11,7 @@ import HomePage from "../pages/Users/HomePage";
 import { RootState } from "../redux/store";
 import DoctorsPage from "../pages/Users/DoctorsPage";
 import ProtectedRoute from "./ProtectedRoutes";
-import TestProtectPage from "../pages/TestProtectPage";
+import UserProfilePage from "../pages/Users/UserProfilePage";
 
 
 const UserRoutes = () => {
@@ -29,9 +29,10 @@ const UserRoutes = () => {
       <Route path="/" element={isSignedIn ? <Navigate to="/home" replace /> : <LandingPage />} />
       <Route path="/home" element={isSignedIn ? <HomePage /> : <Navigate to="/login" />} />
       <Route path="/home" element={isSignedIn ? <HomePage /> : <Navigate to="/login" />} />
-      <Route path="/book-doctors" element={isSignedIn ? <DoctorsPage /> : <Navigate to="/login" />} />
+      <Route path="/doctors/all" element={isSignedIn ? <DoctorsPage /> : <Navigate to="/login" />} />
       <Route element={<ProtectedRoute allowedRoles={["user"]}/>}>
-       <Route path="/home-element" element={<TestProtectPage/>}/>
+       <Route path="/profile" element={<UserProfilePage/>}/>
+
 
       </Route>
     </>

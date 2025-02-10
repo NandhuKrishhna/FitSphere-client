@@ -48,7 +48,7 @@ export const adminApi = createApi({
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["doctors"],
+            invalidatesTags: ["doctors", "notification"],
         }),
         rejectRequest : builder.mutation({
             query : (data) => ({
@@ -56,7 +56,7 @@ export const adminApi = createApi({
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["doctors"],
+            invalidatesTags: ["doctors" , "notification"],
         }),
 
         doctorManagement : builder.query({
@@ -81,7 +81,7 @@ export const adminApi = createApi({
                 method : "POST",
                 body : data
             }),
-            invalidatesTags:["users" , "notification"]
+            invalidatesTags:["users" ]
         })
     })
    

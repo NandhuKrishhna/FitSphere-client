@@ -89,7 +89,8 @@ export default function ProfessionalDetailsForm() {
   };
 
   return (
-    <div className="min-h-screen max-w-screen-lg mx-auto  text-gray-500 flex items-center justify-center relative overflow-hidden">
+    <div className="bg-gradient-to-br from-gray-500 to-black">
+    <div className="min-h-screen max-w-screen-lg mx-auto   text-gray-500 flex items-center justify-center relative overflow-hidden">
       <div className="max-w-5xl w-full bg-[#121212] rounded-2xl p-8">
         <h1 className="text-3xl font-bold text-white mb-2">
           Professional Details
@@ -374,7 +375,10 @@ export default function ProfessionalDetailsForm() {
               {/* Clickable Label for File Input */}
               <label
                 htmlFor="certificateUpload"
-                className="bg-indigo-400 w-10 h-10 rounded-full flex items-center justify-center absolute bottom-1 right-1 p-2 cursor-pointer"
+                className="bg-indigo-400 w-10 h-10 rounded-full flex 
+           hover:bg-indigo-600 hover:scale-110 transition-transform 
+           duration-200 items-center justify-center 
+           absolute bottom-1 right-1 p-2 cursor-pointer"
               >
                 <Camera className="text-black w-6 h-6" />
               </label>
@@ -405,6 +409,7 @@ export default function ProfessionalDetailsForm() {
         isOpen={showSuccess}
         onClose={() => setShowSuccess(false)}
       />
+    </div>
     </div>
   );
 }

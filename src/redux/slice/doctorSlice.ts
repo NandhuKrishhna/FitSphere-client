@@ -7,7 +7,8 @@ interface AuthState {
     accessToken : string,
     isSignIn : boolean,
     isOtpVerified : boolean,
-    isApproved : boolean
+    isApproved : boolean,
+    isCanelSlot : string
     
 }
 
@@ -16,7 +17,8 @@ const intialState : AuthState = {
     accessToken : "",
     isSignIn : false,
     isOtpVerified : false,
-    isApproved : false
+    isApproved : false,
+    isCanelSlot: ""
 };
 export const doctorSlice = createSlice({
     name : "auth",
@@ -25,10 +27,10 @@ export const doctorSlice = createSlice({
         setDoctor : (state , action : PayloadAction<AuthUser>) => {
             state.user = action.payload;
         },
-        setToken : (state , action : PayloadAction<string>) => {
+        setDoctorToken : (state , action : PayloadAction<string>) => {
            state.accessToken = action.payload
         },
-        setSignIn : (state , action : PayloadAction<boolean>) => {
+        setDoctorSignIn : (state , action : PayloadAction<boolean>) => {
             state.isSignIn = action.payload;
         },
         setOtpVerified  : (state , action : PayloadAction<boolean>) => {
@@ -36,14 +38,18 @@ export const doctorSlice = createSlice({
         },
         setDoctorApprove : (state , action : PayloadAction<boolean>) => {
             state.isApproved = action.payload
+        },
+        setCanelSlot : (state , action : PayloadAction<string>) => {
+            state.isCanelSlot = action.payload
         }
     }
 });
 
 export const { setDoctor  , 
-    setToken , 
-    setSignIn , 
+    setDoctorToken , 
+    setDoctorSignIn , 
     setOtpVerified,
-    setDoctorApprove
+    setDoctorApprove,
+    setCanelSlot
 } = doctorSlice.actions;
 export default doctorSlice.reducer;

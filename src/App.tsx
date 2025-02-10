@@ -16,7 +16,7 @@ function App() {
         {/* Admin Routes */}
         {AdminRoutes()}
       </Routes>
-      <Toaster />
+      <Toaster  />
     </div>
   );
 }

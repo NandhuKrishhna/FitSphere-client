@@ -3,14 +3,14 @@ import { AuthUser } from "../../types/auth.types";
 
 interface AuthState {
     user : AuthUser | null;
-    accessToken : string,
+    accessToken : null,
     isSignIn : boolean,
     isOtpVerified : boolean
 }
 
 const intialState : AuthState = {
     user : null,
-    accessToken : "",
+    accessToken : null,
     isSignIn : false,
     isOtpVerified : false
 };
@@ -21,7 +21,7 @@ export const authSlice = createSlice({
         setUser : (state , action : PayloadAction<AuthUser | null>) => {
             state.user = action.payload;
         },
-        setToken : (state , action : PayloadAction<string>) => {
+        setToken : (state , action : PayloadAction<null>) => {
            state.accessToken = action.payload
         },
         setSignIn : (state , action : PayloadAction<boolean>) => {

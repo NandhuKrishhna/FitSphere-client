@@ -4,7 +4,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@heroui/theme/dist/components/(dropdown|menu|divider|popover|button|ripple|spinner).js"
+    "./node_modules/@heroui/theme/dist/components/(button|calendar|date-input|dropdown|ripple|spinner|form|menu|divider|popover).js"
   ],
 	theme: {
 	  extend: {
@@ -15,7 +15,7 @@ export default {
 	},
   plugins: [require("daisyui"),heroui()],
 	daisyui: {
-	  themes: ["light", "dark"],
+	  themes: ["light","dark"],
 	  
 	},
   };

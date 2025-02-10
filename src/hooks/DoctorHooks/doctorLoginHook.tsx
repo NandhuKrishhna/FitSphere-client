@@ -1,11 +1,12 @@
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setSignIn, setToken, setUser } from "../redux/slice/authSlice";
-import { useLoginMutation } from "../redux/api/apiSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { LoginData, loginSchema } from "../types/Validations/registerAsDoctorForm";
+import { useDoctorLoginMutation } from "../../redux/api/doctorApi";
+import { LoginData, loginSchema } from "../../types/Validations/registerAsDoctorForm";
+import { setDoctor, setDoctorSignIn, setDoctorToken } from "../../redux/slice/doctorSlice";
+
 export const ERRORS = {
   EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email."
 };
@@ -16,32 +17,27 @@ export interface ErrorResponse {
     };
     status: number;
   }
-const useLoginHook = () => {
+const useDoctorLoginHook = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
- const [login , {isLoading}] = useLoginMutation()
+   const [doctorLogin,{isLoading}] = useDoctorLoginMutation();
 
     const {register,handleSubmit , formState: { errors },} = useForm<LoginData>({resolver: zodResolver(loginSchema),});
      const onSubmit = async (data: LoginData) => {
       try {
-        const res = await login(data).unwrap();
+        const res = await doctorLogin(data).unwrap();
         console.log(res);
         toast.success(res.message);
-        dispatch(setUser(res.user));
-        dispatch(setToken(res.user.accessToken));
-        dispatch(setSignIn(true));
-        navigate("/home");
+        dispatch(setDoctor(res.user));
+        dispatch(setDoctorToken(res.accessToken));
+        dispatch(setDoctorSignIn(true));
+        navigate("/doctor/dashboard");
       } catch (err) {
         console.log(err)
         const error = err as ErrorResponse;
         if (error.data?.message) {
           toast.error(error.data.message); 
           return; 
-        }
-        if (error.status === 401 && error.data?.message === ERRORS.EMAIL_VERIFICATION_REQUIRED) {
-          toast.error(ERRORS.EMAIL_VERIFICATION_REQUIRED);
-          navigate("/verify-email");
-          return;
         }
       
     }
@@ -57,4 +53,4 @@ const useLoginHook = () => {
   };
 };
 
-export default useLoginHook;
+export default useDoctorLoginHook;

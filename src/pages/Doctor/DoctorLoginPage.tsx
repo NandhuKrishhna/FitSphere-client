@@ -3,13 +3,13 @@ import { useState } from "react"
 import { Eye, EyeOff, Mail } from "lucide-react"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
-import useLoginHook from "../../hooks/LoginHook"
 import { childVariants, containerVariants } from "../../framer-motion/form-motion"
 import InputField from "../../components/Input"
+import useDoctorLoginHook from "../../hooks/DoctorHooks/doctorLoginHook"
 
-export default function LoginPage() {
+export default function DoctorLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
-  const {register, isLoading , errors,  handleSubmit} = useLoginHook()
+  const {register, isLoading , errors,  handleSubmit} = useDoctorLoginHook()
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-500 to-black">
@@ -20,7 +20,7 @@ export default function LoginPage() {
         >
           <div className="p-6">
             <motion.h2 className="text-2xl font-semibold mb-2" variants={childVariants}>
-              Login to your account
+              Doctor Login
             </motion.h2>
             <motion.p className="text-zinc-400 text-sm mb-6" variants={childVariants}>
               Enter your email and password to access your account
@@ -52,9 +52,9 @@ export default function LoginPage() {
               </motion.div>
               <motion.div className="flex items-center justify-between" variants={childVariants}>
             
-                <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-400">
+                {/* <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-400">
                   Forgot password?
-                </Link>
+                </Link> */}
               </motion.div>
               <motion.button
                 type="submit"
@@ -70,7 +70,7 @@ export default function LoginPage() {
           <motion.div className="border-t border-zinc-800 p-6" variants={childVariants}>
             <p className="text-sm text-center text-zinc-400">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-indigo-500 hover:text-indigo-400 font-medium">
+              <Link to="/doctor/signup" className="text-indigo-500 hover:text-indigo-400 font-medium">
                 Sign up
               </Link>
             </p>
@@ -81,4 +81,3 @@ export default function LoginPage() {
     </div>
   )
 }
-

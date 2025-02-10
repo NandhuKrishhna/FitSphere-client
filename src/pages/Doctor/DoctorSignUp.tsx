@@ -19,7 +19,7 @@ const DoctorSignUp = () => {
 
   
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-500 to-black">
       <motion.div
         className="w-full max-w-md mx-4"
         variants={containerVariants}
@@ -122,7 +122,7 @@ const DoctorSignUp = () => {
             <p className="text-sm text-center text-zinc-400">
               Already have an account?{" "}
               <Link
-                to="/login"
+                to="/doctor/login"
                 className="text-indigo-500 hover:text-indigo-400 font-medium"
               >
                 Login

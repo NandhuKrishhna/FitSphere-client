@@ -74,7 +74,7 @@ const formatTime = (time: number) => {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center">
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-gray-500 to-black">
       <div className="w-full max-w-md mx-4 bg-zinc-900 text-white border border-zinc-800 rounded-lg shadow-lg">
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-2">Enter OTP</h2>

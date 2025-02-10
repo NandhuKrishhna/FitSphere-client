@@ -1,18 +1,23 @@
-"use client";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { useLogout } from "../hooks/userLogoutHook"
+import { useSelector } from "react-redux"
+import type { RootState } from "../redux/store"
+import { LogOut } from "lucide-react"
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useLogout } from "../hooks/userLogoutHook";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+type Props ={
+  value? : string,
+  onChange? : (e : React.ChangeEvent<HTMLInputElement>) => void
+}
 
-export default function Header() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { handleLogout, isLoading } = useLogout();
+export default function Header({value, onChange}: Props) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isSearchVisible, setIsSearchVisible] = useState(false)
+  const { handleLogout, isLoading } = useLogout()
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-  const user = useSelector((state: RootState) => state.auth.user);
+    setIsDropdownOpen(!isDropdownOpen)
+  }
+  const user = useSelector((state: RootState) => state.auth.user)
   return (
     <header className="bg-[#0a0a14] border-b border-[#1a1a2e]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -26,65 +31,56 @@ export default function Header() {
 
           {/* Navigation Links - Hidden on mobile */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/dashboard"
-              className="text-white hover:text-purple-400 transition-colors"
-            >
+            {/* <Link to="/dashboard" className="text-white hover:text-purple-400 transition-colors">
               Dashboard
-            </Link>
-            <Link
-              to="/recipes"
-              className="text-white hover:text-purple-400 transition-colors"
-            >
+            </Link> */}
+            {/* <Link to="/recipes" className="text-white hover:text-purple-400 transition-colors">
               Recipes
-            </Link>
-            <Link
-              to="/book-doctors"
-              className="text-white hover:text-purple-400 transition-colors"
-            >
+            </Link> */}
+            <Link to="/doctors/all" className="text-white hover:text-purple-400 transition-colors">
               Doctors
             </Link>
-            <Link
-              to="/explore"
-              className="text-white hover:text-purple-400 transition-colors"
-            >
-              Explore
+            <Link to="/profile" className="text-white hover:text-purple-400 transition-colors">
+              Profile
             </Link>
           </nav>
 
           {/* Right Side Icons */}
-          <div className="flex items-center space-x-4">
-            {/* Search Icon */}
-            <button
-              className="text-white hover:text-purple-400 transition-colors"
-              aria-label="Search"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="flex  items-center space-x-4">
+            {/* Search Icon and Input */}
+            <div className="relative mt-2">
+              <button
+                className="text-white hover:text-purple-400 transition-colors"
+                aria-label="Search"
+                onClick={() => setIsSearchVisible(!isSearchVisible)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+              <div
+                className={`absolute right-0 mt-5 w-64 transition-all duration-300 ease-in-out ${
+                  isSearchVisible ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+                }`}
+              >
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={value}
+                  onChange={onChange}
+                  className="w-full px-4 py-2 text-sm text-white bg-[#1a1a2e] border border-[#2a2a3e] rounded-md focus:outline-none focus:border-purple-500 placeholder-gray-500"
                 />
-              </svg>
-            </button>
+              </div>
+            </div>
 
             {/* Support Icon */}
-            <button
-              className="text-white hover:text-purple-400 transition-colors"
-              aria-label="Support"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <button className="text-white hover:text-purple-400 transition-colors" aria-label="Support">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -95,16 +91,8 @@ export default function Header() {
             </button>
 
             {/* Notification Bell */}
-            <button
-              className="text-white hover:text-purple-400 transition-colors"
-              aria-label="Notifications"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <button className="text-white hover:text-purple-400 transition-colors" aria-label="Notifications">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -115,36 +103,20 @@ export default function Header() {
             </button>
 
             {/* Cart Icon */}
-            <button
-              className="text-white hover:text-purple-400 transition-colors"
-              aria-label="Shopping Cart"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <button className="text-white hover:text-purple-400 transition-colors" aria-label="Shopping Cart">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 004 0z"
                 />
               </svg>
             </button>
 
             {/* Settings Icon */}
-            <button
-              className="text-white hover:text-purple-400 transition-colors"
-              aria-label="Settings"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <button className="text-white hover:text-purple-400 transition-colors" aria-label="Settings">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -170,7 +142,7 @@ export default function Header() {
               >
                 {user && user.profilePic ? (
                   <img
-                    src={user.profilePic}
+                    src={user.profilePic || "/placeholder.svg"}
                     alt="User avatar"
                     width={32}
                     height={32}
@@ -179,34 +151,33 @@ export default function Header() {
                 ) : (
                   <div className="avatar placeholder">
                     <div className="bg-neutral text-neutral-content w-12 rounded-full flex items-center justify-center">
-                    <span>
-            {user && user.name
-              ? user.name.slice(0, 2).toUpperCase()
-              : "GU"}
-          </span>
+                      <span>{user && user.name ? user.name.slice(0, 2).toUpperCase() : "GU"}</span>
                     </div>
                   </div>
                 )}
               </button>
               {isDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-48 bg-indigo-500 hover:bg-indigo-400 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5"
+                  className="absolute right-0 mt-5 w-[10rem]  bg-indigo-500 hover:bg-indigo-400 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="user-menu"
                 >
                   <button
                     onClick={(e: React.FormEvent) => {
-                      handleLogout(e);
-                      setIsDropdownOpen(false);
+                      handleLogout(e)
+                      setIsDropdownOpen(false)
                     }}
-                    className="block px-2 py-2 text-lg font-bold text-center text-gray-700 w-full "
+                    className="block px-1 py-1 text-lg font-bold text-center text-gray-700 w-full "
                     role="menuitem"
                   >
                     {isLoading ? (
                       <span className="loading loading-spinner loading-sm"></span>
                     ) : (
-                      "Logout"
+                      <div className="flex items-center justify-center gap-2 text-white">
+                        <LogOut />
+                        <span>Logout</span>
+                      </div>
                     )}
                   </button>
                 </div>
@@ -216,5 +187,6 @@ export default function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }
+

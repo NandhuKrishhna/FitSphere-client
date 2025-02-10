@@ -17,6 +17,7 @@ import {
   REGISTER 
 } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit";
+import { appApi } from "./api/appApi.ts";
 
 
 const persistConfig = {
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [doctorApi.reducerPath]: doctorApi.reducer,
   [adminApi.reducerPath]: adminApi.reducer,
+  [appApi.reducerPath]: appApi.reducer,
   auth: authReducer,
   doctor: doctorReducer,
   admin: adminReducer,
@@ -44,7 +46,8 @@ export const store = configureStore({
     }).concat(
       authApi.middleware,
       doctorApi.middleware,
-      adminApi.middleware
+      adminApi.middleware,
+      appApi.middleware
     ),
 });
 
