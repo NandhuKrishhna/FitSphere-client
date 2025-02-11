@@ -29,11 +29,9 @@ const UserRoutes = () => {
       <Route path="/" element={isSignedIn ? <Navigate to="/home" replace /> : <LandingPage />} />
       <Route path="/home" element={isSignedIn ? <HomePage /> : <Navigate to="/login" />} />
       <Route path="/home" element={isSignedIn ? <HomePage /> : <Navigate to="/login" />} />
-      <Route path="/doctors/all" element={isSignedIn ? <DoctorsPage /> : <Navigate to="/login" />} />
       <Route element={<ProtectedRoute allowedRoles={["user"]}/>}>
+      <Route path="/doctors/all" element={ <DoctorsPage />} />
        <Route path="/profile" element={<UserProfilePage/>}/>
-
-
       </Route>
     </>
   );

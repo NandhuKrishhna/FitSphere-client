@@ -29,9 +29,15 @@ export const authSlice = createSlice({
         },
         setOtpVerified  : (state , action : PayloadAction<boolean>) => {
             state.isOtpVerified = action.payload
+        },
+        logout :(state) => {
+            state.user = null;
+            state.accessToken = null; 
+            state.isSignIn = false
+            state.isOtpVerified = false           
         }
     }
 });
 
-export const { setUser  , setToken , setSignIn , setOtpVerified} = authSlice.actions;
+export const { setUser  , setToken , setSignIn , setOtpVerified , logout} = authSlice.actions;
 export default authSlice.reducer;

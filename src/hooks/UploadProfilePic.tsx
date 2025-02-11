@@ -1,10 +1,10 @@
 import toast from "react-hot-toast";
-import { useUploardProfilePicMutation } from "../redux/api/appApi"
 import { ErrorResponse } from "./LoginHook";
+import { useUploadProfilePicMutation } from "../redux/api/appApi";
 
 
 const useUploadProfilePicture =  () =>{
-const [uploardProfilePic , {isLoading}] = useUploardProfilePicMutation() 
+const [uploardProfilePic , {isLoading}] = useUploadProfilePicMutation() 
 const uploardProfileHandler  = async ({picture}:{picture:string}) =>{
   try {
     console.log(picture)
@@ -21,7 +21,8 @@ const uploardProfileHandler  = async ({picture}:{picture:string}) =>{
   }
 }
 return{
-    uploardProfileHandler,isLoading
+    uploardProfileHandler,
+    isLoading
 }
 }
 

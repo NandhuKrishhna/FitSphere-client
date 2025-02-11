@@ -49,6 +49,7 @@ export const store = configureStore({
       adminApi.middleware,
       appApi.middleware
     ),
+    devTools : true
 });
 
 export type RootState = ReturnType<typeof store.getState>;

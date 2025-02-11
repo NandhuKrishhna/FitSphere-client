@@ -1,31 +1,22 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { apiSlice } from "./AuthApi";
 
-
-const BASE_URL = "http://localhost:5000/api/app";
-
-export const appApi = createApi({
-  reducerPath: "appApi",
-  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL, credentials: "include" }),
+export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     displayAllDoctors: builder.query({
       query: ({ page = 1, limit = 8, search = "", sort = "_id,asc" }) => ({
-        url: "/doctors/all",
+        url: "/app/doctors/all",
         method: "GET",
         params: { page, limit, search, sort },
       }),
     }),
-  uploardProfilePic : builder.mutation({
-    query :(data) => ({
-      url:"/update-profile",
-      method : "POST",
-      body : data
-    })
-  })
-
+    uploadProfilePic: builder.mutation({
+      query: (data) => ({
+        url: "/app/update-profile",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const {
-   useDisplayAllDoctorsQuery ,
-   useUploardProfilePicMutation
-  } = appApi;
+export const { useDisplayAllDoctorsQuery, useUploadProfilePicMutation } = appApi;

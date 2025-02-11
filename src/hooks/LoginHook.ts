@@ -30,7 +30,7 @@ const useLoginHook = () => {
         dispatch(setUser(res.user));
         dispatch(setToken(res.user.accessToken));
         dispatch(setSignIn(true));
-        navigate("/home");
+        navigate("/doctors/all");
       } catch (err) {
         console.log(err)
         const error = err as ErrorResponse;

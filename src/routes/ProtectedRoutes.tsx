@@ -1,7 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import { logout } from "../redux/slice/authSlice";
 
 type ProtectedRouteProps = {
   allowedRoles: string[];
@@ -10,26 +11,42 @@ type ProtectedRouteProps = {
 
 type TokenPayload = {
   role: string;
+  exp: number; 
 };
 
 const ProtectedRoute = ({ allowedRoles, redirectPath = "/login" }: ProtectedRouteProps) => {
+  console.log(allowedRoles, redirectPath, "From Protected Route");
+  const dispatch = useDispatch();
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
-  console.log(user, accessToken , "From Protected Route")
+  console.log(user, accessToken, "From Protected Route");
+
   if (!accessToken || !user) {
     return <Navigate to={redirectPath} replace />;
   }
-  
+
   let userRole = "";
   try {
     const decodedToken = jwtDecode<TokenPayload>(accessToken);
-    console.log(decodedToken, "decodedToken from the ProtectedRoute")
+    console.log(decodedToken, "Decoded Token from ProtectedRoute");
+
+    const currentTime = Date.now() / 1000; 
+    if (decodedToken.exp < currentTime) {
+      console.warn("Access token expired. Logging out...");
+      dispatch(logout()); 
+      return <Navigate to={redirectPath} replace />;
+    }
+
     userRole = decodedToken.role;
+    console.log(userRole,"User role from ProtectedRoute");
   } catch (error) {
     console.error("Invalid access token:", error);
+    dispatch(logout()); 
     return <Navigate to={redirectPath} replace />;
   }
+
   if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/unauthorized" replace />;
+    dispatch(logout()); 
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;
