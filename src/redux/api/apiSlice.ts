@@ -1,27 +1,26 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-const BASE_URL = "http://localhost:5000/api/auth";
-export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL, credentials: "include" }),
+import { apiSlice } from "./EntryApiSlice";
+
+export const authApi = apiSlice.injectEndpoints({
+
   endpoints: (builder) => ({
     // signUp
     signUp: builder.mutation({
       query: (data ,) => ({
-        url: "/signup",
+        url: "/auth/signup",
         method: "POST",
         body: data,
       }),
     }),
     verfiyEmail : builder.mutation({
       query:(data) => ({
-        url: "/verify-email",
+        url: "/auth/verify-email",
         method: "POST",
         body: {code : data}
       }),
     }),
     login: builder.mutation({
       query: (data) => ({
-        url: "/login",
+        url: "/auth/login",
         method: "POST",
         body: data,
       }),
@@ -29,7 +28,7 @@ export const authApi = createApi({
  // user enter their email to reset the password
     resetPassword : builder.mutation({
       query:(data) => ({
-        url: "/forgot-password",
+        url: "/auth/forgot-password",
         method: "POST",
         body: data
       })
@@ -37,7 +36,7 @@ export const authApi = createApi({
     // user enter the otp to reset the password
     verifyResetPasswordCode : builder.mutation({
       query:(data) => ({
-        url: "/verify/reset-password/otp",
+        url: "/auth/verify/reset-password/otp",
         method: "POST",
         body: {code : data}
       })
@@ -46,7 +45,7 @@ export const authApi = createApi({
     // user enter the new password
     resetNewPassword : builder.mutation({
       query:(data) => ({
-        url: "/reset/new-password",
+        url: "/auth/reset/new-password",
         method: "POST",
         body: data
       })
@@ -54,7 +53,7 @@ export const authApi = createApi({
 
     logout: builder.query({
       query: () => ({
-        url :"/logout",
+        url :"/auth/logout",
         method: "GET",
       })
     })

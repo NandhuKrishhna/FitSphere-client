@@ -140,9 +140,9 @@ export default function Header({value, onChange}: Props) {
                 aria-expanded={isDropdownOpen}
                 aria-haspopup="true"
               >
-                {user && user.profilePic ? (
+                {user && user.profilePicture ? (
                   <img
-                    src={user.profilePic || "/placeholder.svg"}
+                    src={user.profilePicture || "/placeholder.svg"}
                     alt="User avatar"
                     width={32}
                     height={32}

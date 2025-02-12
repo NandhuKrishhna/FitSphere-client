@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { jwtDecode } from "jwt-decode";
 import { logout } from "../redux/slice/authSlice";
+import toast from "react-hot-toast";
 
 type ProtectedRouteProps = {
   allowedRoles: string[];
@@ -15,10 +16,10 @@ type TokenPayload = {
 };
 
 const ProtectedRoute = ({ allowedRoles, redirectPath = "/login" }: ProtectedRouteProps) => {
-  console.log(allowedRoles, redirectPath, "From Protected Route");
+  // console.log(allowedRoles, redirectPath, "From Protected Route");
   const dispatch = useDispatch();
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
-  console.log(user, accessToken, "From Protected Route");
+  // console.log(user, accessToken, "From Protected Route");
 
   if (!accessToken || !user) {
     return <Navigate to={redirectPath} replace />;
@@ -27,19 +28,20 @@ const ProtectedRoute = ({ allowedRoles, redirectPath = "/login" }: ProtectedRout
   let userRole = "";
   try {
     const decodedToken = jwtDecode<TokenPayload>(accessToken);
-    console.log(decodedToken, "Decoded Token from ProtectedRoute");
+    // console.log(decodedToken, "Decoded Token from ProtectedRoute");
 
     const currentTime = Date.now() / 1000; 
     if (decodedToken.exp < currentTime) {
-      console.warn("Access token expired. Logging out...");
+      toast.error("Access token expired. Logging out...");
       dispatch(logout()); 
       return <Navigate to={redirectPath} replace />;
     }
 
     userRole = decodedToken.role;
     console.log(userRole,"User role from ProtectedRoute");
-  } catch (error) {
-    console.error("Invalid access token:", error);
+  } catch (error : any) {
+    console.log(error)
+    toast.error("Invalid access token. Logging out...");
     dispatch(logout()); 
     return <Navigate to={redirectPath} replace />;
   }

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useAdminLoginMutation } from "../../redux/api/adminApi";
-import { setAdminToken, setAdminUser } from "../../redux/slice/adminSlice";
+import { setAdminLogin, setAdminToken, setAdminUser } from "../../redux/slice/adminSlice";
 const loginSchema = z.object({
     email: z.string().email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -44,6 +44,7 @@ const useAdminLoginHook = () => {
         toast.success(res.message);
         dispatch(setAdminUser(res.admin));
         dispatch(setAdminToken(res.accessToken));
+        dispatch(setAdminLogin(true))
         setEmail("");
         setPassword("");
         navigate("/admin/users-management");

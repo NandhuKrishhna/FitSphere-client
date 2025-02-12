@@ -4,42 +4,16 @@ import { Eye, EyeOff, Mail } from "lucide-react"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 import useAdminLoginHook from "../../hooks/Admin/adminLoginHook"
+import { childVariants, containerVariants } from "../../framer-motion/form-motion"
 
 export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const {email, password, errors, handleInputChange, handleSubmit, isLoading} =useAdminLoginHook();
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 10,  
-        when: "beforeChildren",
-        staggerChildren: 0.05,
-      },
-    },
-  }
-  
-  const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 500, 
-        damping: 15,   
-      },
-    },
-  }
-  
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-gray-500 to-black ">
       <motion.div className="w-full max-w-md mx-4" variants={containerVariants} initial="hidden" animate="visible">
         <motion.div
           className="bg-zinc-900 rounded-xl border border-zinc-800 text-white shadow-lg overflow-hidden"

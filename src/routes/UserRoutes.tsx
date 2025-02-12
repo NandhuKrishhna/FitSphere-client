@@ -12,6 +12,7 @@ import { RootState } from "../redux/store";
 import DoctorsPage from "../pages/Users/DoctorsPage";
 import ProtectedRoute from "./ProtectedRoutes";
 import UserProfilePage from "../pages/Users/UserProfilePage";
+import DoctorDetailsPage from "../pages/Users/DoctorDetailsPage";
 
 
 const UserRoutes = () => {
@@ -32,6 +33,7 @@ const UserRoutes = () => {
       <Route element={<ProtectedRoute allowedRoles={["user"]}/>}>
       <Route path="/doctors/all" element={ <DoctorsPage />} />
        <Route path="/profile" element={<UserProfilePage/>}/>
+       <Route path="/doctor/profile" element={<DoctorDetailsPage/>}/>
       </Route>
     </>
   );

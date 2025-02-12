@@ -1,34 +1,42 @@
-import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
 import { Camera } from "lucide-react";
-import useUploadProfilePicture from "../../hooks/UploadProfilePic";
-
-const defaultProfilePic =
-  "https://res.cloudinary.com/dzsdfw5vx/image/upload/v1737140482/pngtree-male-physician-doctor-png-image_10167965_mbxbll.png";
+import { setUser } from "../../redux/slice/authSlice";
+import { useUploadProfilePicMutation } from "../../redux/api/appApi";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { setUpdatingProfile } from "../../redux/slice/authSlice";
 
 const UserProfilePage = () => {
-  const auth = useSelector((state: RootState) => state.auth);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { uploardProfileHandler, isLoading } = useUploadProfilePicture();
-  const [previewImage, setPreviewImage] = useState(auth.user?.profilePic || defaultProfilePic);
-
-  const handleCameraClick = () => {
-    fileInputRef.current?.click(); // Trigger file selection
-  };
-
+  const auth = useSelector((state: RootState) => state.auth.user);
+  const isUpdatingProfile = useSelector((state:RootState) =>state.auth.isUpdatingProfile)
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const [uploadProfilePic ] =useUploadProfilePicMutation()
+  const dispatch = useDispatch();
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
+  
     const reader = new FileReader();
     reader.readAsDataURL(file);
-
+  
     reader.onload = async () => {
       const base64Image = reader.result as string;
-      setPreviewImage(base64Image); 
-      await uploardProfileHandler({ picture: base64Image }); 
+      setSelectedImg(base64Image);
+      try {
+       const response =   await uploadProfilePic({ profilePic: base64Image }).unwrap();
+       dispatch(setUser(response.user));
+       console.log("Response after user upload Profile Picture",response);
+        toast.success("Profile picture updated successfully!");
+      } catch (error: any) {
+        console.error("Profile update error:", error);
+        toast.error(error?.data?.message || "Failed to update profile");
+      } 
+      finally {
+        dispatch(setUpdatingProfile(false));
+      }
     };
   };
 
@@ -36,31 +44,41 @@ const UserProfilePage = () => {
     <div className="min-h-screen bg-[#0a0a14]">
       <Header />
       <div className="flex flex-col items-center mt-9">
-        <div className="relative w-48 h-48 rounded-full overflow-hidden">
-          <img
-            src={previewImage || auth.user?.profilePic}
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
-          <div
-            className="absolute z-auto bottom-4 right-6 text-gray-600 flex items-center justify-center rounded-full w-9 h-9 bg-white cursor-pointer"
-            onClick={handleCameraClick}
-          >
-            <Camera />
+      <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <img
+                src={selectedImg || auth?.profilePicture || "/avatar.png"}
+                alt="Profile"
+                className="size-32 rounded-full object-cover border-4 "
+              />
+              <label
+                htmlFor="avatar-upload"
+                className={`
+                  absolute bottom-0 right-0 
+                  bg-base-content hover:scale-105
+                  p-2 rounded-full cursor-pointer 
+                  transition-all duration-200
+                  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}
+                `}
+              >
+                <Camera className="w-5 h-5 text-base-200" />
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isUpdatingProfile}
+                />
+              </label>
+            </div>
+            <p className="text-sm text-zinc-400">
+              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+            </p>
           </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageUpload}
-          />
-        </div>
-        <p  className="text-white">{isLoading ?"Uploading..." : "Click the camera icon to upload the image"}</p>
 
-
-        <h1 className="text-xl text-white font-bold mt-4">{auth.user?.name || "Richard Davis"}</h1>
-        <p className="text-gray-500">{auth.user?.email || "nandhukrishna@gmail.com"}</p>
+        <h1 className="text-xl text-white font-bold mt-4">{auth?.name || "Richard Davis"}</h1>
+        <p className="text-gray-500">{auth?.email || "nandhukrishna@gmail.com"}</p>
 
         {/* Other Profile Sections */}
         <div className="w-3/4 grid grid-cols-2 gap-6 mt-8">
@@ -73,7 +91,7 @@ const UserProfilePage = () => {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-gray-500">Full Name:</p>
-                <p className="font-medium">{auth.user?.name || "Alec M. Thompson"}</p>
+                <p className="font-medium">{auth?.name || "Alec M. Thompson"}</p>
               </div>
               <div>
                 <p className="text-gray-500">Mobile:</p>
@@ -81,7 +99,7 @@ const UserProfilePage = () => {
               </div>
               <div>
                 <p className="text-gray-500">Email:</p>
-                <p className="font-medium">{auth.user?.email || "alecthompson@mail.com"}</p>
+                <p className="font-medium">{auth?.email || "alecthompson@mail.com"}</p>
               </div>
               <div>
                 <p className="text-gray-500">Location:</p>

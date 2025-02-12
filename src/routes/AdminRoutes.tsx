@@ -21,9 +21,8 @@ const AdminRoutes = () => {
           isAdmin ? (
             <Navigate to="/admin/users-management" replace />
           ) : (
-            <div className="min-h-screen bg-gradient-to-br from-gray-500 to-black text-gray-500 flex items-center justify-center relative overflow-hidden">
               <AdminLoginPage />
-            </div>
+            
           )
         }
       />

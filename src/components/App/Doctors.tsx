@@ -1,13 +1,26 @@
 import { BadgeCheck, Calendar } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setSelectedDoctorId } from "../../redux/slice/appFeatSlice";
+import { useNavigate } from "react-router-dom";
 
 type DoctorCardProps = {
   name: string;
   experience: string;
   specialty: string;
   profilePicture: string;
+  id: string;
 };
 
-const DoctorCard = ({ name, experience, specialty, profilePicture }: DoctorCardProps) => {
+  
+
+const DoctorCard = ({ name, experience, specialty, profilePicture , id }: DoctorCardProps) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const handleCardClick = () => {
+    dispatch(setSelectedDoctorId(id))
+    console.log("User click the card")
+    navigate("/doctor/profile")
+  }
   return (
     <div className="bg-gray-200 dark:bg-gray-900 py-2 rounded-2xl shadow-lg max-w-[15rem] text-center">
       <div className="overflow-hidden rounded-xl flex items-center justify-center">
@@ -23,7 +36,9 @@ const DoctorCard = ({ name, experience, specialty, profilePicture }: DoctorCardP
           <span>{experience}+ Years</span>
         </div>
         <p className="text-blue-600 dark:text-blue-400 text-sm">{specialty}</p>
-        <button className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg transition">
+        <button className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg transition"
+          onClick={handleCardClick}
+          >
           Book
         </button>
       </div>

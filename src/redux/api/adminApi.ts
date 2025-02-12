@@ -1,94 +1,85 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { apiSlice } from "./EntryApiSlice";
 
-const BASE_URL = "http://localhost:5000/api/admin";
-
-export const adminApi = createApi({
-    reducerPath: "adminApi",
-    baseQuery: fetchBaseQuery({ baseUrl: BASE_URL, credentials: "include" }),
-    tagTypes: ["doctors" , "users" , "notification"],
+export const adminApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         adminLogin: builder.mutation({
             query: (data) => ({
-                url: "/signin",
+                url: "/admin/signin",
                 method: "POST",
                 body: data,
             }),
         }),
         getAllUsers: builder.query({
             query: () => ({
-                url: "/users",
+                url: "/admin/users",
                 method: "GET",
             }),
-            providesTags :["users"]
+            providesTags: ["users"]
         }),
-        getAllDoctors : builder.query({
+        getAllDoctors: builder.query({
             query: () => ({
-                url: "/doctors",
+                url: "/admin/doctors",
                 method: "GET",
-
             }),
             providesTags: ["doctors"],
         }),
-        adminLogout : builder.query({
+        adminLogout: builder.query({
             query: () => ({
-                url: "/logout",
+                url: "/admin/logout",
                 method: "GET",
             }),
         }),
         getNotification: builder.query({
-            query : () => ({
-                url: "/notification",
+            query: () => ({
+                url: "/admin/notification",
                 method: "GET",
             }),
-            providesTags:["notification"]
+            providesTags: ["notification"]
         }),
-        approveRequest : builder.mutation({
-            query : (data) => ({
-                url: "/approve-request",
+        approveRequest: builder.mutation({
+            query: (data) => ({
+                url: "/admin/approve-request",
                 method: "POST",
                 body: data,
             }),
             invalidatesTags: ["doctors", "notification"],
         }),
-        rejectRequest : builder.mutation({
-            query : (data) => ({
-                url: "/reject-request",
+        rejectRequest: builder.mutation({
+            query: (data) => ({
+                url: "/admin/reject-request",
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["doctors" , "notification"],
+            invalidatesTags: ["doctors", "notification"],
         }),
-
-        doctorManagement : builder.query({
-            query: () =>({
-                url:"/doctorDetails",
-                method:"GET"
-
+        doctorManagement: builder.query({
+            query: () => ({
+                url: "/admin/doctorDetails",
+                method: "GET"
             })
         }),
-
-        unblockUsers : builder.mutation({
-            query : (data) =>({
-                url:"unblock-user",
-                method : "POST",
-                body : data
+        unblockUsers: builder.mutation({
+            query: (data) => ({
+                url: "/admin/unblock-user",
+                method: "POST",
+                body: data
             }),
-            invalidatesTags:["users"]
+            invalidatesTags: ["users"]
         }),
-        blockUsers : builder.mutation({
-            query : (data) =>({
-                url:"block-user",
-                method : "POST",
-                body : data
+        blockUsers: builder.mutation({
+            query: (data) => ({
+                url: "/admin/block-user",
+                method: "POST",
+                body: data
             }),
-            invalidatesTags:["users" ]
+            invalidatesTags: ["users"]
         })
-    })
-   
+    }),
+    overrideExisting: false
 });
 
-
-export const { useAdminLoginMutation,
+export const {
+    useAdminLoginMutation,
     useGetAllUsersQuery,
     useGetAllDoctorsQuery,
     useLazyAdminLogoutQuery,
@@ -98,4 +89,4 @@ export const { useAdminLoginMutation,
     useDoctorManagementQuery,
     useBlockUsersMutation,
     useUnblockUsersMutation
- } = adminApi;
+} = adminApi;

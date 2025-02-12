@@ -5,14 +5,16 @@ interface AuthState {
     user : AuthUser | null;
     accessToken : null,
     isSignIn : boolean,
-    isOtpVerified : boolean
+    isOtpVerified : boolean;
+    isUpdatingProfile: boolean;
 }
 
 const intialState : AuthState = {
     user : null,
     accessToken : null,
     isSignIn : false,
-    isOtpVerified : false
+    isOtpVerified : false,
+    isUpdatingProfile: false
 };
 export const authSlice = createSlice({
     name : "auth",
@@ -35,9 +37,26 @@ export const authSlice = createSlice({
             state.accessToken = null; 
             state.isSignIn = false
             state.isOtpVerified = false           
-        }
-    }
-});
+        },
+        setUpdatingProfile: (state, action: PayloadAction<boolean>) => {
+            state.isUpdatingProfile = action.payload;
+        },
+        setProfilePic: (state, action: PayloadAction<string>) => {
+            if(state.user){
+                state.user.profilePicture = action.payload
+            }
 
-export const { setUser  , setToken , setSignIn , setOtpVerified , logout} = authSlice.actions;
+    }
+}
+})
+
+
+export const { setUser  , 
+    setToken , 
+    setSignIn ,
+     setOtpVerified ,
+      logout,
+      setUpdatingProfile,
+      setProfilePic
+    } = authSlice.actions;
 export default authSlice.reducer;

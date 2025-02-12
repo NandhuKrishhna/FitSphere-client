@@ -2,7 +2,8 @@ export type AuthUser = {
   _id : string;
   name : string;
   email : string;
-  profilePic? : string;
+  profilePicture? : string;
+  role? :string
 }
 
 export type Admin = {

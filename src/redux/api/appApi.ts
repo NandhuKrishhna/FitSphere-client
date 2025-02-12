@@ -1,4 +1,4 @@
-import { apiSlice } from "./AuthApi";
+import { apiSlice } from "./EntryApiSlice";
 
 export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,7 +16,21 @@ export const appApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    doctorDetails : builder.query({
+      query :(data) =>({
+        url:"/app/doctor/profile",
+        method:"POST",
+        body : data
+      })
+    }),
+    getAllSlotDetails : builder.query({
+      query :(data) =>({
+        url:"/app/doctor/slots",
+        method:"POST",
+        body : data
+      })
+    })
   }),
 });
 
-export const { useDisplayAllDoctorsQuery, useUploadProfilePicMutation } = appApi;
+export const { useDisplayAllDoctorsQuery, useUploadProfilePicMutation , useDoctorDetailsQuery , useGetAllSlotDetailsQuery} = appApi;

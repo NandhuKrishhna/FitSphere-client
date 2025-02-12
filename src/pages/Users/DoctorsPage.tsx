@@ -33,8 +33,7 @@ const DoctorsPage = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(8);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("_id,asc");
-
+  const [sort] = useState("_id,asc")
 
   const { data, error, isLoading } = useDisplayAllDoctorsQuery({ page, limit, search, sort });
 
@@ -47,6 +46,8 @@ const DoctorsPage = () => {
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
+
+
 
   return (
     <div className="min-h-screen bg-[#0a0a14]">
@@ -74,6 +75,7 @@ const DoctorsPage = () => {
                 {data.doctors?.map((doc: DoctorwithDetails) => (
                   <DoctorCard
                     key={doc._id}
+                    id={doc._id}
                     name={doc.name}
                     experience={doc.doctorDetails.experience}
                     specialty={doc.doctorDetails.primarySpecialty}
