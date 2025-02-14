@@ -13,6 +13,7 @@ import DoctorsPage from "../pages/Users/DoctorsPage";
 import ProtectedRoute from "./ProtectedRoutes";
 import UserProfilePage from "../pages/Users/UserProfilePage";
 import DoctorDetailsPage from "../pages/Users/DoctorDetailsPage";
+import WalletPage from "../pages/Users/WalletPage";
 
 
 const UserRoutes = () => {
@@ -34,6 +35,7 @@ const UserRoutes = () => {
       <Route path="/doctors/all" element={ <DoctorsPage />} />
        <Route path="/profile" element={<UserProfilePage/>}/>
        <Route path="/doctor/profile" element={<DoctorDetailsPage/>}/>
+       <Route path="/wallet" element={<WalletPage/>}/>
       </Route>
     </>
   );

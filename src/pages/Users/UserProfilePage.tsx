@@ -4,14 +4,17 @@ import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
 import { Camera } from "lucide-react";
 import { setUser } from "../../redux/slice/authSlice";
-import { useUploadProfilePicMutation } from "../../redux/api/appApi";
+import { useGetAppointmentDetailsQuery, useUploadProfilePicMutation } from "../../redux/api/appApi";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { setUpdatingProfile } from "../../redux/slice/authSlice";
+import AppointmentList from "../../components/App/AppointmentList";
 
 const UserProfilePage = () => {
   const auth = useSelector((state: RootState) => state.auth.user);
   const isUpdatingProfile = useSelector((state:RootState) =>state.auth.isUpdatingProfile)
+  const {data}  = useGetAppointmentDetailsQuery({patientId: auth?._id});
+  console.log('Appointment Datas:',data)
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [uploadProfilePic ] =useUploadProfilePicMutation()
   const dispatch = useDispatch();
@@ -39,11 +42,11 @@ const UserProfilePage = () => {
       }
     };
   };
-
+   
   return (
     <div className="min-h-screen bg-[#0a0a14]">
       <Header />
-      <div className="flex flex-col items-center mt-9">
+      <div className="flex flex-col items-center mt-9 pb-9">
       <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
@@ -109,29 +112,7 @@ const UserProfilePage = () => {
           </div>
 
           {/* Conversations Section */}
-          <div className="col-span-2 bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Conversations</h2>
-            <div className="space-y-4">
-              {[
-                { name: "Sophie B.", message: "Hi I need more information...", image: "/api/placeholder/40/40" },
-                { name: "Anne Marie", message: "Awesome work, can you...", image: "/api/placeholder/40/40" },
-                { name: "Ivanna", message: "About files I can...", image: "/api/placeholder/40/40" },
-                { name: "Peterson", message: "Have a great afternoon.", image: "/api/placeholder/40/40" },
-                { name: "Nick Daniel", message: "Hi I need more information...", image: "/api/placeholder/40/40" },
-              ].map((conversation, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <img src={conversation.image} alt={conversation.name} className="w-10 h-10 rounded-full" />
-                    <div>
-                      <p className="font-medium">{conversation.name}</p>
-                      <p className="text-sm text-gray-500">{conversation.message}</p>
-                    </div>
-                  </div>
-                  <button className="text-blue-600 text-sm font-medium">REPLY</button>
-                </div>
-              ))}
-            </div>
-          </div>
+           <AppointmentList data={data} />
         </div>
       </div>
     </div>

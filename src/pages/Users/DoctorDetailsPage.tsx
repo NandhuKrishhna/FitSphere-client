@@ -1,39 +1,120 @@
 import { useState } from "react";
-import { useDoctorDetailsQuery, useGetAllSlotDetailsQuery } from "../../redux/api/appApi";
+import { useBookSlotsMutation, useDoctorDetailsQuery, useGetAllSlotDetailsQuery, useVerifyPaymentMutation } from "../../redux/api/appApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
-import Calendar from "../../components/App/SlotCalender";
+import Calendar, { Slot } from "../../components/App/SlotCalender";
+import toast from "react-hot-toast";
+import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Payments";
 
 
 const DoctorDetailsPage = () => {
-  const [activeSection, setActiveSection] = useState("about");
-  const [selectedSlot, setSelectedSlot] = useState(null);
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);
-  console.log("doctorId",doctorId)
-  const { data, isLoading } = useDoctorDetailsQuery({ doctorId });
+  const user = useSelector((state: RootState) => state.auth.user);
+  
+  const [activeSection, setActiveSection] = useState("about");
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+
+  // console.log("doctorId",doctorId)
+  // slot booking mutation
+  const [bookSlots, {isLoading: isBookLoading}] = useBookSlotsMutation()
+  // getting doctordetails query
+  const { data } = useDoctorDetailsQuery({ doctorId });
+  // fetching all slots available for the doctor
   const {data:slots}  = useGetAllSlotDetailsQuery({doctorId})
-  if (isLoading) return <div>Loading...</div>;
-  // console.log("SLOTss",slots)
   const doctorDetails = data?.doctorDetails;
+
+  // payment verfication mutation we will pass the razorypay order to the backend//
+   const [verifyPayment] = useVerifyPaymentMutation()
   
   if (!doctorDetails) return <div>No details available.</div>;
-  const handleSlotClick = (slot: any) => {
+  const handleSlotClick = (slot: Slot) => {
     setSelectedSlot(slot); 
   };
 
-
-
-  const handleBookSlot = () => {
-    if (!selectedSlot) {
-      alert("Please select a slot before booking.");
+  const initPay = (order: Order) => {
+    console.log("Initializing payment with order:", order); 
+  
+    if (!(window as any).Razorpay) {
+      console.error("Razorpay SDK not loaded");
+      toast.error("Razorpay SDK not loaded. Please try again.");
       return;
     }
-    const { date, startTime, endTime } = selectedSlot;
-    alert(`You have booked a slot:\n
-    Doctor ID: ${doctorId}
-    Date: ${date}
-    Time: ${startTime} - ${endTime}`);
+    if (!order.id || !order.amount || !order.currency) {
+      console.error("Missing required order details:", order);
+      toast.error("Invalid order details");
+      return;
+    }
+  
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Appointment Payment",
+      description: "Payment for consultation",
+      order_id: order.id,
+      handler: async function(response: RazorpayResponse) {
+        try {
+          console.log("Payment successful!", response);
+          await verifyPayment({razorpay_order_id: response.razorpay_order_id})
+           toast.success("Payment successful!");
+        } catch (error) {
+          console.error("Payment verification failed:", error);
+          toast.error("Payment verification failed");
+        }
+     
+      },
+      prefill: {
+        name: `${user?.name}`,
+        email: `${user?.email}`,
+        contact: `${user?.email}`,
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+  
+    console.log("Razorpay options:", options); 
+  
+    try {
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function(response: RazorpayErrorResponse) {
+        console.error("Payment failed:", response.error);
+        toast.error(`Payment failed: ${response.error.description}`);
+      });
+  
+      rzp.open();
+    } catch (error) {
+      console.error("Error creating Razorpay instance:", error);
+      toast.error("Failed to initialize payment");
+    }
+  };
+  
+  const handleBookSlot = async () => {
+    if (!selectedSlot) {
+      toast.error("Please select a slot to book a consultation.");
+      return;
+    }
+    const patientId = user?._id
+    try {
+      const response = await bookSlots({
+        doctorId,
+        patientId,
+        slotId: selectedSlot?._id,
+        amount: doctorDetails.details.consultationFees
+      }).unwrap();
+  
+      console.log("Booking response:", response); 
+  
+      if (!response.order) {
+        throw new Error("No order details received from server");
+      }
+  
+      initPay(response.order);
+    } catch (error) {
+      console.error("Error booking slot:", error);
+      toast.error("Failed to book slot. Please try again.");
+    }
   };
 
 
@@ -80,7 +161,6 @@ const DoctorDetailsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
        <Header/>
       <div className="max-w-6xl mx-auto mt-11 pb-10">
-        {/* Profile Header */}
         <div className="flex items-start gap-6 mb-8">
           <div className="relative">
             <img
@@ -104,12 +184,11 @@ const DoctorDetailsPage = () => {
             <button 
             onClick={handleBookSlot}
             className="w-full mt-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              Book Slot
+              {isBookLoading? "Loading..." : "Book Slot"}
             </button>
           </div>
         </div>
 
-        {/* Communication Options */}
         <div className="flex gap-4 mb-8">
           {["Chat", "Video", "Audio"].map((option) => (
             <button

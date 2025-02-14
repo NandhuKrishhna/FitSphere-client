@@ -50,9 +50,15 @@ const Calendar: React.FC<CalendarProps> = ({
 
   const handleDateClick = (day: number) => {
     const clickedDate = new Date(Date.UTC(currentYear, currentMonth, day));
-    const clickedDateString = clickedDate.toISOString().split("T")[0];
+    const currentUTCDate = new Date();
+    currentUTCDate.setUTCHours(0, 0, 0, 0);
 
+    if (clickedDate < currentUTCDate) {
+      return;
+    }
+    const clickedDateString = clickedDate.toISOString().split("T")[0];
     const validSlots = Array.isArray(slots.slots) ? slots.slots : [];
+
     const slotsForDay = validSlots.filter((slot) => {
       const slotDate = new Date(slot.date).toISOString().split("T")[0];
       return slotDate === clickedDateString;
@@ -65,6 +71,9 @@ const Calendar: React.FC<CalendarProps> = ({
 
   const renderCalendar = () => {
     const validSlots = Array.isArray(slots.slots) ? slots.slots : [];
+    const currentUTCDate = new Date();
+    currentUTCDate.setUTCHours(0, 0, 0, 0);
+
     const days = [];
 
     for (let i = 0; i < firstDayOfMonth; i++) {
@@ -75,12 +84,27 @@ const Calendar: React.FC<CalendarProps> = ({
       const currentDateUTC = new Date(Date.UTC(currentYear, currentMonth, day));
       const currentDateString = currentDateUTC.toISOString().split("T")[0];
 
+      // Skip past dates
+      if (currentDateUTC < currentUTCDate) {
+        days.push(
+          <div
+            key={day}
+            className="h-10 flex items-center justify-center 
+            rounded-full bg-gray-600 text-gray-400 cursor-not-allowed"
+          >
+            {day}
+          </div>
+        );
+        continue;
+      }
+
       const slotsForDay = validSlots.filter((slot) => {
         const slotDate = new Date(slot.date).toISOString().split("T")[0];
         return slotDate === currentDateString;
       });
 
       const slotCount = slotsForDay.length;
+
       days.push(
         <div
           key={day}
@@ -93,6 +117,7 @@ const Calendar: React.FC<CalendarProps> = ({
         </div>
       );
     }
+
     return days;
   };
 
@@ -142,43 +167,57 @@ const Calendar: React.FC<CalendarProps> = ({
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-900 p-4 rounded-lg   text-white w-96">
-            <div className="ml-12">
-            <h3 className="text-lg  font-semibold mb-2">
-               Slots for {selectedDate}
-            </h3>
-            {selectedSlots.length > 0 ? (
-              <ul>
-                {selectedSlots.map((slot) => (
-                  <li
-                    key={slot._id}
-                    className="mb-1 cursor-pointer  hover:text-purple-300 "
-                    onClick={() => {
-                      onSlotClick(slot); 
-                      setIsModalOpen(false); 
-                    }}
-                  >
-                    {new Date(slot.startTime).toLocaleTimeString()} -{" "}
-                    {new Date(slot.endTime).toLocaleTimeString()} (
-                    {slot.consultationType})
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No slots available for this date.😓</p>
-            )}
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="bg-gray-900 p-4 rounded-lg text-white w-96">
+      <div className="ml-12">
+        <h3 className="text-lg font-semibold mb-2">
+          Slots for {selectedDate}
+        </h3>
+        {selectedSlots.filter((slot) => slot.status === "available").length > 0 ? (
+          <ul>
+            {selectedSlots
+              .filter((slot) => slot.status === "available") 
+              .map((slot) => (
+                <li
+                  key={slot._id}
+                  className="mb-1 cursor-pointer hover:text-purple-300"
+                  onClick={() => {
+                    onSlotClick(slot);
+                    setIsModalOpen(false);
+                  }}
+                >
+                  {new Date(slot.startTime).toLocaleTimeString("en-US", {
+                    timeZone: "UTC",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}{" "}
+                  -{" "}
+                  {new Date(slot.endTime).toLocaleTimeString("en-US", {
+                    timeZone: "UTC",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}{" "}
+                  ({slot.consultationType})
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <p>No available slots for this date. 😓</p>
+        )}
 
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="mt-4 bg-purple-500 hover:bg-red-400 px-2 py-1 rounded-md"
-            >
-              Close
-            </button>
-          </div>
-          </div>
-        </div>
-      )}
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="mt-4 bg-purple-500 hover:bg-red-400 px-2 py-1 rounded-md"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

@@ -1,12 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSignUpMutation } from "../redux/api/apiSlice";
+
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setToken, setUser } from "../redux/slice/authSlice";
 import { FormData, userRegisterSchema } from "../types/Validations/registerAsDoctorForm";
 import { ErrorResponse } from "../types/userTypes";
+import { useSignUpMutation } from "../redux/api/apiSlice";
 
 
 

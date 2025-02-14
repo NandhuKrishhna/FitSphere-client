@@ -1,5 +1,8 @@
 import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
 import { useContext, createContext, useState, ReactNode } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+// import { useDoctorLogout } from "../hooks/DoctorHooks/doctorLogoutHook";
 
 interface SidebarContextType {
   expanded: boolean;
@@ -13,7 +16,8 @@ interface SidebarProps {
 
 export default function Sidebar({ children }: SidebarProps) {
   const [expanded, setExpanded] = useState<boolean>(true);
-
+ const doctor = useSelector((state:RootState) => state.doctor.user);
+//  const{handleLogout,isLoading} = useDoctorLogout()
   return (
     <aside className="h-screen">
       <nav className="h-full flex flex-col bg-[#1a1a1a] shadow-lg shadow-purple-500/20">
@@ -41,14 +45,14 @@ export default function Sidebar({ children }: SidebarProps) {
         {/* Sidebar Footer (User Info) */}
         <div className="border-t border-gray-700 flex p-3">
           <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+            src={doctor?.profilePicture}
             alt="User Avatar"
             className="w-10 h-10 rounded-md"
           />
           <div className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
             <div className="leading-4">
-              <h4 className="font-semibold text-white">John Doe</h4>
-              <span className="text-xs text-gray-400">johndoe@gmail.com</span>
+              <h4 className="font-semibold text-white">{doctor?.name}</h4>
+              <span className="text-xs text-gray-400">{doctor?.email}</span>
             </div>
             <MoreVertical size={20} className="text-white" />
           </div>

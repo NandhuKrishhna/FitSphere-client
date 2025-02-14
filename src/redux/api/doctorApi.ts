@@ -3,7 +3,7 @@ import { apiSlice } from "./EntryApiSlice";
 export const doctorApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // signUp
-    signUp: builder.mutation({
+    doctorSignUp: builder.mutation({
       query: (data ,) => ({
         url: "/doctor/signup",
         method: "POST",
@@ -53,20 +53,39 @@ export const doctorApi = apiSlice.injectEndpoints({
         method : "POST",
         body : data
       }),
-      invalidatesTags:["slots"]
-    })
+      invalidatesTags:["slots","wallet"]
+    }),
+
+    doctorLogout : builder.query({
+        query : () =>({
+          url : "/doctor/logout",
+          method: "GET"
+        })
+    }),
+
+    getAllAppointments: builder.query({
+      query: (data) => ({
+        url: "/doctor/get/all-appointments",
+        method: "POST",
+        body: data,
+      }),
+      providesTags:["wallet"]
+    }),
+    
 
   }),
  
 });
 
 export const { 
-    useSignUpMutation ,
+    useDoctorSignUpMutation,
     useVerifyEmailByOtpMutation,
     useRegisterAsDoctorMutation,
     useDoctorLoginMutation,
     useAddSlotsMutation,
     useCancelSlotMutation,
-    useGetAllSlotsQuery
+    useGetAllSlotsQuery,
+    useLazyDoctorLogoutQuery,
+    useGetAllAppointmentsQuery
 
 } = doctorApi;

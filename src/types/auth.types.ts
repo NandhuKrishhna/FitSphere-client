@@ -6,6 +6,14 @@ export type AuthUser = {
   role? :string
 }
 
+export type Doctor ={
+  _id : string;
+  name : string;
+  email : string;
+  profilePic? : string;
+  role? : string
+}
+
 export type Admin = {
   _id : string;
   name : string;

@@ -1,9 +1,9 @@
 import { createSlice , PayloadAction } from "@reduxjs/toolkit";
-import { AuthUser } from "../../types/auth.types";
+import {Doctor } from "../../types/auth.types";
 
 
-interface AuthState {
-    user : AuthUser | null;
+interface DoctorState {
+    user : Doctor | null;
     accessToken : string,
     isSignIn : boolean,
     isOtpVerified : boolean,
@@ -12,7 +12,7 @@ interface AuthState {
     
 }
 
-const intialState : AuthState = {
+const intialState : DoctorState = {
     user : null,
     accessToken : "",
     isSignIn : false,
@@ -24,7 +24,7 @@ export const doctorSlice = createSlice({
     name : "auth",
     initialState : intialState,
     reducers : {
-        setDoctor : (state , action : PayloadAction<AuthUser>) => {
+        setDoctor : (state , action : PayloadAction<Doctor | null>) => {
             state.user = action.payload;
         },
         setDoctorToken : (state , action : PayloadAction<string>) => {

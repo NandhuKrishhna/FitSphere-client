@@ -1,23 +1,23 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useLogout } from "../hooks/userLogoutHook"
 import { useSelector } from "react-redux"
-import type { RootState } from "../redux/store"
 import { LogOut } from "lucide-react"
+import { useDoctorLogout } from "../../hooks/DoctorHooks/doctorLogoutHook"
+import { RootState } from "../../redux/store"
 
 type Props ={
   value? : string,
   onChange? : (e : React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function Header({value, onChange}: Props) {
+export default function DoctorHeader({value, onChange}: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isSearchVisible, setIsSearchVisible] = useState(false)
-  const { handleLogout, isLoading } = useLogout()
+  const { handleDoctorLogout, isLoading } = useDoctorLogout()
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
-  const user = useSelector((state: RootState) => state.auth.user)
+  const user = useSelector((state: RootState) => state.doctor.user)
   return (
     <header className="bg-[#0a0a14] border-b border-[#1a1a2e]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -31,13 +31,15 @@ export default function Header({value, onChange}: Props) {
 
           {/* Navigation Links - Hidden on mobile */}
           <nav className="hidden md:flex items-center space-x-8">
-            {/* <Link to="/dashboard" className="text-white hover:text-purple-400 transition-colors">
+            <Link to="/doctor/dashboard" className="text-white hover:text-purple-400 transition-colors">
               Dashboard
-            </Link> */}
-            {/* <Link to="/recipes" className="text-white hover:text-purple-400 transition-colors">
-              Recipes
-            </Link> */}
-            <Link to="/doctors/all" className="text-white hover:text-purple-400 transition-colors">
+            </Link> 
+             <Link to="/doctor/appointments" className="text-white hover:text-purple-400 transition-colors">
+              Slot Management
+            </Link>
+
+
+            {/* <Link to="/doctors/all" className="text-white hover:text-purple-400 transition-colors">
               Doctors
             </Link>
             <Link to="/profile" className="text-white hover:text-purple-400 transition-colors">
@@ -45,7 +47,7 @@ export default function Header({value, onChange}: Props) {
             </Link>
             <Link to="/wallet" className="text-white hover:text-purple-400 transition-colors">
               Wallet
-            </Link>
+            </Link> */}
           </nav>
 
           {/* Right Side Icons */}
@@ -143,9 +145,9 @@ export default function Header({value, onChange}: Props) {
                 aria-expanded={isDropdownOpen}
                 aria-haspopup="true"
               >
-                {user && user.profilePicture ? (
+                {user && user.profilePic ? (
                   <img
-                    src={user.profilePicture || "/placeholder.svg"}
+                    src={user.profilePic || "/placeholder.svg"}
                     alt="User avatar"
                     width={32}
                     height={32}
@@ -168,7 +170,7 @@ export default function Header({value, onChange}: Props) {
                 >
                   <button
                     onClick={(e: React.FormEvent) => {
-                      handleLogout(e)
+                        handleDoctorLogout(e)
                       setIsDropdownOpen(false)
                     }}
                     className="block px-1 py-1 text-lg font-bold text-center text-gray-700 w-full "

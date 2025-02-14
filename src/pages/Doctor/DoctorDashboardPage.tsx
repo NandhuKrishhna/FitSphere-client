@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { CalendarDays, LayoutDashboard, Settings } from "lucide-react";
-import Sidebar, { SidebarItem } from "../../components/DoctorSideNavBar";
 
 import toast from "react-hot-toast";
 import { useAddSlotsMutation, useGetAllSlotsQuery } from "../../redux/api/doctorApi";
@@ -10,6 +8,7 @@ import { Slot } from "../../types/Slot";
 import { ErrorResponse } from "../../types/userTypes";
 import Calendar from "../../components/Doctor/SlotCalender";
 import { useSlotCancelHook } from "../../hooks/DoctorHooks/SlotCancelHook";
+import DoctorHeader from "../../components/Doctor/DoctorHeader";
 
 
 type CalendarDate = {
@@ -61,10 +60,17 @@ const DoctorDashboardPage = () => {
 
       toast.success(res.message);
     } catch (error) {
+      console.log(error)
       const err = error as ErrorResponse;
       if (err.data?.message) {
         toast.error(err.data.message);
         return;
+      }
+      if(err.data?.errors) {
+        err.data.errors.forEach((err) => {
+          toast.error(err.message);
+        });
+        return
       }
       toast.error("An unexpected error occurred. Please try again.");
       
@@ -72,14 +78,10 @@ const DoctorDashboardPage = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-tr from-black to-indigo-300 min-h-screen">
-      <Sidebar>
-        <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active />
-        <SidebarItem icon={<CalendarDays size={20} />} text="Slot Management" active />
-        <SidebarItem icon={<Settings size={20} />} text="Settings" active />
-      </Sidebar>
+    <div className="bg-zinc-900 min-h-screen">
+      <DoctorHeader/>
 
-      <div className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="flex-1 p-4 mt-11 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <SlotList slots={slots} isLoading={isSlotsLoading} onCancel={handleCancel} isCanelLoading={isCancelLoading} />
         
         <div className="space-y-6">

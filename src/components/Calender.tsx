@@ -1,4 +1,4 @@
-// Calendar.tsx
+
 import { useState } from "react";
 
 type CalendarDate = {
@@ -97,7 +97,6 @@ export function Calendar({ onDateSelect }: CalendarProps) {
   return (
     <div className="w-full max-w-sm mx-auto">
       <div className="bg-[#1a1a1a] rounded-2xl p-6 shadow-lg shadow-purple-500/20">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => navigateMonth("prev")}

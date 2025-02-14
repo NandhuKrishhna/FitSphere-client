@@ -36,7 +36,7 @@ const SignupForm: React.FC = () => {
               className="text-2xl font-semibold mb-2"
               variants={childVariants}
             >
-              Create your account
+              Create user account
             </motion.h2>
             <motion.p
               className="text-zinc-400 text-sm mb-6"

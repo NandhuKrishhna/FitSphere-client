@@ -16,7 +16,7 @@ export const useLogout = () =>{
             const response = await logout({}).unwrap()
             console.log(response)
             dispatch(setUser(null))
-            dispatch(setToken(""))
+            dispatch(setToken(null))
             dispatch(setSignIn(false))
             toast.success("Logout Successfull")
         } catch (error) {

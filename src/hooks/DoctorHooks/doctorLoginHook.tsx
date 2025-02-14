@@ -27,10 +27,10 @@ const useDoctorLoginHook = () => {
       try {
         const res = await doctorLogin(data).unwrap();
         console.log(res);
-        toast.success(res.message);
         dispatch(setDoctor(res.user));
         dispatch(setDoctorToken(res.accessToken));
         dispatch(setDoctorSignIn(true));
+        toast.success(res.message);
         navigate("/doctor/dashboard");
       } catch (err) {
         console.log(err)

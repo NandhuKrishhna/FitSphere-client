@@ -24,7 +24,7 @@ export const consultationTypes = [
   export const timeOptions = generateTimeOptions();
 
 
-  export type Slot = {
+  export  type Slot = {
     _id: string;
     doctorId: string;
     consultationType: "video" | "audio";
