@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useVerfiyEmailMutation } from "../redux/api/apiSlice";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setSignIn } from "../redux/slice/authSlice";
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;
@@ -13,7 +11,6 @@ interface ErrorResponse {
 }
   const useVerificationCodeHook = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [verfiyEmail, { isLoading }] = useVerfiyEmailMutation();
 
@@ -32,9 +29,8 @@ interface ErrorResponse {
         const res = await verfiyEmail(otp.join("")).unwrap();
         console.log(res);
         toast.success(res.message);
-        setOtp(new Array(6).fill(""));
-        dispatch(setSignIn(true));
-        navigate("/home");
+        setOtp(new Array(6).fill(""))
+        navigate("/doctors/all");
       } catch (err) {
         console.log(err)
         const error = err as ErrorResponse;

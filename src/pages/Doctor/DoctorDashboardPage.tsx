@@ -1,97 +1,86 @@
 import { useEffect, useState } from "react";
-
 import toast from "react-hot-toast";
 import { useAddSlotsMutation, useGetAllSlotsQuery } from "../../redux/api/doctorApi";
 import SlotList from "../../components/Doctor/SlotList";
-import SlotForm from "../../components/Doctor/SlotForm";
 import { Slot } from "../../types/Slot";
 import { ErrorResponse } from "../../types/userTypes";
-import Calendar from "../../components/Doctor/SlotCalender";
-import { useSlotCancelHook } from "../../hooks/DoctorHooks/SlotCancelHook";
 import DoctorHeader from "../../components/Doctor/DoctorHeader";
-
-
-type CalendarDate = {
-  date: number;
-  month: number;
-  year: number;
-  isCurrentMonth: boolean;
-};
+import ConsultationCalendar from "../../components/Doctor/ConsultationCalendar";
 
 const DoctorDashboardPage = () => {
-  const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(null);
   const [addSlots, { isLoading }] = useAddSlotsMutation();
   const { data, isLoading: isSlotsLoading } = useGetAllSlotsQuery({});
   const [slots, setSlots] = useState<Slot[]>([]);
-  const {handleCancel , isLoading: isCancelLoading} = useSlotCancelHook()
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [consultationType, setConsultationType] = useState<"audio" | "video" | null>(null);
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
+
   useEffect(() => {
     if (data?.response) {
       setSlots(data.response);
     }
   }, [data]);
 
-  const handleDateSelect = (date: CalendarDate) => {
-    setSelectedDate(date);
-  };
-
-  const handleSubmit = async (data: {
-    startTime: string;
-    endTime: string;
-    consultationType: string;
-  }) => {
-    if (!selectedDate) {
-      toast.error("Please select a date on the calendar.");
+  const handleSubmit = async () => {
+    if (!selectedDate || !consultationType || !startTime || !endTime) {
+      toast.error("Please fill all the fields before submitting.");
       return;
     }
-
-    const formattedDate = `${selectedDate.year}-${String(selectedDate.month + 1)
-      .padStart(2, "0")}-${String(selectedDate.date).padStart(2, "0")}`;
+    console.log(selectedDate);
+    console.log(startTime);
+    console.log(endTime);
+    console.log(consultationType);
+    const formattedDate = selectedDate.toISOString().split("T")[0];
+    const startTimeISO = new Date(`${formattedDate}T${startTime}:00Z`).toISOString();
+    const endTimeISO = new Date(`${formattedDate}T${endTime}:00Z`).toISOString();
 
     try {
-      const startTimeISO = new Date(`${formattedDate}T${data.startTime}:00Z`).toISOString();
-      const endTimeISO = new Date(`${formattedDate}T${data.endTime}:00Z`).toISOString();
-
       const res = await addSlots({
         startTime: startTimeISO,
         endTime: endTimeISO,
         date: formattedDate,
-        consultationType: data.consultationType,
+        consultationType,
       }).unwrap();
 
       toast.success(res.message);
+      setStartTime("");
+      setEndTime("");
+      setConsultationType(null);
+      setSelectedDate(null);
     } catch (error) {
-      console.log(error)
+      console.error(error);
       const err = error as ErrorResponse;
       if (err.data?.message) {
         toast.error(err.data.message);
-        return;
+      } else if (err.data?.errors) {
+        err.data.errors.forEach((err) => toast.error(err.message));
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
       }
-      if(err.data?.errors) {
-        err.data.errors.forEach((err) => {
-          toast.error(err.message);
-        });
-        return
-      }
-      toast.error("An unexpected error occurred. Please try again.");
-      
     }
   };
 
   return (
     <div className="bg-zinc-900 min-h-screen">
-      <DoctorHeader/>
+      <DoctorHeader />
 
       <div className="flex-1 p-4 mt-11 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SlotList slots={slots} isLoading={isSlotsLoading} onCancel={handleCancel} isCanelLoading={isCancelLoading} />
-        
-        <div className="space-y-6">
-          <Calendar onDateSelect={handleDateSelect} />
-          <SlotForm
-            selectedDate={selectedDate}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
-        </div>
+        <SlotList slots={slots} isLoading={isSlotsLoading} />
+
+        <ConsultationCalendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          consultationType={consultationType}
+          setConsultationType={setConsultationType}
+          startTime={startTime}
+          setStartTime={setStartTime}
+          endTime={endTime}
+          setEndTime={setEndTime}
+          onSubmit={handleSubmit}
+          isLoading={isLoading}
+          slots={slots}
+        />
       </div>
     </div>
   );

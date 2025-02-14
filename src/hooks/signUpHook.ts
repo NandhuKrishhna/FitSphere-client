@@ -1,10 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setToken, setUser } from "../redux/slice/authSlice";
 import { FormData, userRegisterSchema } from "../types/Validations/registerAsDoctorForm";
 import { ErrorResponse } from "../types/userTypes";
 import { useSignUpMutation } from "../redux/api/apiSlice";
@@ -12,7 +9,6 @@ import { useSignUpMutation } from "../redux/api/apiSlice";
 
 
 const useSignUp = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [signUp, { isLoading }] = useSignUpMutation();
 
@@ -21,8 +17,6 @@ const useSignUp = () => {
     try {
       const res = await signUp(data).unwrap();
       toast.success(res.message);
-      dispatch(setUser(res.user));
-      dispatch(setToken(res.accessToken));
       navigate("/verify-email");
     } catch (err) {
       const error = err as ErrorResponse;

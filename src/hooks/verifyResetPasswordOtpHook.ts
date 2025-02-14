@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useVerifyResetPasswordCodeMutation, } from "../redux/api/apiSlice";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setOtpVerified,} from "../redux/slice/authSlice";
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;
@@ -14,7 +12,6 @@ interface ErrorResponse {
   
   const useResetPasswordHook = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [ verifyResetPasswordCode , { isLoading }] = useVerifyResetPasswordCodeMutation()
 
@@ -35,7 +32,6 @@ interface ErrorResponse {
         console.log(res);
         toast.success(res.message);
         setOtp(new Array(6).fill(""));
-        dispatch(setOtpVerified(true));
         navigate("/reset/new-password");
       } catch (err) {
         console.log(err)

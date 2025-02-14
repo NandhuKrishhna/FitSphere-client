@@ -1,17 +1,20 @@
 export type AuthUser = {
-  _id : string;
-  name : string;
-  email : string;
-  profilePicture? : string;
-  role? :string
-}
+  _id?: string;
+  name?: string;
+  email?: string;
+  profilePicture?: string;
+  role?: string;
+  accessToken: string; 
+};
+
 
 export type Doctor ={
-  _id : string;
-  name : string;
-  email : string;
-  profilePic? : string;
-  role? : string
+  _id?: string;
+  name?: string;
+  email?: string;
+  profilePicture?: string;
+  role?: string;
+  accessToken: string; 
 }
 
 export type Admin = {

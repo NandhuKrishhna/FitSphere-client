@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setSignIn, setToken, setUser } from "../redux/slice/authSlice";
+import { setCredentials} from "../redux/slice/authSlice";
 import { useLoginMutation } from "../redux/api/apiSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,9 +27,7 @@ const useLoginHook = () => {
         const res = await login(data).unwrap();
         console.log(res);
         toast.success(res.message);
-        dispatch(setUser(res.user));
-        dispatch(setToken(res.user.accessToken));
-        dispatch(setSignIn(true));
+        dispatch(setCredentials({ user: res.user }));
         navigate("/doctors/all");
       } catch (err) {
         console.log(err)

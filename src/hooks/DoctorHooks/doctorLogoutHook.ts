@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useLazyDoctorLogoutQuery } from "../../redux/api/doctorApi";
-import { setDoctor, setDoctorSignIn, setDoctorToken } from "../../redux/slice/doctorSlice";
+import { setDoctorCredentials, setDoctorSignIn,  } from "../../redux/slice/doctorSlice";
 import toast from "react-hot-toast";
 
 
@@ -15,8 +15,7 @@ export const useDoctorLogout = () =>{
         try {
             const response = await doctorLogout({}).unwrap()
             console.log(response)
-            dispatch(setDoctor(null))
-            dispatch(setDoctorToken(''))
+            dispatch(setDoctorCredentials(null))
             dispatch(setDoctorSignIn(false))
             toast.success("Logout Successfull")
         } catch (error) {

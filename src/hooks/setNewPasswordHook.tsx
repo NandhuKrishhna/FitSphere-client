@@ -1,7 +1,5 @@
 import toast from "react-hot-toast";
 import { useResetNewPasswordMutation } from "../redux/api/apiSlice";
-import { useDispatch } from "react-redux";
-import { setOtpVerified } from "../redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { PasswordData, setNewPasswordSchema } from "../types/Validations/registerAsDoctorForm";
@@ -14,7 +12,6 @@ const useSetNewPasswordHook = () => {
 
  const [resetNewPassword , {isLoading}] = useResetNewPasswordMutation()
  const {register , handleSubmit ,  watch , formState:{errors}} = useForm<PasswordData>({resolver: zodResolver(setNewPasswordSchema)})
- const dispatch = useDispatch();
  const navigate = useNavigate();
 
 
@@ -22,7 +19,6 @@ const useSetNewPasswordHook = () => {
       try {
          const res = await resetNewPassword(data).unwrap();
          toast.success(res.message);
-         dispatch(setOtpVerified(false));
          navigate("/login");
       } catch (error) {
         const err  = error as ErrorResponse;

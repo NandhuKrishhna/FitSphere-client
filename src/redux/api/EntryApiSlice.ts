@@ -1,11 +1,8 @@
 import { createApi, fetchBaseQuery, FetchArgs, FetchBaseQueryError, BaseQueryApi, BaseQueryFn } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { logout, setToken } from "../slice/authSlice";
+import { setCredentials, setlogout, } from "../slice/authSlice";
 
-// Define types
-type RefreshResultData = {
-  accessToken: null;
-};
+
 
 type CustomErrorData = {
   message: string;
@@ -21,7 +18,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5000/api",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.accessToken;
+    const token = (getState() as RootState).auth.user?.accessToken;
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
@@ -40,14 +37,21 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 
   if (error?.status === 401 && error?.data?.errorCode ==="InvalidAccessToken") {
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
-
     if (refreshResult.data) {
-      const data = refreshResult.data as RefreshResultData;
-      api.dispatch(setToken(data.accessToken));
+      const user = (api.getState() as RootState).auth.user;
+      api.dispatch(
+        setCredentials({
+          user: {
+            ...user,
+            accessToken: (refreshResult.data as { accessToken: string }).accessToken,
+          },
+        })
+      );
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.dispatch(logout());
+      api.dispatch(setlogout());
     }
+    
   }
 
   return result;

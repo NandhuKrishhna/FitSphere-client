@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
 import { Camera } from "lucide-react";
-import { setUser } from "../../redux/slice/authSlice";
 import { useGetAppointmentDetailsQuery, useUploadProfilePicMutation } from "../../redux/api/appApi";
 import toast from "react-hot-toast";
 import { useState } from "react";
@@ -30,7 +29,6 @@ const UserProfilePage = () => {
       setSelectedImg(base64Image);
       try {
        const response =   await uploadProfilePic({ profilePic: base64Image }).unwrap();
-       dispatch(setUser(response.user));
        console.log("Response after user upload Profile Picture",response);
         toast.success("Profile picture updated successfully!");
       } catch (error: any) {

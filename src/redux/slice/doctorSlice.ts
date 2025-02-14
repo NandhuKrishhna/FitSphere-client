@@ -3,8 +3,7 @@ import {Doctor } from "../../types/auth.types";
 
 
 interface DoctorState {
-    user : Doctor | null;
-    accessToken : string,
+    doctor : Doctor | null
     isSignIn : boolean,
     isOtpVerified : boolean,
     isApproved : boolean,
@@ -13,8 +12,7 @@ interface DoctorState {
 }
 
 const intialState : DoctorState = {
-    user : null,
-    accessToken : "",
+    doctor : null,
     isSignIn : false,
     isOtpVerified : false,
     isApproved : false,
@@ -24,12 +22,10 @@ export const doctorSlice = createSlice({
     name : "auth",
     initialState : intialState,
     reducers : {
-        setDoctor : (state , action : PayloadAction<Doctor | null>) => {
-            state.user = action.payload;
-        },
-        setDoctorToken : (state , action : PayloadAction<string>) => {
-           state.accessToken = action.payload
-        },
+        setDoctorCredentials: (state, action: PayloadAction<{ doctor: Doctor }>) => {
+             const { doctor } = action.payload;
+             state.doctor = doctor;
+           },
         setDoctorSignIn : (state , action : PayloadAction<boolean>) => {
             state.isSignIn = action.payload;
         },
@@ -45,8 +41,7 @@ export const doctorSlice = createSlice({
     }
 });
 
-export const { setDoctor  , 
-    setDoctorToken , 
+export const { setDoctorCredentials  , 
     setDoctorSignIn , 
     setOtpVerified,
     setDoctorApprove,

@@ -1,14 +1,12 @@
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { setDoctor } from "../../redux/slice/doctorSlice";
-import { setToken } from "../../redux/slice/authSlice";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userRegisterSchema } from "../../types/Validations/registerAsDoctorForm";
 import { FormData } from "../../types/Validations/registerAsDoctorForm";
 import { useDoctorSignUpMutation } from "../../redux/api/doctorApi";
+import { setDoctorCredentials } from "../../redux/slice/doctorSlice";
 interface ErrorResponse {
     data: {
       errors?: Array<{ path: string; message: string }>;
@@ -27,8 +25,7 @@ const useDoctorSignUp = () => {
       const res = await doctorSignUp(data).unwrap();
         console.log(res);
         toast.success(res.message);
-        dispatch(setDoctor(res.user));
-        dispatch(setToken(res.accessToken));
+        dispatch(setDoctorCredentials(res.user));
         navigate("/doctor/verify/otp");
     } catch (err) {
       const error = err as ErrorResponse;

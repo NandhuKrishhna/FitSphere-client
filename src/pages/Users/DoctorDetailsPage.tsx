@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import Calendar, { Slot } from "../../components/App/SlotCalender";
 import toast from "react-hot-toast";
 import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Payments";
+import ConsultationModal from "../../components/App/Confirmation";
 
 
 const DoctorDetailsPage = () => {
@@ -24,11 +25,11 @@ const DoctorDetailsPage = () => {
   const {data:slots}  = useGetAllSlotDetailsQuery({doctorId})
   const doctorDetails = data?.doctorDetails;
 
-  // payment verfication mutation we will pass the razorypay order to the backend//
    const [verifyPayment] = useVerifyPaymentMutation()
   
   if (!doctorDetails) return <div>No details available.</div>;
   const handleSlotClick = (slot: Slot) => {
+    console.log("button clicked");
     setSelectedSlot(slot); 
   };
 
@@ -179,12 +180,13 @@ const DoctorDetailsPage = () => {
           </div>
           <div className="mt-10">
 
-          <Calendar slots={slots || []} onSlotClick={handleSlotClick} />
+          {/* <Calendar slots={slots || []} onSlotClick={handleSlotClick} /> */}
+          <ConsultationModal slots={slots || []} onSlotClick={handleSlotClick} name={doctorDetails.name} dept={doctorDetails.details?.primarySpecialty} />
 
             <button 
             onClick={handleBookSlot}
             className="w-full mt-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              {isBookLoading? "Loading..." : "Book Slot"}
+              {isBookLoading? <span className="loading loading-ring loading-md"></span> : "Book Slot"}
             </button>
           </div>
         </div>
