@@ -1,8 +1,7 @@
 import { useDispatch } from "react-redux"
-
 import toast from "react-hot-toast";
 import { useLazyAdminLogoutQuery } from "../../redux/api/adminApi";
-import { setAdminToken, setAdminUser } from "../../redux/slice/adminSlice";
+import { setLogout } from "../../redux/slice/Auth_Slice";
 
 
 
@@ -16,8 +15,7 @@ export const useAdminLogout = () =>{
         try {
             const response = await adminLogin({}).unwrap()
             console.log(response)
-            dispatch(setAdminUser(null))
-            dispatch(setAdminToken(""))
+            dispatch(setLogout())
             toast.success("Logout Successfull")
         } catch (error) {
             console.log(error)

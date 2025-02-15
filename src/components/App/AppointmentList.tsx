@@ -52,7 +52,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({ data }) => {
       </div>
 
       <div className="space-y-4">
-        {data.response.map((appointment: Appointment) => (
+        {data?.response?.map((appointment: Appointment) => (
           <div
             key={appointment._id}
             className="bg-white p-4 rounded-lg shadow-sm border border-gray-100"
@@ -75,8 +75,8 @@ const AppointmentList: React.FC<AppointmentListProps> = ({ data }) => {
                     </div>
                     <div className="flex items-center text-gray-500 text-sm">
                       <Clock className="w-4 h-4 mr-1" />
-                      {formatToIndianTime(appointment.slots.startTime)} -{" "}
-                      {formatToIndianTime(appointment.slots.endTime)}
+                      {formatToIndianTime(appointment?.slots.startTime)} -{" "}
+                      {formatToIndianTime(appointment?.slots.endTime)}
                     </div>
                   </div>
                 </div>

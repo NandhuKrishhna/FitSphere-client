@@ -11,9 +11,13 @@ import DoctorDetailsPage from "../pages/Users/DoctorDetailsPage";
 import WalletPage from "../pages/Users/WalletPage";
 import RequireAuth from "../components/RequiredAuth";
 import Layout from "../components/Layout";
-
+import { useSelector } from "react-redux";
+import { selectCurrentToken } from "../redux/slice/Auth_Slice";
+import TestPage from "../pages/TestPage";
+const USER_REDIRECT_PATH = "/login"
 
 const UserRoutes = () => {
+  const token = useSelector(selectCurrentToken)
   return (
     <Routes>
      <Route path="/" element={<Layout/>}>
@@ -23,11 +27,12 @@ const UserRoutes = () => {
     <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
     <Route path="/verify-reset-otp" element={<ResetPasswordOtp/>}/>
     <Route path="/reset/new-password" element={<ResetPasswordPage/>}/>
+    <Route path="/test" element={<TestPage/>}/>
  
-    <Route element={<RequireAuth/>}>
+    <Route element={<RequireAuth token={token} redirectTo={USER_REDIRECT_PATH}/>}>
     <Route path="/doctors/all" element={<DoctorsPage/>}/>
     <Route path="/profile" element={<UserProfilePage/>}/>
-    <Route path="/doctor/profile" element={<DoctorDetailsPage/>}/>
+    <Route path="/doctors/profile" element={<DoctorDetailsPage/>}/>
     <Route path="/wallet" element={<WalletPage/>}/>
     </Route>
     </Route>

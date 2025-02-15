@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slice/authSlice.ts"
+import authReducer from "./slice/Auth_Slice.ts"
 import doctorReducer from "./slice/doctorSlice.ts"
 import adminReducer from "./slice/adminSlice.ts"
 import storage from "redux-persist/lib/storage";
@@ -22,7 +22,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ['auth', 'doctor', 'admin' , 'appFeat']
+  whitelist: [ 'auth', 'doctor', 'admin' , 'appFeat']
 };
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer, 

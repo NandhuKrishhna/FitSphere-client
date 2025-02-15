@@ -1,5 +1,6 @@
 import { createSlice , PayloadAction } from "@reduxjs/toolkit";
 import {Doctor } from "../../types/auth.types";
+import { RootState } from "../store";
 
 
 interface DoctorState {
@@ -19,7 +20,7 @@ const intialState : DoctorState = {
     isCanelSlot: ""
 };
 export const doctorSlice = createSlice({
-    name : "auth",
+    name : "doctor",
     initialState : intialState,
     reducers : {
         setDoctorCredentials: (state, action: PayloadAction<{ doctor: Doctor }>) => {
@@ -37,6 +38,9 @@ export const doctorSlice = createSlice({
         },
         setCanelSlot : (state , action : PayloadAction<string>) => {
             state.isCanelSlot = action.payload
+        },
+        setDoctorLogout :(state) =>{
+            state.doctor = null
         }
     }
 });
@@ -45,6 +49,9 @@ export const { setDoctorCredentials  ,
     setDoctorSignIn , 
     setOtpVerified,
     setDoctorApprove,
-    setCanelSlot
+    setCanelSlot,
+    setDoctorLogout
 } = doctorSlice.actions;
 export default doctorSlice.reducer;
+export const selectCurrentDoctor = (state:RootState) => state.doctor.doctor;
+export const selectDoctorToken = (state:RootState) => state.doctor.doctor?.accessToken

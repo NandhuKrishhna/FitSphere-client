@@ -2,14 +2,14 @@
 
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import { RootState } from "../../redux/store";
 import { useGetWalletQuery } from "../../redux/api/appApi";
 import Header from "../../components/Header";
+import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
 
 const ITEMS_PER_PAGE = 5;
 
 export default function WalletPage() {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector(selectCurrentUser);
   const { data: walletData, error, isLoading } = useGetWalletQuery({ userId: user?._id });
 
   const [currentPage, setCurrentPage] = useState(1);

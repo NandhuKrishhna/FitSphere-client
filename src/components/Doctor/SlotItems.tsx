@@ -1,5 +1,7 @@
 import { XCircle } from "lucide-react";
 import { Slot } from "../../types/Slot";
+import { useCancelSlotMutation } from "../../redux/api/doctorApi";
+import ConfirmDialog from "./AlertConfirmation";
 
 type SlotItemProps = {
   slot: Slot;
@@ -12,7 +14,8 @@ const adjustUTCDateToIST = (utcDate: string | Date) => {
   return new Date(date.getTime() - (5 * 60 * 60 * 1000 + 30 * 60 * 1000));
 };
 
-const SlotItem = ({ slot, onCancel , }: SlotItemProps) => {
+const SlotItem = ({ slot}: SlotItemProps) => {
+  const [cancelSlot , {isLoading:isCancelLoading}] = useCancelSlotMutation()
   const adjustedDate = adjustUTCDateToIST(slot.date);
   const formattedDate = adjustedDate.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -45,13 +48,24 @@ const SlotItem = ({ slot, onCancel , }: SlotItemProps) => {
           {slot.status === "booked" ? "Booked" : "Available"}
         </p>
       </div>
-      {slot.status === "available" && onCancel && (
-        <button
-          onClick={() => onCancel(slot._id)}
-          className="text-red-400 hover:text-red-600 transition"
-        >
-         <XCircle size={24} />
-        </button>
+      {slot.status === "available" && cancelSlot && (
+        <ConfirmDialog
+          message="Are you sure you want to cancel this slot?"
+          description={`Canceling this slot will make it available for others to book. This action cannot be undone.`}
+          confirmText="Yes, Cancel"
+          cancelText="No, Keep Slot"
+          onConfirm={() => cancelSlot({slotId : slot._id})} 
+          isCancelLoading={isCancelLoading}
+          color="bg-red-400"
+          trigger={
+            <button
+              className="text-red-400 hover:text-red-600 transition"
+              disabled={isCancelLoading}
+            >
+                <XCircle size={24} />
+            </button>
+          }
+        />
       )}
     </div>
   );

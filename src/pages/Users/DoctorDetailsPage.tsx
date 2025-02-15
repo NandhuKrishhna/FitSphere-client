@@ -3,15 +3,16 @@ import { useBookSlotsMutation, useDoctorDetailsQuery, useGetAllSlotDetailsQuery,
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
-import Calendar, { Slot } from "../../components/App/SlotCalender";
+import  { Slot } from "../../components/App/SlotCalender";
 import toast from "react-hot-toast";
 import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Payments";
 import ConsultationModal from "../../components/App/Confirmation";
+import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
 
 
 const DoctorDetailsPage = () => {
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector(selectCurrentUser);
   
   const [activeSection, setActiveSection] = useState("about");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
@@ -159,7 +160,7 @@ const DoctorDetailsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
        <Header/>
       <div className="max-w-6xl mx-auto mt-11 pb-10">
         <div className="flex items-start gap-6 mb-8">
@@ -169,14 +170,10 @@ const DoctorDetailsPage = () => {
               alt="Doctor profile"
               className="w-25 h-25 rounded-lg object-cover"
             />
-            <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900"></span>
           </div>
           <div className="flex-1 mt-9 ">
             <h1 className="text-white text-3xl font-semibold pb-3">{doctorDetails.name}</h1>
             <p className="text-purple-400 text-xl">{doctorDetails?.details?.primarySpecialty}</p>
-            <button className="mt-2 px-4 py-1 bg-purple-600 text-white rounded-full text-sm hover:bg-purple-700 transition-colors">
-              Follow
-            </button>
           </div>
           <div className="mt-10">
 

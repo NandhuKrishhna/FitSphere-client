@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userRegisterSchema } from "../../types/Validations/registerAsDoctorForm";
 import { FormData } from "../../types/Validations/registerAsDoctorForm";
 import { useDoctorSignUpMutation } from "../../redux/api/doctorApi";
-import { setDoctorCredentials } from "../../redux/slice/doctorSlice";
+import { setCredentials } from "../../redux/slice/Auth_Slice";
 interface ErrorResponse {
     data: {
       errors?: Array<{ path: string; message: string }>;
@@ -25,7 +25,7 @@ const useDoctorSignUp = () => {
       const res = await doctorSignUp(data).unwrap();
         console.log(res);
         toast.success(res.message);
-        dispatch(setDoctorCredentials(res.user));
+        dispatch(setCredentials({...res.user}));
         navigate("/doctor/verify/otp");
     } catch (err) {
       const error = err as ErrorResponse;

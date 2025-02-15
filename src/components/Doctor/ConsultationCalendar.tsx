@@ -48,8 +48,8 @@ export default function ConsultationCalendar({
 
   // Count slots by date
   const slotCountsByDate = slots.reduce((acc, slot) => {
-    const date = format(new Date(slot.date), "yyyy-MM-dd"); // Use formatted date as key
-    acc[date] = (acc[date] || 0) + 1; // Increment the count for the date
+    const date = format(new Date(slot.date), "yyyy-MM-dd"); 
+    acc[date] = (acc[date] || 0) + 1; 
     return acc;
   }, {} as Record<string, number>);
 
@@ -66,7 +66,12 @@ export default function ConsultationCalendar({
   };
 
   return (
-    <Card className="w-[440px] bg-white p-4">
+    <Card className="w-[440px] bg-white mt-9 p-4">
+      <div className="flex flex-col items-center justify-center p-4 text-xl font-bold">
+      <h1 className="">Schedule a Time Slot for Appointments </h1>
+      <p className="text-sm font-normal">Please fill out all required fields to create a new time slot for patient appointments</p>
+
+      </div>
       <div className="flex items-center justify-between mb-6">
         <Select>
           <SelectTrigger className="w-[160px]">
@@ -173,7 +178,7 @@ export default function ConsultationCalendar({
           disabled={!selectedDate || !consultationType || !startTime || !endTime || isLoading}
           onClick={onSubmit}
         >
-          {isLoading ? "Booking..." : "Book Consultation"}
+          {isLoading ? "Booking..." : "Add Slot"}
         </Button>
       </div>
     </Card>

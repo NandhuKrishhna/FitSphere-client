@@ -1,7 +1,8 @@
 import { useDispatch } from "react-redux"
 import { useLazyLogoutQuery } from "../redux/api/apiSlice";
 import toast from "react-hot-toast";
-import { setlogout } from "../redux/slice/authSlice";
+import { setLogout } from "../redux/slice/Auth_Slice";
+
 
 
 
@@ -15,7 +16,7 @@ export const useLogout = () =>{
         try {
             const response = await logout({}).unwrap()
             console.log(response)
-            dispatch(setlogout())
+            dispatch(setLogout())
             toast.success("Logout Successfull")
         } catch (error) {
             console.log(error)

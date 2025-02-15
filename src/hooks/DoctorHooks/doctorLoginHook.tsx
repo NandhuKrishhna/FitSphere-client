@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDoctorLoginMutation } from "../../redux/api/doctorApi";
 import { LoginData, loginSchema } from "../../types/Validations/registerAsDoctorForm";
-import { setDoctorCredentials, setDoctorSignIn,  } from "../../redux/slice/doctorSlice";
+import { setCredentials } from "../../redux/slice/Auth_Slice";
 
 export const ERRORS = {
   EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email."
@@ -27,10 +27,9 @@ const useDoctorLoginHook = () => {
       try {
         const res = await doctorLogin(data).unwrap();
         console.log(res);
-        console.log(res)
-        dispatch(setDoctorCredentials({ doctor: res.doctor }));
-        dispatch(setDoctorSignIn(true));
+        // console.log(res.doctor)
         toast.success(res.message);
+        dispatch(setCredentials({...res.doctor}))
         navigate("/doctor/dashboard");
       } catch (err) {
         console.log(err)

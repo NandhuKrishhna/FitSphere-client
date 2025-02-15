@@ -3,7 +3,6 @@ import LandingPage from "./pages/Users/LandingPage";
 import Layout from "./components/Layout";
 import UserRoutes from "./routes/UserRoutes";
 import Doctor_Routes from "./routes/Doctor_Routes";
-
 function App() {
   return (
     <Routes>
@@ -12,8 +11,7 @@ function App() {
       {/*User Routes*/}
       <Route path="/*" element={<UserRoutes/>}/>
       <Route path="/doctor/*" element={<Doctor_Routes/>}/>
-
-      {/*Doctor Routes*/}
+       
       </Route>
     </Routes>
   );

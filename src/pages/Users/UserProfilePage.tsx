@@ -1,6 +1,6 @@
 
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+// import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
 import { Camera } from "lucide-react";
 import { useGetAppointmentDetailsQuery, useUploadProfilePicMutation } from "../../redux/api/appApi";
@@ -8,10 +8,12 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { setUpdatingProfile } from "../../redux/slice/authSlice";
 import AppointmentList from "../../components/App/AppointmentList";
+import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
 
 const UserProfilePage = () => {
-  const auth = useSelector((state: RootState) => state.auth.user);
-  const isUpdatingProfile = useSelector((state:RootState) =>state.auth.isUpdatingProfile)
+  const auth = useSelector(selectCurrentUser);
+  // const isUpdatingProfile = useSelector((state:RootState) =>state.auth.isUpdatingProfile)
+  const isUpdatingProfile = false
   const {data}  = useGetAppointmentDetailsQuery({patientId: auth?._id});
   console.log('Appointment Datas:',data)
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
@@ -42,7 +44,7 @@ const UserProfilePage = () => {
   };
    
   return (
-    <div className="min-h-screen bg-[#0a0a14]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
       <Header />
       <div className="flex flex-col items-center mt-9 pb-9">
       <div className="flex flex-col items-center gap-4">

@@ -13,6 +13,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-500 to-black">
+      
       <motion.div className="w-full max-w-md mx-4" variants={containerVariants} initial="hidden" animate="visible">
         <motion.div
           className="bg-zinc-900 rounded-xl border border-zinc-800 text-white shadow-lg overflow-hidden"

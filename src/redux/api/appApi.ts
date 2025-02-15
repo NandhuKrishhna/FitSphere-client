@@ -62,7 +62,7 @@ export const appApi = apiSlice.injectEndpoints({
         method : "POST",
         body : data
       }),
-      invalidatesTags:["appointments"]
+      invalidatesTags:["appointments", "wallet"]
     }),
     getWallet : builder.query({
       query :(data) =>({

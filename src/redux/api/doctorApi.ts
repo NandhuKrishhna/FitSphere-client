@@ -4,7 +4,7 @@ export const doctorApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // signUp
     doctorSignUp: builder.mutation({
-      query: (data ,) => ({
+      query: (data ) => ({
         url: "/doctor/signup",
         method: "POST",
         body: data,
@@ -48,7 +48,7 @@ export const doctorApi = apiSlice.injectEndpoints({
       providesTags:["slots"]
     }),
     cancelSlot : builder.mutation({
-      query :(data) =>({
+      query :(data) => ({
         url : "/doctor/cancel-slot",
         method : "POST",
         body : data

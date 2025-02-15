@@ -50,7 +50,7 @@ const DoctorsPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-[#0a0a14]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
       <Header value={search} onChange={handleSearchChange} />
 
 

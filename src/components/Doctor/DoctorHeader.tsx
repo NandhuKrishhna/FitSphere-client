@@ -3,7 +3,8 @@ import { Link } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { LogOut } from "lucide-react"
 import { useDoctorLogout } from "../../hooks/DoctorHooks/doctorLogoutHook"
-import { RootState } from "../../redux/store"
+import { selectCurrentDoctor } from "../../redux/slice/Auth_Slice"
+
 
 type Props ={
   value? : string,
@@ -17,7 +18,8 @@ export default function DoctorHeader({value, onChange}: Props) {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
-  const user = useSelector((state: RootState) => state.doctor.user)
+  const user = useSelector(selectCurrentDoctor);
+  // console.log(user)
   return (
     <header className="bg-[#0a0a14] border-b border-[#1a1a2e]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -145,9 +147,9 @@ export default function DoctorHeader({value, onChange}: Props) {
                 aria-expanded={isDropdownOpen}
                 aria-haspopup="true"
               >
-                {user && user.profilePic ? (
+                {user && user.profilePicture ? (
                   <img
-                    src={user.profilePic || "/placeholder.svg"}
+                    src={user.profilePicture || "/placeholder.svg"}
                     alt="User avatar"
                     width={32}
                     height={32}

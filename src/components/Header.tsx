@@ -2,8 +2,8 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useLogout } from "../hooks/userLogoutHook"
 import { useSelector } from "react-redux"
-import type { RootState } from "../redux/store"
 import { AvatarDropdown } from "./App/DropDown"
+import { selectCurrentUser } from "../redux/slice/Auth_Slice"
 
 type Props ={
   value? : string,
@@ -14,7 +14,7 @@ export default function Header({value, onChange}: Props) {
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const { handleLogout, isLoading } = useLogout()
 
-  const user = useSelector((state: RootState) => state.auth.user)
+  const user = useSelector(selectCurrentUser)
   return (
     <header className="bg-[#0a0a14] border-b border-[#1a1a2e]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">

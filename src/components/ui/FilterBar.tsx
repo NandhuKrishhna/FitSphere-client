@@ -1,81 +1,121 @@
-import { useState } from "react";
-import { ListFilter, X } from "lucide-react"; // Using Lucide icons for menu & close
+import * as React from "react"
+import { Check, ChevronsUpDown, Filter } from "lucide-react"
 
-const FilterBar = () => {
-  const [isOpen, setIsOpen] = useState(false); // State to manage sidebar visibility
+import { cn } from "../../lib/utils"
+import { Button } from "../../components/ui/button"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover"
+import { Separator } from "../../components/ui/separator"
+import { Checkbox } from "../../components/ui/checkbox"
+import { Label } from "../../components/ui/label"
+
+const specialties = [
+  { value: "all", label: "All Specialties" },
+  { value: "cardiology", label: "Cardiology" },
+  { value: "dermatology", label: "Dermatology" },
+  { value: "neurology", label: "Neurology" },
+  { value: "pediatrics", label: "Pediatrics" },
+  { value: "orthopedics", label: "Orthopedics" },
+]
+
+const languages = [
+  { value: "all", label: "All Languages" },
+  { value: "english", label: "English" },
+  { value: "spanish", label: "Spanish" },
+  { value: "french", label: "French" },
+  { value: "german", label: "German" },
+  { value: "mandarin", label: "Mandarin" },
+]
+
+const FiterBar = () => {
+  const [open, setOpen] = React.useState(true)
+  const [specialty, setSpecialty] = React.useState("")
+  const [language, setLanguage] = React.useState("")
+  const [gender, setGender] = React.useState<string[]>([])
 
   return (
-    <div className="relative h-full ">
-      {/* Menu Button for Mobile */}
-      <div className="sm:flex sm:">
-      <button
-        className="sm:hidden  flex items-center text-white bg-zinc-700 p-2 rounded-md"
-        onClick={() => setIsOpen(true)} 
-      >
-
-      <ListFilter size={24} />
-
-      </button>
-        </div>
-
-      <div
-        className={`fixed top-0 left-0 w-64 h-full bg-zinc-800/30 bg-opacity-90 p-4 text-white transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out sm:relative sm:translate-x-0 sm:flex sm:flex-col sm:w-48 lg:w-64`}
-      >
-        {/* Close Button (Mobile Only) */}
-        <button
-          className="absolute top-4 right-4 sm:hidden text-white hover:text-gray-300"
-          onClick={() => setIsOpen(false)} // Close sidebar
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between md:w-[200px]  lg:w-[200px] bg-gray-600 text-white"
         >
-          <X size={24} />
-        </button>
-
-        <h2 className="text-2xl font-bold mb-6">Filters</h2>
-
-        {/* Specialty Filter */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Specialty</h3>
-          <select className="w-full bg-zinc-700 rounded-md p-2 text-sm">
-            <option>All Specialties</option>
-            <option>Cardiology</option>
-            <option>Dermatology</option>
-            <option>Neurology</option>
-          </select>
+          <Filter className="mr-2 h-4 w-4" />
+          {specialty || language || gender.length > 0 ? "Filters Applied" : "Filter"}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="lg:w-[200px] bg-gray-400 p-0 text-black" align="start">
+        <Command>
+          <CommandInput />
+          <CommandList>
+            <CommandEmpty>No filter found.</CommandEmpty>
+            <CommandGroup heading="Specialty">
+              {specialties.map((item) => (
+                <CommandItem
+                  key={item.value}
+                  onSelect={() => {
+                    setSpecialty(item.value === specialty ? "" : item.value)
+                  }}
+                >
+                  <Check className={cn("mr-2 h-4 w-4", specialty === item.value ? "opacity-100" : "opacity-0")} />
+                  {item.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+            <Separator />
+            <CommandGroup heading="Language">
+              {languages.map((item) => (
+                <CommandItem
+                  key={item.value}
+                  onSelect={() => {
+                    setLanguage(item.value === language ? "" : item.value)
+                  }}
+                >
+                  <Check className={cn("mr-2 h-4 w-4", language === item.value ? "opacity-100" : "opacity-0")} />
+                  {item.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+            <Separator />
+            <CommandGroup heading="Gender">
+              <CommandItem>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="male"
+                    checked={gender.includes("male")}
+                    onCheckedChange={(checked) => {
+                      setGender(checked ? [...gender, "male"] : gender.filter((g) => g !== "male"))
+                    }}
+                  />
+                  <Label htmlFor="male">Male</Label>
+                </div>
+              </CommandItem>
+              <CommandItem>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="female"
+                    checked={gender.includes("female")}
+                    onCheckedChange={(checked) => {
+                      setGender(checked ? [...gender, "female"] : gender.filter((g) => g !== "female"))
+                    }}
+                  />
+                  <Label htmlFor="female">Female</Label>
+                </div>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
+        <div className="p-4">
+          <Button className="w-full" onClick={() => setOpen(false)}>
+            Apply Filters
+          </Button>
         </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
-        {/* Gender Filter */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Gender</h3>
-          <div className="flex gap-4">
-            <label className="flex items-center">
-              <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-500" />
-              <span className="ml-2 text-sm">Male</span>
-            </label>
-            <label className="flex items-center">
-              <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-500" />
-              <span className="ml-2 text-sm">Female</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Language Filter */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Language</h3>
-          <select className="w-full bg-zinc-700 rounded-md p-2 text-sm">
-            <option>All Languages</option>
-            <option>English</option>
-            <option>Spanish</option>
-            <option>French</option>
-          </select>
-        </div>
-
-        <button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-          Apply Filters
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default FilterBar;
+export default FiterBar
