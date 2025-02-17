@@ -7,7 +7,8 @@ import  { Slot } from "../../components/App/SlotCalender";
 import toast from "react-hot-toast";
 import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Payments";
 import ConsultationModal from "../../components/App/Confirmation";
-import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
+import { MenuItem, menuItems } from "@/utils/UserDoctorDetails";
 
 
 const DoctorDetailsPage = () => {
@@ -122,17 +123,6 @@ const DoctorDetailsPage = () => {
 
 
 
-  const menuItems = [
-    { id: "about", label: "About" },
-    { id: "experience", label: "Experience" },
-    { id: "services", label: "Services Offered" },
-    { id: "reviews", label: "Reviews" },
-    { id: "consultation", label: "Consultation Fees" },
-    { id: "packages", label: "Packages and Benefits" },
-    { id: "awards", label: "Awards" },
-    { id: "additional", label: "Additional Features" },
-  ];
-
   const getContent = () => {
     switch (activeSection) {
       case "about":
@@ -201,7 +191,7 @@ const DoctorDetailsPage = () => {
         <div className="flex gap-8">
 
           <div className="w-64 space-y-2">
-            {menuItems.map((item) => (
+            {menuItems.map((item : MenuItem) => (
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}

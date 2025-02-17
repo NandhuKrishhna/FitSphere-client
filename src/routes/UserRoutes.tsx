@@ -14,30 +14,36 @@ import Layout from "../components/Layout";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "../redux/slice/Auth_Slice";
 import TestPage from "../pages/TestPage";
-const USER_REDIRECT_PATH = "/login"
+import ChatPage from "@/pages/Users/ChatPage";
+const USER_REDIRECT_PATH = "/login";
 
 const UserRoutes = () => {
-  const token = useSelector(selectCurrentToken)
+  const token = useSelector(selectCurrentToken);
   return (
     <Routes>
-     <Route path="/" element={<Layout/>}>
-    <Route path="/login" element={<LoginPage/>}/>
-    <Route path="/signup" element={<SignupForm />} />
-    <Route path="/verify-email" element={<OTPVerificationPage />}/>
-    <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
-    <Route path="/verify-reset-otp" element={<ResetPasswordOtp/>}/>
-    <Route path="/reset/new-password" element={<ResetPasswordPage/>}/>
-    <Route path="/test" element={<TestPage/>}/>
- 
-    <Route element={<RequireAuth token={token} redirectTo={USER_REDIRECT_PATH}/>}>
-    <Route path="/doctors/all" element={<DoctorsPage/>}/>
-    <Route path="/profile" element={<UserProfilePage/>}/>
-    <Route path="/doctors/profile" element={<DoctorDetailsPage/>}/>
-    <Route path="/wallet" element={<WalletPage/>}/>
-    </Route>
-    </Route>
+      <Route path="/" element={<Layout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupForm />} />
+        <Route path="/verify-email" element={<OTPVerificationPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/verify-reset-otp" element={<ResetPasswordOtp />} />
+        <Route path="/reset/new-password" element={<ResetPasswordPage />} />
+        <Route path="/test" element={<TestPage />} />
+
+        <Route
+          element={
+            <RequireAuth token={token} redirectTo={USER_REDIRECT_PATH} />
+          }
+        >
+          <Route path="/doctors/all" element={<DoctorsPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/doctors/profile" element={<DoctorDetailsPage />} />
+          <Route path="/wallet" element={<WalletPage />} />
+          <Route path="/messenger" element={<ChatPage />} />
+        </Route>
+      </Route>
     </Routes>
-   )
+  );
 };
 
 export default UserRoutes;

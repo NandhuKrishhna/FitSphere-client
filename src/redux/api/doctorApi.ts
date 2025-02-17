@@ -4,17 +4,17 @@ export const doctorApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // signUp
     doctorSignUp: builder.mutation({
-      query: (data ) => ({
+      query: (data) => ({
         url: "/doctor/signup",
         method: "POST",
         body: data,
       }),
     }),
-    verifyEmailByOtp : builder.mutation({
-      query:(data) => ({
+    verifyEmailByOtp: builder.mutation({
+      query: (data) => ({
         url: "/doctor/verify/otp",
         method: "POST",
-        body: {code : data}
+        body: { code: data },
       }),
     }),
 
@@ -25,42 +25,42 @@ export const doctorApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    doctorLogin : builder.mutation({
+    doctorLogin: builder.mutation({
       query: (data) => ({
-        url: "/doctor/doctor-login",
-        method : "POST",
-        body : data
-      })
-    }),
-    addSlots : builder.mutation({
-      query :(data) =>({
-        url : "/doctor/slot-management",
-        method : "POST",
-        body : data
+        url: "/doctor/login",
+        method: "POST",
+        body: data,
       }),
-      invalidatesTags:["slots"]
     }),
-    getAllSlots : builder.query({
-      query : ()=>({
-        url :"/doctor/get-slots",
-        method : "GET"
+    addSlots: builder.mutation({
+      query: (data) => ({
+        url: "/doctor/slot-management",
+        method: "POST",
+        body: data,
       }),
-      providesTags:["slots"]
+      invalidatesTags: ["slots"],
     }),
-    cancelSlot : builder.mutation({
-      query :(data) => ({
-        url : "/doctor/cancel-slot",
-        method : "POST",
-        body : data
+    getAllSlots: builder.query({
+      query: () => ({
+        url: "/doctor/get-slots",
+        method: "GET",
       }),
-      invalidatesTags:["slots","wallet"]
+      providesTags: ["slots"],
+    }),
+    cancelSlot: builder.mutation({
+      query: (data) => ({
+        url: "/doctor/cancel-slot",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["slots", "wallet"],
     }),
 
-    doctorLogout : builder.query({
-        query : () =>({
-          url : "/doctor/logout",
-          method: "GET"
-        })
+    doctorLogout: builder.query({
+      query: () => ({
+        url: "/doctor/logout",
+        method: "GET",
+      }),
     }),
 
     getAllAppointments: builder.query({
@@ -69,23 +69,19 @@ export const doctorApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      providesTags:["wallet"]
+      providesTags: ["wallet"],
     }),
-    
-
   }),
- 
 });
 
-export const { 
-    useDoctorSignUpMutation,
-    useVerifyEmailByOtpMutation,
-    useRegisterAsDoctorMutation,
-    useDoctorLoginMutation,
-    useAddSlotsMutation,
-    useCancelSlotMutation,
-    useGetAllSlotsQuery,
-    useLazyDoctorLogoutQuery,
-    useGetAllAppointmentsQuery
-
+export const {
+  useDoctorSignUpMutation,
+  useVerifyEmailByOtpMutation,
+  useRegisterAsDoctorMutation,
+  useDoctorLoginMutation,
+  useAddSlotsMutation,
+  useCancelSlotMutation,
+  useGetAllSlotsQuery,
+  useLazyDoctorLogoutQuery,
+  useGetAllAppointmentsQuery,
 } = doctorApi;

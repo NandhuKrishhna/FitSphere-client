@@ -1,5 +1,4 @@
 import { apiSlice } from "./EntryApiSlice";
-
 export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     displayAllDoctors: builder.query({
@@ -72,7 +71,7 @@ export const appApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["wallet"]
       
-    })
+    }),
   }),
 });
 
