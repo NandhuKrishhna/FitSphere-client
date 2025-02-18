@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { useLazyLogoutQuery } from "../redux/api/apiSlice";
 import toast from "react-hot-toast";
 import { setLogout } from "../redux/slice/Auth_Slice";
+import { disconnectSocket } from "@/lib/socketManager";
 
 export const useLogout = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ export const useLogout = () => {
       const response = await logout({}).unwrap();
       console.log(response);
       dispatch(setLogout());
+      disconnectSocket();
       toast.success("Logout Successfull");
     } catch (error) {
       console.log(error);

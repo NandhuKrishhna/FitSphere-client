@@ -1,8 +1,13 @@
-import { createApi, fetchBaseQuery, FetchArgs, FetchBaseQueryError, BaseQueryApi, BaseQueryFn } from "@reduxjs/toolkit/query/react";
+import {
+  createApi,
+  fetchBaseQuery,
+  FetchArgs,
+  FetchBaseQueryError,
+  BaseQueryApi,
+  BaseQueryFn,
+} from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { setCredentials, setLogout, } from "../slice/Auth_Slice";
-
-
+import { setCredentials, setLogout } from "../slice/Auth_Slice";
 
 type CustomErrorData = {
   message: string;
@@ -35,13 +40,13 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   let result = await baseQuery(args, api, extraOptions);
   const error = result.error as CustomError;
 
-  if (error?.status === 401 && error?.data?.errorCode ==="InvalidAccessToken") {
+  if (error?.status === 401 && error?.data?.errorCode === "InvalidAccessToken") {
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
     if (refreshResult.data) {
       const user = (api.getState() as RootState).auth.currentUser;
       api.dispatch(
         setCredentials({
-          ...user, 
+          ...user,
           accessToken: (refreshResult.data as { accessToken: string }).accessToken,
         })
       );
@@ -49,7 +54,6 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     } else {
       api.dispatch(setLogout());
     }
-    
   }
 
   return result;
@@ -58,7 +62,6 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 // Create API slice
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes:['doctors', 'users', 'notification', 'slots' , "appointments" , 'wallet'],
+  tagTypes: ["doctors", "users", "notification", "slots", "appointments", "wallet", "chatsidebar", "chats"],
   endpoints: () => ({}),
 });
-

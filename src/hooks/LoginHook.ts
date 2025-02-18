@@ -4,14 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../redux/api/apiSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  LoginData,
-  loginSchema,
-} from "../types/Validations/registerAsDoctorForm";
+import { LoginData, loginSchema } from "../types/Validations/registerAsDoctorForm";
 import { setCredentials } from "../redux/slice/Auth_Slice";
+import { connectSocket } from "@/lib/socketManager";
 export const ERRORS = {
-  EMAIL_VERIFICATION_REQUIRED:
-    "Please verify your email. A verification code has been sent to your email.",
+  EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email.",
 };
 export interface ErrorResponse {
   data: {
@@ -36,7 +33,9 @@ const useLoginHook = () => {
       console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.user }));
+      console.log("Test response from login hook", res);
       // connect the socket after login
+      connectSocket(res.user._id, dispatch);
       navigate("/doctors/all");
     } catch (err) {
       console.log(err);
@@ -45,10 +44,7 @@ const useLoginHook = () => {
         toast.error(error.data.message);
         return;
       }
-      if (
-        error.status === 401 &&
-        error.data?.message === ERRORS.EMAIL_VERIFICATION_REQUIRED
-      ) {
+      if (error.status === 401 && error.data?.message === ERRORS.EMAIL_VERIFICATION_REQUIRED) {
         toast.error(ERRORS.EMAIL_VERIFICATION_REQUIRED);
         navigate("/verify-email");
         return;

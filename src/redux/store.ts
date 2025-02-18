@@ -13,7 +13,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["auth", "doctor", "admin", "appFeat"],
+  whitelist: ["auth", "doctor", "admin", "appFeat", "socket"],
 };
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,

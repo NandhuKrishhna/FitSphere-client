@@ -26,7 +26,7 @@ export const authSlice = createSlice({
     setlogout: (state) => {
       state.user = null;
     },
-    
+
     setUpdatingProfile: (state, action: PayloadAction<boolean>) => {
       state.isUpdatingProfile = action.payload;
     },
@@ -38,10 +38,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const {
-    setCredentialsDemo,  
-  setlogout,
-  setUpdatingProfile,
-  setProfilePic,
-} = authSlice.actions;
+export const { setCredentialsDemo, setlogout, setUpdatingProfile, setProfilePic } = authSlice.actions;
 export default authSlice.reducer;

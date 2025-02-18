@@ -1,43 +1,47 @@
 import { useState } from "react";
-import { useBookSlotsMutation, useDoctorDetailsQuery, useGetAllSlotDetailsQuery, useVerifyPaymentMutation } from "../../redux/api/appApi";
+import {
+  useBookSlotsMutation,
+  useDoctorDetailsQuery,
+  useGetAllSlotDetailsQuery,
+  useVerifyPaymentMutation,
+} from "../../redux/api/appApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
-import  { Slot } from "../../components/App/SlotCalender";
+import { Slot } from "../../components/App/SlotCalender";
 import toast from "react-hot-toast";
 import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Payments";
 import ConsultationModal from "../../components/App/Confirmation";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { MenuItem, menuItems } from "@/utils/UserDoctorDetails";
 
-
 const DoctorDetailsPage = () => {
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);
   const user = useSelector(selectCurrentUser);
-  
+
   const [activeSection, setActiveSection] = useState("about");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
 
   // console.log("doctorId",doctorId)
   // slot booking mutation
-  const [bookSlots, {isLoading: isBookLoading}] = useBookSlotsMutation()
+  const [bookSlots, { isLoading: isBookLoading }] = useBookSlotsMutation();
   // getting doctordetails query
   const { data } = useDoctorDetailsQuery({ doctorId });
   // fetching all slots available for the doctor
-  const {data:slots}  = useGetAllSlotDetailsQuery({doctorId})
+  const { data: slots } = useGetAllSlotDetailsQuery({ doctorId });
   const doctorDetails = data?.doctorDetails;
 
-   const [verifyPayment] = useVerifyPaymentMutation()
-  
+  const [verifyPayment] = useVerifyPaymentMutation();
+
   if (!doctorDetails) return <div>No details available.</div>;
   const handleSlotClick = (slot: Slot) => {
     console.log("button clicked");
-    setSelectedSlot(slot); 
+    setSelectedSlot(slot);
   };
 
   const initPay = (order: Order) => {
-    console.log("Initializing payment with order:", order); 
-  
+    console.log("Initializing payment with order:", order);
+
     if (!(window as any).Razorpay) {
       console.error("Razorpay SDK not loaded");
       toast.error("Razorpay SDK not loaded. Please try again.");
@@ -48,7 +52,7 @@ const DoctorDetailsPage = () => {
       toast.error("Invalid order details");
       return;
     }
-  
+
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: order.amount,
@@ -56,16 +60,15 @@ const DoctorDetailsPage = () => {
       name: "Appointment Payment",
       description: "Payment for consultation",
       order_id: order.id,
-      handler: async function(response: RazorpayResponse) {
+      handler: async function (response: RazorpayResponse) {
         try {
           console.log("Payment successful!", response);
-          await verifyPayment({razorpay_order_id: response.razorpay_order_id})
-           toast.success("Payment successful!");
+          await verifyPayment({ razorpay_order_id: response.razorpay_order_id });
+          toast.success("Payment successful!");
         } catch (error) {
           console.error("Payment verification failed:", error);
           toast.error("Payment verification failed");
         }
-     
       },
       prefill: {
         name: `${user?.name}`,
@@ -76,52 +79,49 @@ const DoctorDetailsPage = () => {
         color: "#3399cc",
       },
     };
-  
-    console.log("Razorpay options:", options); 
-  
+
+    console.log("Razorpay options:", options);
+
     try {
       const rzp = new (window as any).Razorpay(options);
-      rzp.on("payment.failed", function(response: RazorpayErrorResponse) {
+      rzp.on("payment.failed", function (response: RazorpayErrorResponse) {
         console.error("Payment failed:", response.error);
         toast.error(`Payment failed: ${response.error.description}`);
       });
-  
+
       rzp.open();
     } catch (error) {
       console.error("Error creating Razorpay instance:", error);
       toast.error("Failed to initialize payment");
     }
   };
-  
+
   const handleBookSlot = async () => {
     if (!selectedSlot) {
       toast.error("Please select a slot to book a consultation.");
       return;
     }
-    const patientId = user?._id
+    const patientId = user?._id;
     try {
       const response = await bookSlots({
         doctorId,
         patientId,
         slotId: selectedSlot?._id,
-        amount: doctorDetails.details.consultationFees
+        amount: doctorDetails.details.consultationFees,
       }).unwrap();
-  
-      console.log("Booking response:", response); 
-  
+
+      console.log("Booking response:", response);
+
       if (!response.order) {
         throw new Error("No order details received from server");
       }
-  
+
       initPay(response.order);
     } catch (error) {
       console.error("Error booking slot:", error);
       toast.error("Failed to book slot. Please try again.");
     }
   };
-
-
-
 
   const getContent = () => {
     switch (activeSection) {
@@ -151,12 +151,12 @@ const DoctorDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
-       <Header/>
+      <Header />
       <div className="max-w-6xl mx-auto mt-11 pb-10">
         <div className="flex items-start gap-6 mb-8">
           <div className="relative">
             <img
-              src={doctorDetails.ProfilePicture}
+              src={doctorDetails.profilePicture}
               alt="Doctor profile"
               className="w-25 h-25 rounded-lg object-cover"
             />
@@ -166,14 +166,19 @@ const DoctorDetailsPage = () => {
             <p className="text-purple-400 text-xl">{doctorDetails?.details?.primarySpecialty}</p>
           </div>
           <div className="mt-10">
+            {/* <Calendar slots={slots || []} onSlotClick={handleSlotClick} /> */}
+            <ConsultationModal
+              slots={slots || []}
+              onSlotClick={handleSlotClick}
+              name={doctorDetails.name}
+              dept={doctorDetails.details?.primarySpecialty}
+            />
 
-          {/* <Calendar slots={slots || []} onSlotClick={handleSlotClick} /> */}
-          <ConsultationModal slots={slots || []} onSlotClick={handleSlotClick} name={doctorDetails.name} dept={doctorDetails.details?.primarySpecialty} />
-
-            <button 
-            onClick={handleBookSlot}
-            className="w-full mt-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              {isBookLoading? <span className="loading loading-ring loading-md"></span> : "Book Slot"}
+            <button
+              onClick={handleBookSlot}
+              className="w-full mt-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              {isBookLoading ? <span className="loading loading-ring loading-md"></span> : "Book Slot"}
             </button>
           </div>
         </div>
@@ -189,9 +194,8 @@ const DoctorDetailsPage = () => {
           ))}
         </div>
         <div className="flex gap-8">
-
           <div className="w-64 space-y-2">
-            {menuItems.map((item : MenuItem) => (
+            {menuItems.map((item: MenuItem) => (
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
@@ -212,7 +216,6 @@ const DoctorDetailsPage = () => {
             <h2 className="text-white text-lg mb-4">Contact</h2>
             <p className="text-gray-300">Phone: {doctorDetails?.details?.contactPhoneNumber}</p>
             <p className="text-gray-300">Email: {doctorDetails?.details?.professionalEmail}</p>
-           
           </div>
         </div>
       </div>

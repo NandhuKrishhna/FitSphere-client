@@ -8,7 +8,7 @@ import BasicPagination from "../../components/ui/Pagination";
 export type DoctorwithDetails = {
   _id: string;
   name: string;
-  ProfilePicture: string;
+  profilePicture: string;
   doctorDetails: {
     experience: string;
     consultationFees: string;
@@ -29,34 +29,28 @@ const DoctorCardSkeleton = () => (
 );
 
 const DoctorsPage = () => {
-
   const [page, setPage] = useState(1);
   const [limit] = useState(8);
   const [search, setSearch] = useState("");
-  const [sort] = useState("_id,asc")
+  const [sort] = useState("_id,asc");
 
   const { data, error, isLoading } = useDisplayAllDoctorsQuery({ page, limit, search, sort });
-
-
+  console.log(data);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    setPage(1); 
+    setPage(1);
   };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
 
-
-
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
       <Header value={search} onChange={handleSearchChange} />
 
-
       <div className="flex gap-6 p-7 mt-14">
-         <FilterBar/>
-
+        <FilterBar />
 
         <div className="flex-1">
           {isLoading && (
@@ -79,16 +73,17 @@ const DoctorsPage = () => {
                     name={doc.name}
                     experience={doc.doctorDetails.experience}
                     specialty={doc.doctorDetails.primarySpecialty}
-                    profilePicture={doc.ProfilePicture}
+                    profilePicture={doc.profilePicture}
                   />
                 ))}
               </div>
 
               <div className="flex justify-center mt-4">
                 <BasicPagination
-                count={data.pagination.totalPages}
-                page={data.pagination.currentPage}
-                onChange={handlePageChange}/>
+                  count={data.pagination.totalPages}
+                  page={data.pagination.currentPage}
+                  onChange={handlePageChange}
+                />
               </div>
             </>
           )}
