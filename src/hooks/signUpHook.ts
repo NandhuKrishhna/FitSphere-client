@@ -8,19 +8,23 @@ import { useSignUpMutation } from "../redux/api/apiSlice";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../redux/slice/Auth_Slice";
 
-
-
 const useSignUp = () => {
   const navigate = useNavigate();
   const [signUp, { isLoading }] = useSignUpMutation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const {register,handleSubmit, watch , formState: { errors },} = useForm<FormData>({resolver: zodResolver(userRegisterSchema),});
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(userRegisterSchema) });
   const onSubmit = async (data: FormData) => {
     try {
       const res = await signUp(data).unwrap();
+      localStorage.setItem("userId", res.user._id);
       toast.success(res.message);
-      dispatch(setCredentials(res.user))
+      dispatch(setCredentials({ ...res.response }));
       navigate("/verify-email");
     } catch (err) {
       const error = err as ErrorResponse;
@@ -41,7 +45,7 @@ const useSignUp = () => {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     isLoading,
-    watch
+    watch,
   };
 };
 

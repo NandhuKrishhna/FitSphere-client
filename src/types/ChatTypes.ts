@@ -22,8 +22,8 @@ export type SelectedUser = {
     profilePicture: string;
     _id: string;
   };
-  lastMessage: string;
-  _id: string;
+  lastMessage?: string;
+  _id?: string;
 };
 
 export type Users = {
@@ -33,5 +33,14 @@ export type Users = {
     _id: string;
   } | null;
   lastMessage: string;
+  _id: string;
+};
+
+export type MessagesData = {
+  createdAt: string;
+  isRead: boolean;
+  message: string;
+  receivedId: string;
+  senderId: string;
   _id: string;
 };

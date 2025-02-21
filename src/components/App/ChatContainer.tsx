@@ -1,34 +1,33 @@
 import { ScrollArea } from "../ui/scroll-area";
 import { MessageSkeleton } from "./MessageSkeleton";
 import { toIndianTime } from "@/utils/TimeAgo";
-import { ChatMessageData, Messages } from "@/types/ChatTypes";
+import { Messages, MessagesData } from "@/types/ChatTypes";
 
 const ChatContainer = ({
-  data,
+  messages,
   selectedUser,
   isMessageLoading,
 }: {
-  data: ChatMessageData | null;
+  messages: MessagesData | null;
   selectedUser: string;
   isMessageLoading: boolean;
 }) => {
-  console.log(data);
-
   if (isMessageLoading) {
     return <MessageSkeleton />;
   }
-  if (!data?.messages || data?.messages.length === 0) {
+
+  if (!Array.isArray(messages) || messages.length === 0) {
     return (
       <ScrollArea className="flex-1 p-4 flex items-center justify-center">
-        <p className="text-sm text-zinc-400">No messages yet. Start the conversation!</p>
+        <p className="text-sm text-zinc-400 ">No messages yet. Start the conversation!</p>
       </ScrollArea>
     );
   }
 
   return (
     <ScrollArea className="flex-1 p-4">
-      <div className="space-y-4">
-        {data.messages.map((message: Messages) => (
+      <div className="h-full space-y-4 overflow-y-auto">
+        {messages.map((message: Messages) => (
           <div
             key={message._id}
             className={`flex ${message.senderId === selectedUser ? "justify-start" : "justify-end"}`}

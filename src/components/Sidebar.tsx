@@ -3,18 +3,23 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Home, Settings, Users, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { useAdminLogout } from "../hooks/Admin/adminLogoutHook";
+import { selectCurrentAdmin } from "@/redux/slice/Auth_Slice";
 
 const Sidebar = ({
   expanded,
   setExpanded,
-}: { expanded: boolean; setExpanded: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const isAdmin = useSelector((state: RootState) => state.admin.admin);
+}: {
+  expanded: boolean;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const isAdmin = useSelector(selectCurrentAdmin);
 
   return (
     <div
-      className={`min-h-screen bg-[#25262b] border-r border-[#3a3b40] shadow-xl transition-all duration-300 ease-in-out flex flex-col ${expanded ? "w-64" : "w-20"}`}
+      className={`min-h-screen bg-[#25262b] border-r border-[#3a3b40] shadow-xl transition-all duration-300 ease-in-out flex flex-col ${
+        expanded ? "w-64" : "w-20"
+      }`}
     >
       <div className="flex justify-between items-center p-4 border-b border-[#3a3b40]">
         {expanded && (
@@ -91,7 +96,10 @@ const Sidebar = ({
 export const SidebarProfile = ({
   user,
   expanded,
-}: { user: { profilePicture?: string; name: string; email: string }; expanded: boolean }) => {
+}: {
+  user: { profilePicture?: string; name: string; email: string };
+  expanded: boolean;
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { handleLogout, isLoading } = useAdminLogout();
   const userName = user?.name || "Guest User";
@@ -152,11 +160,7 @@ export const SidebarProfile = ({
                 onClick={handleLogout}
               >
                 <LogOut size={18} />
-                {isLoading ? (
-                  <span className="loading loading-spinner loading-sm"></span>
-                ) : (
-                  "Logout"
-                )}
+                {isLoading ? <span className="loading loading-spinner loading-sm"></span> : "Logout"}
               </button>
             </div>
           </div>

@@ -1,19 +1,15 @@
-import {
-  useState,
-  useRef,
-  type KeyboardEvent,
-  type ClipboardEvent,
-  useEffect,
-} from "react";
+import { useState, useRef, type KeyboardEvent, type ClipboardEvent, useEffect } from "react";
 import { Lock } from "lucide-react";
 import useVerificationCodeHook from "../../hooks/verifyEmailOtpHook";
+import useResendPasswordHook from "@/hooks/ResendOtpHook";
 
 export default function OTPVerificationPage() {
   const { otp, setOtp, handleSubmit, isLoading } = useVerificationCodeHook();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [timeLeft, setTimeLeft] = useState(300);
   const [canResend, setCanResend] = useState(false);
-
+  const { handleResendOtp } = useResendPasswordHook();
+  const email = localStorage.getItem("ForgotPasswordEmail");
   useEffect(() => {
     if (timeLeft > 0) {
       const timerId = setTimeout(() => {
@@ -28,9 +24,7 @@ export default function OTPVerificationPage() {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleChange = (element: HTMLInputElement, index: number) => {
@@ -71,9 +65,11 @@ export default function OTPVerificationPage() {
       inputRefs.current[Math.min(pastedData.length, 5)]?.focus();
     }
   };
-
-  const handleResendCode = async () => {
-    console.log("Resending code...");
+  const handleResend = async () => {
+    if (!email) return;
+    await handleResendOtp(email);
+    setTimeLeft(300);
+    setCanResend(false);
   };
 
   return (
@@ -82,8 +78,7 @@ export default function OTPVerificationPage() {
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-2">Enter OTP</h2>
           <p className="text-zinc-400 text-sm mb-6">
-            Enter the 6-digit code sent to your email. This code is valid for
-            the next 5 minutes.
+            Enter the 6-digit code sent to your email. This code is valid for the next 5 minutes.
           </p>
           <div className="flex gap-2 justify-center my-4">
             {otp.map((_, index) => (
@@ -93,9 +88,7 @@ export default function OTPVerificationPage() {
                 maxLength={1}
                 ref={(el) => (inputRefs.current[index] = el)}
                 value={otp[index]}
-                onChange={(e) =>
-                  handleChange(e.target as HTMLInputElement, index)
-                }
+                onChange={(e) => handleChange(e.target as HTMLInputElement, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 onPaste={handlePaste}
                 className="w-12 h-12 text-center text-lg bg-transparent border border-zinc-700 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
@@ -105,7 +98,7 @@ export default function OTPVerificationPage() {
           <button
             className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center h-10"
             onClick={handleSubmit}
-            disabled={isLoading} // Prevent multiple clicks
+            disabled={isLoading}
           >
             {isLoading ? (
               <span className="loading loading-spinner loading-md"></span>
@@ -121,21 +114,18 @@ export default function OTPVerificationPage() {
           <div className="text-sm text-center w-full mb-4">
             Didn't get the code?{" "}
             <button
-              onClick={handleResendCode}
+              onClick={handleResend}
               className={`${
-                canResend
-                  ? "text-indigo-500 hover:text-indigo-400"
-                  : "text-zinc-500 cursor-not-allowed"
+                canResend ? "text-indigo-500 hover:text-indigo-400" : "text-zinc-500 cursor-not-allowed"
               } font-medium`}
               disabled={!canResend}
             >
               Resend code {!canResend && `(${formatTime(timeLeft)})`}
             </button>
           </div>
+
           <div className="flex justify-center gap-6 text-sm text-zinc-400">
-            <button className="hover:text-white transition duration-300 ease-in-out">
-              Need help?
-            </button>
+            <button className="hover:text-white transition duration-300 ease-in-out">Need help?</button>
           </div>
         </div>
       </div>

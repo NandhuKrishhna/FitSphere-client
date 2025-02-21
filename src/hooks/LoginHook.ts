@@ -32,10 +32,8 @@ const useLoginHook = () => {
       const res = await login(data).unwrap();
       console.log(res);
       toast.success(res.message);
-      dispatch(setCredentials({ ...res.user }));
-      console.log("Test response from login hook", res);
-      // connect the socket after login
-      connectSocket(res.user._id, dispatch);
+      dispatch(setCredentials({ ...res.response }));
+      connectSocket(res.response._id, dispatch);
       navigate("/doctors/all");
     } catch (err) {
       console.log(err);

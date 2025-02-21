@@ -3,6 +3,7 @@ import { RootState } from "../store";
 import { SelectedUser } from "@/types/ChatTypes";
 
 interface SocketState {
+  messages: string[];
   users: string[];
   selectedUser: SelectedUser | null;
   onlineUsers: string[];
@@ -10,6 +11,7 @@ interface SocketState {
 }
 
 const initialState: SocketState = {
+  messages: [],
   users: [],
   selectedUser: null,
   onlineUsers: [],
@@ -26,21 +28,40 @@ const socketSlice = createSlice({
     setUsers(state, action) {
       state.users = action.payload;
     },
-    setSelectedUser(state, action) {
+    setSelectedUser: (state, action: PayloadAction<SelectedUser | null>) => {
+      console.log("Selected User:", action.payload);
       state.selectedUser = action.payload;
     },
     setConnectionStatus: (state, action: PayloadAction<boolean>) => {
       state.isConnected = action.payload;
     },
+    setMessages: (state, action: PayloadAction<string[]>) => {
+      state.messages = action.payload;
+    },
+    resetSocketState: () => initialState,
+    addMessages: (state, action: PayloadAction<string>) => {
+      state.messages.push(action.payload);
+    },
+    addUserToSidebar: (state, action: PayloadAction<any>) => {
+      state.users.push(action.payload);
+    },
   },
 });
 
-export const { setOnlineUsers, setUsers, setSelectedUser, setConnectionStatus } = socketSlice.actions;
-
+export const {
+  setOnlineUsers,
+  setUsers,
+  setSelectedUser,
+  setConnectionStatus,
+  setMessages,
+  resetSocketState,
+  addMessages,
+  addUserToSidebar,
+} = socketSlice.actions;
 export default socketSlice.reducer;
-
 // Selectors
 export const selectUsers = (state: RootState) => state.socket.users;
 export const selectOnlineUsers = (state: RootState) => state.socket.onlineUsers;
 export const selectSelectedUser = (state: RootState) => state.socket.selectedUser;
 export const selectConnectionStatus = (state: RootState) => state.socket.isConnected;
+export const selectMessages = (state: RootState) => state.socket.messages;

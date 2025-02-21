@@ -6,8 +6,7 @@ import {
   BaseQueryApi,
   BaseQueryFn,
 } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store";
-import { setCredentials, setLogout } from "../slice/Auth_Slice";
+import { setLogout } from "../slice/Auth_Slice";
 
 type CustomErrorData = {
   message: string;
@@ -22,8 +21,8 @@ type CustomError = FetchBaseQueryError & {
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5000/api",
   credentials: "include",
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.currentUser?.accessToken;
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem("accessToken");
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
@@ -43,13 +42,8 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   if (error?.status === 401 && error?.data?.errorCode === "InvalidAccessToken") {
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
     if (refreshResult.data) {
-      const user = (api.getState() as RootState).auth.currentUser;
-      api.dispatch(
-        setCredentials({
-          ...user,
-          accessToken: (refreshResult.data as { accessToken: string }).accessToken,
-        })
-      );
+      const newAccessToken = (refreshResult.data as { accessToken: string }).accessToken;
+      localStorage.setItem("accessToken", newAccessToken);
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(setLogout());

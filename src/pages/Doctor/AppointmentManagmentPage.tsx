@@ -1,10 +1,12 @@
 import { useSelector } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/api/doctorApi";
 import DoctorHeader from "../../components/Doctor/DoctorHeader";
-import { RootState } from "../../redux/store";
+
+import { selectCurrentDoctor } from "@/redux/slice/Auth_Slice";
 
 const AppointmentTable = () => {
-  const doctor = useSelector((state: RootState) => state.doctor.user);
+  const doctor = useSelector(selectCurrentDoctor);
+  console.log(doctor);
 
   const { data, isLoading, isError } = useGetAllAppointmentsQuery({
     userId: doctor?._id,
@@ -18,7 +20,12 @@ const AppointmentTable = () => {
     return <div className="text-center text-red-500">Failed to fetch data</div>;
   }
 
-  const appointments = data.response;
+  const appointments = data.response.appointments || []; // Safely access the appointments array
+  console.log(appointments);
+
+  if (appointments.length === 0) {
+    return <div className="text-center text-gray-400">No appointments found</div>;
+  }
 
   return (
     <div className="bg-gray-900 min-h-screen">
@@ -52,21 +59,17 @@ const AppointmentTable = () => {
                 <tr key={appointment._id}>
                   <td className="px-6 py-4 whitespace-nowrap flex items-center">
                     <img
-                      src={appointment.patientDetails.profilePicture}
-                      alt={appointment.patientDetails.name}
+                      src={appointment.patientDetails?.profilePicture || ""}
+                      alt={appointment.patientDetails?.name || "Patient"}
                       className="w-10 h-10 rounded-full mr-3"
                     />
                     <div>
-                      <p className="text-sm font-medium text-white">
-                        {appointment.patientDetails.name}
-                      </p>
+                      <p className="text-sm font-medium text-white">{appointment.patientDetails?.name}</p>
                     </div>
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-300">
-                      {appointment.consultationType}
-                    </span>
+                    <span className="text-sm text-gray-300">{appointment.consultationType}</span>
                   </td>
 
                   {/* Date & Time */}
@@ -74,9 +77,7 @@ const AppointmentTable = () => {
                     <span className="text-sm text-gray-300">
                       {new Date(appointment.date).toLocaleDateString()}{" "}
                       {appointment.slotDetails?.startTime
-                        ? `${new Date(
-                            appointment.slotDetails.startTime
-                          ).toLocaleTimeString()} - ${new Date(
+                        ? `${new Date(appointment.slotDetails.startTime).toLocaleTimeString()} - ${new Date(
                             appointment.slotDetails.endTime
                           ).toLocaleTimeString()}`
                         : ""}
@@ -86,9 +87,7 @@ const AppointmentTable = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`text-sm font-medium ${
-                        appointment.paymentStatus === "completed"
-                          ? "text-green-400"
-                          : "text-red-400"
+                        appointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
                       }`}
                     >
                       {appointment.paymentStatus} ({appointment.amount})
@@ -97,9 +96,7 @@ const AppointmentTable = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        appointment.status === "cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-green-100 text-green-800"
+                        appointment.status === "cancelled" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
                       }`}
                     >
                       {appointment.status}

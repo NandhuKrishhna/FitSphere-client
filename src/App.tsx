@@ -1,8 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/Users/LandingPage";
 import Layout from "./components/Layout";
-import UserRoutes from "./routes/UserRoutes";
+
 import Doctor_Routes from "./routes/Doctor_Routes";
+import Admin_Routes from "./routes/Admin_Routes";
+import UserRoutes from "./routes/UserRoutes";
 function App() {
   return (
     <Routes>
@@ -11,6 +13,7 @@ function App() {
         {/*User Routes*/}
         <Route path="/*" element={<UserRoutes />} />
         <Route path="/doctor/*" element={<Doctor_Routes />} />
+        <Route path="/admin/*" element={<Admin_Routes />} />
       </Route>
     </Routes>
   );

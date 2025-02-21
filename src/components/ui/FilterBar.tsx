@@ -1,93 +1,132 @@
-import * as React from "react"
-import { Check, ChevronsUpDown, Filter } from "lucide-react"
-
-import { cn } from "../../lib/utils"
-import { Button } from "../../components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover"
-import { Separator } from "../../components/ui/separator"
-import { Checkbox } from "../../components/ui/checkbox"
-import { Label } from "../../components/ui/label"
+// FilterBar.tsx
+import * as React from "react";
+import { Check, Filter } from "lucide-react";
+import { cn } from "../../lib/utils";
+import { Button } from "../../components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../../components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
+import { Separator } from "../../components/ui/separator";
+import { Checkbox } from "../../components/ui/checkbox";
+import { Label } from "../../components/ui/label";
 
 const specialties = [
-  { value: "all", label: "All Specialties" },
-  { value: "cardiology", label: "Cardiology" },
-  { value: "dermatology", label: "Dermatology" },
-  { value: "neurology", label: "Neurology" },
-  { value: "pediatrics", label: "Pediatrics" },
-  { value: "orthopedics", label: "Orthopedics" },
-]
+  { value: "Cardiology", label: "Cardiology" },
+  { value: "Dermatology", label: "Dermatology" },
+  { value: "Neurology", label: "Neurology" },
+  { value: "Pediatrics", label: "Pediatrics" },
+  { value: "Orthopedics", label: "Orthopedics" },
+];
 
 const languages = [
-  { value: "all", label: "All Languages" },
-  { value: "english", label: "English" },
-  { value: "spanish", label: "Spanish" },
-  { value: "french", label: "French" },
-  { value: "german", label: "German" },
-  { value: "mandarin", label: "Mandarin" },
-]
+  { value: "English", label: "English" },
+  { value: "Spanish", label: "Spanish" },
+  { value: "French", label: "French" },
+  { value: "German", label: "German" },
+  { value: "Mandarin", label: "Mandarin" },
+];
 
-const FiterBar = () => {
-  const [open, setOpen] = React.useState(true)
-  const [specialty, setSpecialty] = React.useState("")
-  const [language, setLanguage] = React.useState("")
-  const [gender, setGender] = React.useState<string[]>([])
+const experiences = [
+  { value: 0, label: "Any experience" },
+  { value: 5, label: "5+ years" },
+  { value: 10, label: "10+ years" },
+  { value: 15, label: "15+ years" },
+];
+
+interface FilterBarProps {
+  onApplyFilters: (filters: { gender: string[]; specialty: string[]; language: string[]; experience: number }) => void;
+}
+
+const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
+  const [localGender, setLocalGender] = React.useState<string[]>([]);
+  const [localSpecialty, setLocalSpecialty] = React.useState<string[]>([]);
+  const [localLanguage, setLocalLanguage] = React.useState<string[]>([]);
+  const [localExperience, setLocalExperience] = React.useState<number>(0);
+
+  const handleApply = () => {
+    onApplyFilters({
+      gender: localGender,
+      specialty: localSpecialty,
+      language: localLanguage,
+      experience: localExperience,
+    });
+  };
+
+  const hasActiveFilters =
+    localGender.length > 0 || localSpecialty.length > 0 || localLanguage.length > 0 || localExperience > 0;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between md:w-[200px]  lg:w-[200px] bg-gray-600 text-white"
+          className="justify-between sm: w-[50px] md:w-[100px] lg:w-[200px] bg-gray-600 text-white"
         >
           <Filter className="mr-2 h-4 w-4" />
-          {specialty || language || gender.length > 0 ? "Filters Applied" : "Filter"}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className="hidden lg:block">{hasActiveFilters ? "Filters Applied" : "Filter"}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="lg:w-[200px] bg-gray-400 p-0 text-black" align="start">
         <Command>
-          <CommandInput />
+          <CommandInput placeholder="Search filters..." />
           <CommandList>
-            <CommandEmpty>No filter found.</CommandEmpty>
+            <CommandEmpty>No filters found</CommandEmpty>
+
             <CommandGroup heading="Specialty">
               {specialties.map((item) => (
                 <CommandItem
                   key={item.value}
                   onSelect={() => {
-                    setSpecialty(item.value === specialty ? "" : item.value)
+                    setLocalSpecialty((prev) =>
+                      prev.includes(item.value) ? prev.filter((s) => s !== item.value) : [...prev, item.value]
+                    );
                   }}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", specialty === item.value ? "opacity-100" : "opacity-0")} />
+                  <Check
+                    className={cn("mr-2 h-4 w-4", localSpecialty.includes(item.value) ? "opacity-100" : "opacity-0")}
+                  />
                   {item.label}
                 </CommandItem>
               ))}
             </CommandGroup>
+
             <Separator />
+
             <CommandGroup heading="Language">
               {languages.map((item) => (
                 <CommandItem
                   key={item.value}
                   onSelect={() => {
-                    setLanguage(item.value === language ? "" : item.value)
+                    setLocalLanguage((prev) =>
+                      prev.includes(item.value) ? prev.filter((l) => l !== item.value) : [...prev, item.value]
+                    );
                   }}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", language === item.value ? "opacity-100" : "opacity-0")} />
+                  <Check
+                    className={cn("mr-2 h-4 w-4", localLanguage.includes(item.value) ? "opacity-100" : "opacity-0")}
+                  />
                   {item.label}
                 </CommandItem>
               ))}
             </CommandGroup>
+
             <Separator />
+
             <CommandGroup heading="Gender">
               <CommandItem>
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="male"
-                    checked={gender.includes("male")}
+                    checked={localGender.includes("Male")}
                     onCheckedChange={(checked) => {
-                      setGender(checked ? [...gender, "male"] : gender.filter((g) => g !== "male"))
+                      setLocalGender((prev) => (checked ? [...prev, "Male"] : prev.filter((g) => g !== "Male")));
                     }}
                   />
                   <Label htmlFor="male">Male</Label>
@@ -97,25 +136,36 @@ const FiterBar = () => {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="female"
-                    checked={gender.includes("female")}
+                    checked={localGender.includes("Female")}
                     onCheckedChange={(checked) => {
-                      setGender(checked ? [...gender, "female"] : gender.filter((g) => g !== "female"))
+                      setLocalGender((prev) => (checked ? [...prev, "Female"] : prev.filter((g) => g !== "Female")));
                     }}
                   />
                   <Label htmlFor="female">Female</Label>
                 </div>
               </CommandItem>
             </CommandGroup>
+
+            <Separator />
+
+            <CommandGroup heading="Experience">
+              {experiences.map((item) => (
+                <CommandItem key={item.value} onSelect={() => setLocalExperience(item.value)}>
+                  <Check className={cn("mr-2 h-4 w-4", localExperience === item.value ? "opacity-100" : "opacity-0")} />
+                  {item.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
           </CommandList>
         </Command>
         <div className="p-4">
-          <Button className="w-full" onClick={() => setOpen(false)}>
+          <Button className="w-full" onClick={handleApply}>
             Apply Filters
           </Button>
         </div>
       </PopoverContent>
     </Popover>
-  )
-}
+  );
+};
 
-export default FiterBar
+export default FilterBar;

@@ -9,7 +9,7 @@ interface ErrorResponse {
   };
   status: number;
 }
-  const useVerificationCodeHook = () => {
+const useVerificationCodeHook = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const navigate = useNavigate();
   const [verfiyEmail, { isLoading }] = useVerfiyEmailMutation();
@@ -26,13 +26,15 @@ interface ErrorResponse {
     const success = validateForm();
     if (success === true) {
       try {
-        const res = await verfiyEmail(otp.join("")).unwrap();
+        const userId = localStorage.getItem("userId");
+        const res = await verfiyEmail({ code: otp.join(""), userId: userId }).unwrap();
         console.log(res);
         toast.success(res.message);
-        setOtp(new Array(6).fill(""))
+        setOtp(new Array(6).fill(""));
+        localStorage.removeItem("userId");
         navigate("/doctors/all");
       } catch (err) {
-        console.log(err)
+        console.log(err);
         const error = err as ErrorResponse;
         if (error.data?.errors) {
           const fieldErrors: Record<string, string> = {};
@@ -41,15 +43,13 @@ interface ErrorResponse {
           });
           toast.error(fieldErrors.code);
         } else if (error.status === 404 && error.data?.message) {
-          toast.error(error.data.message); 
+          toast.error(error.data.message);
         } else {
           toast.error("An unexpected error occurred. Please try again.");
         }
       }
-      }
     }
-
-
+  };
 
   return {
     otp,

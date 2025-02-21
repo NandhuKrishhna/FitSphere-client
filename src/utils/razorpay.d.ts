@@ -1,6 +1,5 @@
 declare global {
-    interface Window {
-      Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
-    }
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
   }
-  
+}

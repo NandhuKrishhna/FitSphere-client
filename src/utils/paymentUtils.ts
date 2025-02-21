@@ -1,10 +1,8 @@
 import { toast } from "react-hot-toast";
 import { RazorpayOrder } from "../types/Payments";
 
-
 export const initPay = (order: RazorpayOrder, onSuccess: (response: any) => void, onFailure: (error: any) => void) => {
-
-  console.log("Initializing payment with order:", order); 
+  console.log("Initializing payment with order:", order);
   if (!(window as any).Razorpay) {
     console.error("Razorpay SDK not loaded");
     toast.error("Razorpay SDK not loaded. Please try again.");

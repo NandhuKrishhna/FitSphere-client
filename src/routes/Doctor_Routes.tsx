@@ -7,24 +7,23 @@ import DoctorLoginPage from "../pages/Doctor/DoctorLoginPage";
 import DoctorDashboardPage from "../pages/Doctor/DoctorDashboardPage";
 import AppointmentTable from "../pages/Doctor/AppointmentManagmentPage";
 import RequireAuth from "../components/RequiredAuth";
-import { useSelector } from "react-redux";
-import { selectCurrentToken } from "../redux/slice/Auth_Slice";
+import DoctorChatPage from "@/pages/Doctor/DoctorChatPage";
+import { Roles } from "@/utils/Enums";
 
 const Doctor_Routes = () => {
-  const token = useSelector(selectCurrentToken)
   return (
     <Routes>
-    <Route path="/" element={<Layout />}>
-
-    <Route path="/signup" element={<DoctorSignUp />} />
-    <Route path="/verify/otp" element={<DoctorOtpVerification />} />
-    <Route path="/registration" element={<ProfessionalDetailsForm />} />
-    <Route path="/login" element={<DoctorLoginPage />} />
-    <Route element={<RequireAuth token={token} redirectTo={"/doctor/login"}/>}>
-    <Route path="/dashboard" element={<DoctorDashboardPage />} />
-    <Route path="/appointments" element={<AppointmentTable />} />
-    </Route>
-    </Route>
+      <Route path="/" element={<Layout />}>
+        <Route path="/signup" element={<DoctorSignUp />} />
+        <Route path="/verify/otp" element={<DoctorOtpVerification />} />
+        <Route path="/registration" element={<ProfessionalDetailsForm />} />
+        <Route path="/login" element={<DoctorLoginPage />} />
+        <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
+          <Route path="/dashboard" element={<DoctorDashboardPage />} />
+          <Route path="/appointments" element={<AppointmentTable />} />
+          <Route path="/chat" element={<DoctorChatPage />} />
+        </Route>
+      </Route>
     </Routes>
   );
 };

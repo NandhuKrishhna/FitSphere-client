@@ -1,82 +1,81 @@
-import { useState, useMemo, useEffect } from "react"
-import { format, toZonedTime } from "date-fns-tz"
-import { Button } from "../../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
-import { Slot } from "./SlotCalender"
+import { useState, useMemo, useEffect } from "react";
+import { format, toZonedTime } from "date-fns-tz";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Slot } from "./SlotCalender";
 
 interface CalendarProps {
-  name?: string
-  dept: string
+  name?: string;
+  dept: string;
   slots?: {
-    success: boolean
-    message: string
-    slots: Slot[]
-  }
-  onSlotClick: (slot: Slot) => void
+    success: boolean;
+    message: string;
+    slots: Slot[];
+  };
+  onSlotClick: (slot: Slot) => void;
 }
 
 export default function ConsultationModal({ slots, name, dept, onSlotClick }: CalendarProps) {
-  const timeZone = "Asia/Kolkata"
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null)
+  const timeZone = "Asia/Kolkata";
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
 
   // Safely process slots data
   const { datesArray, groupedSlots } = useMemo(() => {
-    const groups: { [key: string]: Slot[] } = {}
-    const safeSlots = slots?.slots || []
+    const groups: { [key: string]: Slot[] } = {};
+    const safeSlots = slots?.slots || [];
 
     safeSlots.forEach((slot) => {
       try {
-        const dateKey = format(new Date(slot.date), "yyyy-MM-dd", { timeZone })
-        groups[dateKey] = groups[dateKey] || []
-        groups[dateKey].push(slot)
+        const dateKey = format(new Date(slot.date), "yyyy-MM-dd", { timeZone });
+        groups[dateKey] = groups[dateKey] || [];
+        groups[dateKey].push(slot);
       } catch (error) {
-        console.error("Error processing slot:", error)
+        console.error("Error processing slot:", error);
       }
-    })
+    });
 
-    const dates = Object.keys(groups).map((isoDate) => {
-      try {
-        const date = new Date(isoDate)
-        return {
-          isoDate,
-          day: format(date, "EEE", { timeZone }),
-          date: format(date, "d", { timeZone }),
-          slots: groups[isoDate].filter((s) => s.status === "available").length,
+    const dates = Object.keys(groups)
+      .map((isoDate) => {
+        try {
+          const date = new Date(isoDate);
+          return {
+            isoDate,
+            day: format(date, "EEE", { timeZone }),
+            date: format(date, "d", { timeZone }),
+            slots: groups[isoDate].filter((s) => s.status === "available").length,
+          };
+        } catch (error) {
+          console.error("Error processing date:", error);
+          return null;
         }
-      } catch (error) {
-        console.error("Error processing date:", error)
-        return null
-      }
-    }).filter(Boolean) as { isoDate: string; day: string; date: string; slots: number }[]
+      })
+      .filter(Boolean) as { isoDate: string; day: string; date: string; slots: number }[];
 
     return {
       datesArray: dates,
       groupedSlots: groups,
-    }
-  }, [slots?.slots]) // Safe dependency with optional chaining
+    };
+  }, [slots?.slots]);
 
-  // Set initial selected date
   useEffect(() => {
     if (datesArray.length > 0 && !selectedDate) {
-      setSelectedDate(datesArray[0]?.isoDate || null)
+      setSelectedDate(datesArray[0]?.isoDate || null);
     }
-  }, [datesArray, selectedDate])
+  }, [datesArray, selectedDate]);
 
-  // Memoize filtered slots with safety checks
   const filteredSlots = useMemo(() => {
-    if (!selectedDate || !groupedSlots[selectedDate]) return []
-    return groupedSlots[selectedDate].filter((slot) => 
-      slot.status === "available" && 
-      new Date(slot.endTime) > new Date() // Filter out expired slots
-    )
-  }, [selectedDate, groupedSlots])
+    if (!selectedDate || !groupedSlots[selectedDate]) return [];
+    return groupedSlots[selectedDate].filter(
+      (slot) => slot.status === "available" && new Date(slot.endTime) > new Date()
+    );
+  }, [selectedDate, groupedSlots]);
 
   const handleSlotClick = (slot: Slot) => {
-    setSelectedSlotId(slot._id)
-    onSlotClick(slot)
-  }
+    setSelectedSlotId(slot._id);
+    onSlotClick(slot);
+  };
 
   if (!slots) {
     return (
@@ -85,7 +84,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           <div className="text-gray-500">Loading slots...</div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (!slots.success) {
@@ -95,7 +94,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           <div className="text-red-500">{slots.message || "Failed to load slots"}</div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -157,9 +156,9 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
           <div className="grid grid-cols-2 gap-2 mt-4">
             {filteredSlots.map((slot) => {
-              const start = toZonedTime(new Date(slot.startTime), timeZone)
-              const end = toZonedTime(new Date(slot.endTime), timeZone)
-              const timeLabel = `${format(start, "h:mm a")} - ${format(end, "h:mm a")}`
+              const start = toZonedTime(new Date(slot.startTime), timeZone);
+              const end = toZonedTime(new Date(slot.endTime), timeZone);
+              const timeLabel = `${format(start, "h:mm a")} - ${format(end, "h:mm a")}`;
 
               return (
                 <Button
@@ -174,17 +173,15 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 >
                   {timeLabel}
                 </Button>
-              )
+              );
             })}
           </div>
 
           {filteredSlots.length === 0 && selectedDate && (
-            <div className="text-center text-gray-500 mt-4">
-              No available slots for this date
-            </div>
+            <div className="text-center text-gray-500 mt-4">No available slots for this date</div>
           )}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

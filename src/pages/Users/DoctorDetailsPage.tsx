@@ -5,7 +5,7 @@ import {
   useGetAllSlotDetailsQuery,
   useVerifyPaymentMutation,
 } from "../../redux/api/appApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Header from "../../components/Header";
 import { Slot } from "../../components/App/SlotCalender";
@@ -14,20 +14,30 @@ import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Paym
 import ConsultationModal from "../../components/App/Confirmation";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { MenuItem, menuItems } from "@/utils/UserDoctorDetails";
+import { handleOptionClick } from "@/utils/DoctorDetailsPageUtils";
+import { useNavigate } from "react-router-dom";
 
 const DoctorDetailsPage = () => {
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);
   const user = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [activeSection, setActiveSection] = useState("about");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
 
-  // console.log("doctorId",doctorId)
-  // slot booking mutation
   const [bookSlots, { isLoading: isBookLoading }] = useBookSlotsMutation();
-  // getting doctordetails query
+
   const { data } = useDoctorDetailsQuery({ doctorId });
-  // fetching all slots available for the doctor
+  console.log(data);
+  const selectedDoctorForChat = {
+    doctorDetails: {
+      name: data?.doctorDetails?.name || "Unknown",
+      profilePicture: data?.doctorDetails?.profilePicture || "/avatar.png",
+      _id: data?.doctorDetails?._id || "",
+    },
+  };
+  console.log("SelectedUser for chat`", selectedDoctorForChat);
   const { data: slots } = useGetAllSlotDetailsQuery({ doctorId });
   const doctorDetails = data?.doctorDetails;
 
@@ -65,6 +75,7 @@ const DoctorDetailsPage = () => {
           console.log("Payment successful!", response);
           await verifyPayment({ razorpay_order_id: response.razorpay_order_id });
           toast.success("Payment successful!");
+          navigate("/appointments");
         } catch (error) {
           console.error("Payment verification failed:", error);
           toast.error("Payment verification failed");
@@ -166,7 +177,6 @@ const DoctorDetailsPage = () => {
             <p className="text-purple-400 text-xl">{doctorDetails?.details?.primarySpecialty}</p>
           </div>
           <div className="mt-10">
-            {/* <Calendar slots={slots || []} onSlotClick={handleSlotClick} /> */}
             <ConsultationModal
               slots={slots || []}
               onSlotClick={handleSlotClick}
@@ -187,6 +197,7 @@ const DoctorDetailsPage = () => {
           {["Chat", "Video", "Audio"].map((option) => (
             <button
               key={option}
+              onClick={() => handleOptionClick(option, navigate, dispatch, selectedDoctorForChat)}
               className="flex items-center justify-center w-16 h-16 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
             >
               <span className="text-purple-400">{option}</span>

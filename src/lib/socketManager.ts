@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { AppDispatch } from "@/redux/store";
-import { setConnectionStatus, setOnlineUsers } from "@/redux/slice/socket.ioSlice";
+import { addMessages, setConnectionStatus, setOnlineUsers } from "@/redux/slice/socket.ioSlice";
 
 let socket: Socket | null = null;
 
@@ -26,6 +26,11 @@ export const connectSocket = (userId: string, dispatch: AppDispatch) => {
   socket.on("disconnect", () => {
     console.log("Socket disconnected");
     dispatch(setConnectionStatus(false));
+  });
+
+  socket.on("newMessage", (message: string) => {
+    console.log("a new message is received", message);
+    dispatch(addMessages(message));
   });
 };
 

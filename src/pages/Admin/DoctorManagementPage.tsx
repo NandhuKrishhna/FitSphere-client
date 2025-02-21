@@ -1,66 +1,65 @@
-import type React from "react"
-import { useState, useEffect } from "react"
-import { ChevronDown, Filter, Search } from "lucide-react"
-import { useDoctorManagementQuery } from "../../redux/api/adminApi"
-import Sidebar from "../../components/Sidebar"
-import {  DoctorWithDetails } from "../../types/DoctorTypes"
-import DoctorTable from "../../components/ui/DoctorTable"
-import DashboardSkeleton from "../../components/skeleton/UserManagementSkeleton"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { ChevronDown, Filter, Search } from "lucide-react";
+import { useDoctorManagementQuery, useGetAllDoctorsQuery } from "../../redux/api/adminApi";
+import Sidebar from "../../components/Sidebar";
+import { DoctorWithDetails } from "../../types/DoctorTypes";
+import DoctorTable from "../../components/ui/DoctorTable";
+import DashboardSkeleton from "../../components/skeleton/UserManagementSkeleton";
 
 const DoctorManagement: React.FC = () => {
-  const [expanded, setExpanded] = useState(true)
-  const { data  , isLoading} = useDoctorManagementQuery({})
-  console.log(data)
-  const [filteredUsers, setFilteredUsers] = useState<DoctorWithDetails[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filter, setFilter] = useState("All")
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [expanded, setExpanded] = useState(true);
+  const { data, isLoading } = useGetAllDoctorsQuery({});
+  console.log(data);
+  const [filteredUsers, setFilteredUsers] = useState<DoctorWithDetails[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("All");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const filterOptions = ["All", "Active", "Blocked", "Approved", "Basic"]
-
+  const filterOptions = ["All", "Active", "Blocked", "Approved", "Basic"];
+  console.log("Doctors Data : ", data);
   useEffect(() => {
-    if (data?.doctorsWithDetails) {
-      const doctorsArray = Array.isArray(data.doctorsWithDetails)
-        ? data.doctorsWithDetails
-        : [data.doctorsWithDetails]; 
-  
-      const mergedDoctors = doctorsArray.map((doctor : any) => ({
+    if (data?.doctors) {
+      const doctorsArray = Array.isArray(data.doctors) ? data.doctors : [data.doctors];
+
+      const mergedDoctors = doctorsArray.map((doctor: any) => ({
         ...doctor,
-        ...(doctor.doctorDetails?.[0] || {}), 
+        ...(doctor.doctorDetails?.[0] || {}),
       }));
-  
+
+      console.log("Merged Doctors:", mergedDoctors);
+
       let result = [...mergedDoctors];
-  
       if (searchTerm) {
         result = result.filter(
           (user) =>
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+            user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email?.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
-  
       if (filter !== "All") {
         result = result.filter((user) => {
           switch (filter) {
             case "Active":
-              return user.isActive;
-            case "Inactive":
-              return !user.isActive;
+              return user.isActive === true;
+            case "Blocked":
+              return user.isActive === false;
             case "Approved":
-              return user.isApproved;
-            case "NotApproved":
-              return !user.isApproved;
+              return user.isApproved === true;
+            case "Basic":
+              return user.isApproved === false;
             default:
               return true;
           }
         });
       }
-  
+
       setFilteredUsers(result);
     }
   }, [data, searchTerm, filter]);
-  if(isLoading){
-    return <DashboardSkeleton/>
+
+  if (isLoading) {
+    return <DashboardSkeleton />;
   }
   return (
     <div className="flex min-h-screen bg-gray-900">
@@ -134,8 +133,8 @@ const DoctorManagement: React.FC = () => {
                         key={option}
                         className="w-full text-left px-4 py-2 hover:bg-gray-600 first:rounded-t-lg last:rounded-b-lg text-gray-200"
                         onClick={() => {
-                          setFilter(option)
-                          setIsDropdownOpen(false)
+                          setFilter(option);
+                          setIsDropdownOpen(false);
                         }}
                       >
                         {option}
@@ -151,9 +150,7 @@ const DoctorManagement: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
-export default DoctorManagement
-
+export default DoctorManagement;
