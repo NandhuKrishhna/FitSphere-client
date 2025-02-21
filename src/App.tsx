@@ -1,10 +1,22 @@
+import { Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/Users/LandingPage";
+import Layout from "./components/Layout";
 
+import Doctor_Routes from "./routes/Doctor_Routes";
+import Admin_Routes from "./routes/Admin_Routes";
+import UserRoutes from "./routes/UserRoutes";
 function App() {
-
-
   return (
-   <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-300"></div>
-  )
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<LandingPage />} />
+        {/*User Routes*/}
+        <Route path="/*" element={<UserRoutes />} />
+        <Route path="/doctor/*" element={<Doctor_Routes />} />
+        <Route path="/admin/*" element={<Admin_Routes />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;

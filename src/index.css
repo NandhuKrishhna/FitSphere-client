@@ -1,3 +1,18 @@
+@import url('https://fonts.cdnfonts.com/css/satoshi');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply font-satoshi;
+  }
+
+  input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  background-color: #27272a !important; 
+  color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px #27272a inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s; 
+}
