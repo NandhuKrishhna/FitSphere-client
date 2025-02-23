@@ -40,6 +40,7 @@ export default function Header({ value, onChange }: Props) {
               { name: "Profile", path: "/profile" },
               { name: "Wallet", path: "/wallet" },
               { name: "Appointments", path: "/appointments" },
+              { name: "Recipes", path: "/recipes" },
             ].map((item) => (
               <Link
                 key={item.name}

@@ -14,6 +14,7 @@ import Layout from "../components/Layout";
 import ChatPage from "@/pages/Users/ChatPage";
 import AppointmentList from "@/components/App/AppointmentList";
 import { Roles } from "@/utils/Enums";
+import RecipesGeneratorPage from "@/pages/Users/RecipesPage";
 
 const UserRoutes = () => {
   return (
@@ -33,6 +34,7 @@ const UserRoutes = () => {
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/messenger" element={<ChatPage />} />
           <Route path="/appointments" element={<AppointmentList />} />
+          <Route path="/recipes" element={<RecipesGeneratorPage />} />
         </Route>
       </Route>
     </Routes>
