@@ -5,31 +5,19 @@ import useSearchRecipesHook from "@/hooks/App/SearchRecipes";
 import RecipeCard from "@/components/App/RecipeCard";
 import Header from "@/components/Header";
 import { Skeleton } from "@/components/ui/skeleton";
-
-export interface Recipe {
-  id: number;
-  title: string;
-  image: string;
-  usedIngredientCount: number;
-  missedIngredientCount: number;
-}
-
-export interface RecipeDetails {
-  id: number;
-  title: string;
-  image: string;
-  readyInMinutes: number;
-  servings: number;
-  summary: string;
-  instructions: string;
-  extendedIngredients: Array<{
-    original: string;
-  }>;
-}
+import useGetRecipesDetails from "@/hooks/App/getRecipesDetails";
+import { useState } from "react";
+import RecipeDetailsModal from "@/components/App/RecipeModal";
 
 export default function RecipesGeneratorPage() {
   const { isLoading, handleSearch, responseData, setSearchResults, searchResults } = useSearchRecipesHook();
-  console.log(responseData);
+  const { handleGetRecipesDetails, reciepeDetails } = useGetRecipesDetails();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRecipeClick = async (recipeId: string) => {
+    await handleGetRecipesDetails(recipeId.toString());
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
@@ -61,8 +49,16 @@ export default function RecipesGeneratorPage() {
             ? Array.from({ length: 6 }).map((_, index) => (
                 <Skeleton key={index} className="h-48 w-full max-w-[250px] rounded-lg" />
               ))
-            : responseData?.response?.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+            : responseData?.response?.map((recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} onClick={() => handleRecipeClick(recipe.id.toString())} />
+              ))}
         </div>
+
+        <RecipeDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          recipeDetails={reciepeDetails?.resposse}
+        />
       </div>
     </div>
   );

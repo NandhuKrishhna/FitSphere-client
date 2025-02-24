@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Home, Settings, Users, LogOut } from "lucide
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAdminLogout } from "../hooks/Admin/adminLogoutHook";
-import { selectCurrentAdmin } from "@/redux/slice/Auth_Slice";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 
 const Sidebar = ({
   expanded,
@@ -13,7 +13,7 @@ const Sidebar = ({
   expanded: boolean;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const isAdmin = useSelector(selectCurrentAdmin);
+  const isAdmin = useSelector(selectCurrentUser);
 
   return (
     <div

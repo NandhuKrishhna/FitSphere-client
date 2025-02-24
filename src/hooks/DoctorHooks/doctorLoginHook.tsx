@@ -34,7 +34,7 @@ const useDoctorLoginHook = () => {
       // console.log(res.doctor)
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
-      localStorage.setItem("accessToken", res.doctor.accessToken);
+      localStorage.setItem("accessToken", res.response.accessToken);
       navigate("/doctor/dashboard");
     } catch (err) {
       console.log(err);

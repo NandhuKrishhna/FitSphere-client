@@ -14,9 +14,18 @@ interface Recipe {
   usedIngredients: Ingredient[];
 }
 
-const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
+// Then keep the RecipeCardProps interface
+interface RecipeCardProps {
+  recipe: Recipe;
+  onClick: () => void;
+}
+
+const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onClick }) => {
   return (
-    <Card className="w-full max-w-[250px] overflow-hidden transition-all duration-300 hover:shadow-lg bg-white/10 backdrop-blur-sm">
+    <Card
+      className="w-full max-w-[250px] overflow-hidden transition-all duration-300 hover:shadow-lg bg-white/10 backdrop-blur-sm cursor-pointer"
+      onClick={onClick} // Attach the onClick event here
+    >
       <div className="relative h-40 overflow-hidden">
         <img
           src={recipe.image || "/placeholder.svg"}

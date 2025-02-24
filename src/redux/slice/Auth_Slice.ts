@@ -29,13 +29,5 @@ export const { setCredentials, setLogout, setProfilePicture } = authslice.action
 export default authslice.reducer;
 
 // Selectors
-export const selectCurrentUser = (state: RootState) =>
-  state.auth.currentUser?.role === "user" ? state.auth.currentUser : null;
-
-export const selectCurrentDoctor = (state: RootState) =>
-  state.auth.currentUser?.role === "doctor" ? state.auth.currentUser : null;
-
-export const selectCurrentAdmin = (state: RootState) =>
-  state.auth.currentUser?.role === "admin" ? state.auth.currentUser : null;
-
+export const selectCurrentUser = (state: RootState) => state.auth.currentUser;
 export const selectCurrentToken = (state: RootState) => state.auth.currentUser?.accessToken;

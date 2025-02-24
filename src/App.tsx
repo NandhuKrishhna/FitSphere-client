@@ -5,11 +5,13 @@ import Layout from "./components/Layout";
 import Doctor_Routes from "./routes/Doctor_Routes";
 import Admin_Routes from "./routes/Admin_Routes";
 import UserRoutes from "./routes/UserRoutes";
+import Unauthorized from "./pages/UnAuthorized";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<LandingPage />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
         {/*User Routes*/}
         <Route path="/*" element={<UserRoutes />} />
         <Route path="/doctor/*" element={<Doctor_Routes />} />

@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { MessageCircle, Bell } from "lucide-react";
 import { AvatarDropdown } from "../App/DropDown";
-import { selectCurrentDoctor } from "@/redux/slice/Auth_Slice";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useDoctorLogout } from "@/hooks/DoctorHooks/doctorLogoutHook";
 
 export default function DoctorHeader() {
   const { handleDoctorLogout, isLoading } = useDoctorLogout();
-  const user = useSelector(selectCurrentDoctor);
+  const user = useSelector(selectCurrentUser);
 
   return (
     <header className="bg-gradient-to-r from-purple-900 to-indigo-900 border-b border-purple-700/50 ">

@@ -2,10 +2,10 @@ import { useSelector } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/api/doctorApi";
 import DoctorHeader from "../../components/Doctor/DoctorHeader";
 
-import { selectCurrentDoctor } from "@/redux/slice/Auth_Slice";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 
 const AppointmentTable = () => {
-  const doctor = useSelector(selectCurrentDoctor);
+  const doctor = useSelector(selectCurrentUser);
   console.log(doctor);
 
   const { data, isLoading, isError } = useGetAllAppointmentsQuery({
