@@ -1,9 +1,10 @@
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "../redux/api/apiSlice";
-import { EmailData, emailScheme } from "../types/Validations/registerAsDoctorForm";
+import { emailScheme } from "../types/Validations/registerAsDoctorForm";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { AuthForgotPasswordInputs } from "@/components/App/AuthLayout";
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;
@@ -18,9 +19,9 @@ const useForgotPasswordHook = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<EmailData>({ resolver: zodResolver(emailScheme) });
+  } = useForm<AuthForgotPasswordInputs>({ resolver: zodResolver(emailScheme) });
 
-  const onSubmit = async (data: EmailData) => {
+  const onSubmit: SubmitHandler<AuthForgotPasswordInputs> = async (data: AuthForgotPasswordInputs) => {
     try {
       const res = await resetPassword(data).unwrap();
       localStorage.setItem("ForgotPasswordEmail", res.email);

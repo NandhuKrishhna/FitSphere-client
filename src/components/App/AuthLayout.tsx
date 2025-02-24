@@ -9,15 +9,21 @@ import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 
 export interface AuthFormInputs {
   name?: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
   confirmPassword?: string;
+}
+
+export interface AuthForgotPasswordInputs {
+  email: string;
 }
 
 interface AuthLayoutProps {
   title?: string;
   subtitle?: string;
   isSignUp?: boolean;
+  resetPassword?: boolean;
+  forgotPassword?: boolean;
   onSubmit: () => void;
   register: UseFormRegister<AuthFormInputs>;
   errors: FieldErrors<AuthFormInputs>;
@@ -33,6 +39,8 @@ const AuthLayout = ({
   title,
   subtitle,
   isSignUp = false,
+  resetPassword = false,
+  forgotPassword = false,
   onSubmit,
   register,
   errors,
@@ -60,69 +68,139 @@ const AuthLayout = ({
               {subtitle}
             </motion.p>
             <form onSubmit={onSubmit} className="space-y-4">
-              {isSignUp && (
+              {/* Forgot Password: Only show email input */}
+              {forgotPassword ? (
                 <motion.div className="space-y-2" variants={childVariants}>
-                  <InputField id="name" placeholder="Full Name" register={register("name")} icon={<User size={18} />} />
-                  {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
-                </motion.div>
-              )}
-
-              <motion.div className="space-y-2" variants={childVariants}>
-                <InputField
-                  id="email"
-                  placeholder="Email"
-                  type="email"
-                  register={register("email")}
-                  icon={<Mail size={18} />}
-                />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-              </motion.div>
-
-              <motion.div className="space-y-2" variants={childVariants}>
-                <div className="relative">
                   <InputField
-                    id="password"
-                    placeholder={isSignUp ? "Create a strong password" : "Enter your password"}
-                    type={showPassword ? "text" : "password"}
-                    register={register("password")}
+                    id="email"
+                    placeholder="Enter your email"
+                    type="email"
+                    register={register("email")}
+                    icon={<Mail size={18} />}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-                {isSignUp && watch && <PasswordStrengthChecker password={watch("password")} />}
-                {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-              </motion.div>
-
-              {isSignUp && (
-                <motion.div className="space-y-2" variants={childVariants}>
-                  <div className="relative">
-                    <InputField
-                      id="confirmPassword"
-                      placeholder="Confirm your password"
-                      type={showPassword ? "text" : "password"}
-                      register={register("confirmPassword")}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+                  {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                 </motion.div>
-              )}
+              ) : resetPassword ? (
+                <>
+                  {/* Reset Password: Only show password & confirm password fields */}
+                  <motion.div className="space-y-2" variants={childVariants}>
+                    <div className="relative">
+                      <InputField
+                        id="password"
+                        placeholder="Enter new password"
+                        type={showPassword ? "text" : "password"}
+                        register={register("password")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {watch && <PasswordStrengthChecker password={watch("password")} />}
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                  </motion.div>
 
-              {isSignUp && (
-                <motion.p className="text-xs text-zinc-400" variants={childVariants}>
-                  By signing up, you agree to our Terms of Service and Privacy Policy
-                </motion.p>
+                  <motion.div className="space-y-2" variants={childVariants}>
+                    <div className="relative">
+                      <InputField
+                        id="confirmPassword"
+                        placeholder="Confirm new password"
+                        type={showPassword ? "text" : "password"}
+                        register={register("confirmPassword")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+                  </motion.div>
+                </>
+              ) : (
+                <>
+                  {/* Sign Up Form */}
+                  {isSignUp && (
+                    <motion.div className="space-y-2" variants={childVariants}>
+                      <InputField
+                        id="name"
+                        placeholder="Full Name"
+                        register={register("name")}
+                        icon={<User size={18} />}
+                      />
+                      {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                    </motion.div>
+                  )}
+
+                  {/* Email Input */}
+                  <motion.div className="space-y-2" variants={childVariants}>
+                    <InputField
+                      id="email"
+                      placeholder="Email"
+                      type="email"
+                      register={register("email")}
+                      icon={<Mail size={18} />}
+                    />
+                    {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                  </motion.div>
+
+                  {/* Password Input */}
+                  <motion.div className="space-y-2" variants={childVariants}>
+                    <div className="relative">
+                      <InputField
+                        id="password"
+                        placeholder={isSignUp ? "Create a strong password" : "Enter your password"}
+                        type={showPassword ? "text" : "password"}
+                        register={register("password")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {isSignUp && watch && <PasswordStrengthChecker password={watch("password")} />}
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                    {!isSignUp && (
+                      <motion.div className="flex items-center justify-between" variants={childVariants}>
+                        <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-400">
+                          Forgot password?
+                        </Link>
+                      </motion.div>
+                    )}
+                  </motion.div>
+
+                  {/* Confirm Password for Sign Up */}
+                  {isSignUp && (
+                    <motion.div className="space-y-2" variants={childVariants}>
+                      <div className="relative">
+                        <InputField
+                          id="confirmPassword"
+                          placeholder="Confirm your password"
+                          type={showPassword ? "text" : "password"}
+                          register={register("confirmPassword")}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-[50px] transform -translate-y-1/2 text-zinc-500 hover:text-white focus:outline-none"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                      {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+                      )}
+                    </motion.div>
+                  )}
+                </>
               )}
 
               <motion.button
@@ -136,6 +214,7 @@ const AuthLayout = ({
               </motion.button>
             </form>
           </div>
+
           {footerQuestion && footerLinkText && footerLinkPath && (
             <motion.div className="border-t border-zinc-800 p-6" variants={childVariants}>
               <p className="text-sm text-center text-zinc-400">

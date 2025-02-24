@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { useResetNewPasswordMutation } from "../redux/api/apiSlice";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { PasswordData, setNewPasswordSchema } from "../types/Validations/registerAsDoctorForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorResponse } from "./LoginHook";
@@ -16,7 +16,7 @@ const useSetNewPasswordHook = () => {
   } = useForm<PasswordData>({ resolver: zodResolver(setNewPasswordSchema) });
   const navigate = useNavigate();
 
-  const onSubmit = async (data: PasswordData) => {
+  const onSubmit: SubmitHandler<PasswordData> = async (data: PasswordData) => {
     try {
       const userId = localStorage.getItem("ForgotPasswordUserId");
       const res = await resetNewPassword({ ...data, userId }).unwrap();

@@ -10,6 +10,7 @@ export default function OTPVerificationPage() {
   const [canResend, setCanResend] = useState(false);
   const { handleResendOtp } = useResendPasswordHook();
   const email = localStorage.getItem("ForgotPasswordEmail");
+
   useEffect(() => {
     if (timeLeft > 0) {
       const timerId = setTimeout(() => {

@@ -75,7 +75,8 @@ export default function ResetPasswordOtp() {
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-2">Enter OTP to reset your password</h2>
           <p className="text-zinc-400 text-sm mb-6">
-            Enter the 6-digit code sent to your email : {email}. This code is valid for the next 5 minutes.
+            Enter the 6-digit code sent to your email : <span className="text-indigo-500">{email}</span>. This code is
+            valid for the next 5 minutes.
           </p>
           <div className="flex gap-2 justify-center my-4">
             {otp.map((_, index) => (
