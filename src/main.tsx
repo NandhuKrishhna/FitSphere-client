@@ -6,8 +6,8 @@ import { Provider } from "react-redux";
 import { persistor, RootState, store } from "./redux/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
 import { StrictMode } from "react";
-import { Toaster } from "react-hot-toast";
 import { connectSocket } from "./lib/socketManager.ts";
+import CustomToaster from "./components/CustomToaster.tsx";
 persistor.subscribe(() => {
   if (persistor.getState().bootstrapped) {
     const state: RootState = store.getState();
@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <Toaster />
+          <CustomToaster />
           <Routes>
             <Route path="/*" element={<App />} />
           </Routes>
