@@ -5,19 +5,28 @@ import { Link } from "react-router-dom";
 import PasswordStrengthChecker from "../../components/PasswordStrengthChecker";
 import { childVariants, containerVariants } from "../../framer-motion/form-motion";
 import InputField from "../../components/Input";
+import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
+
+export interface AuthFormInputs {
+  name?: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+}
 
 interface AuthLayoutProps {
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   isSignUp?: boolean;
   onSubmit: () => void;
-  register: any;
-  errors: any;
-  watch?: any;
+  register: UseFormRegister<AuthFormInputs>;
+  errors: FieldErrors<AuthFormInputs>;
+  watch?: UseFormWatch<AuthFormInputs>;
   isLoading: boolean;
-  footerQuestion: string;
-  footerLinkText: string;
-  footerLinkPath: string;
+  footerQuestion?: string;
+  footerLinkText?: string;
+  footerLinkPath?: string;
+  submitButtonText?: string;
 }
 
 const AuthLayout = ({
@@ -32,6 +41,7 @@ const AuthLayout = ({
   footerQuestion,
   footerLinkText,
   footerLinkPath,
+  submitButtonText,
 }: AuthLayoutProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -122,18 +132,20 @@ const AuthLayout = ({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {isLoading ? <span className="loading loading-ring loading-md"></span> : isSignUp ? "Sign Up" : "Login"}
+                {isLoading ? <span className="loading loading-ring loading-md"></span> : submitButtonText}
               </motion.button>
             </form>
           </div>
-          <motion.div className="border-t border-zinc-800 p-6" variants={childVariants}>
-            <p className="text-sm text-center text-zinc-400">
-              {footerQuestion}{" "}
-              <Link to={footerLinkPath} className="text-indigo-500 hover:text-indigo-400 font-medium">
-                {footerLinkText}
-              </Link>
-            </p>
-          </motion.div>
+          {footerQuestion && footerLinkText && footerLinkPath && (
+            <motion.div className="border-t border-zinc-800 p-6" variants={childVariants}>
+              <p className="text-sm text-center text-zinc-400">
+                {footerQuestion}{" "}
+                <Link to={footerLinkPath} className="text-indigo-500 hover:text-indigo-400 font-medium">
+                  {footerLinkText}
+                </Link>
+              </p>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </div>

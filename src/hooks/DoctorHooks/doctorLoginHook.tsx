@@ -2,10 +2,11 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useDoctorLoginMutation } from "../../redux/api/doctorApi";
-import { LoginData, loginSchema } from "../../types/Validations/registerAsDoctorForm";
+import { loginSchema } from "../../types/Validations/registerAsDoctorForm";
 import { setCredentials } from "../../redux/slice/Auth_Slice";
+import { AuthFormInputs } from "@/components/App/AuthLayout";
 
 export const ERRORS = {
   EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email.",
@@ -26,8 +27,8 @@ const useDoctorLoginHook = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginData>({ resolver: zodResolver(loginSchema) });
-  const onSubmit = async (data: LoginData) => {
+  } = useForm<AuthFormInputs>({ resolver: zodResolver(loginSchema) });
+  const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await doctorLogin(data).unwrap();
       console.log(res);

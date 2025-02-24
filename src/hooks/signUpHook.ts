@@ -1,12 +1,13 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { FormData, userRegisterSchema } from "../types/Validations/registerAsDoctorForm";
+import { userRegisterSchema } from "../types/Validations/registerAsDoctorForm";
 import { ErrorResponse } from "../types/userTypes";
 import { useSignUpMutation } from "../redux/api/apiSlice";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../redux/slice/Auth_Slice";
+import { AuthFormInputs } from "@/components/App/AuthLayout";
 
 const useSignUp = () => {
   const navigate = useNavigate();
@@ -18,8 +19,8 @@ const useSignUp = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(userRegisterSchema) });
-  const onSubmit = async (data: FormData) => {
+  } = useForm<AuthFormInputs>({ resolver: zodResolver(userRegisterSchema) });
+  const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await signUp(data).unwrap();
       localStorage.setItem("userId", res.user._id);

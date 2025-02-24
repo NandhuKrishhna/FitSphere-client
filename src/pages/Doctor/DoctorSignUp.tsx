@@ -17,6 +17,7 @@ const DoctorSignUp = () => {
       footerQuestion="Already have an account?"
       footerLinkText="Login"
       footerLinkPath="/doctor/login"
+      submitButtonText="Sign Up"
     />
   );
 };

@@ -1,32 +1,37 @@
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userRegisterSchema } from "../../types/Validations/registerAsDoctorForm";
-import { FormData } from "../../types/Validations/registerAsDoctorForm";
 import { useDoctorSignUpMutation } from "../../redux/api/doctorApi";
 import { setCredentials } from "../../redux/slice/Auth_Slice";
+import { AuthFormInputs } from "@/components/App/AuthLayout";
 interface ErrorResponse {
-    data: {
-      errors?: Array<{ path: string; message: string }>;
-      message?: string;
-    };
-    status: number;
-  }
+  data: {
+    errors?: Array<{ path: string; message: string }>;
+    message?: string;
+  };
+  status: number;
+}
 const useDoctorSignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [doctorSignUp, { isLoading }] = useDoctorSignUpMutation();
 
-  const {register,handleSubmit, watch , formState: { errors },} = useForm<FormData>({resolver: zodResolver(userRegisterSchema),});
-  const onSubmit = async (data: FormData) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<AuthFormInputs>({ resolver: zodResolver(userRegisterSchema) });
+  const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await doctorSignUp(data).unwrap();
-        console.log(res);
-        toast.success(res.message);
-        dispatch(setCredentials({...res.user}));
-        navigate("/doctor/verify/otp");
+      console.log(res);
+      toast.success(res.message);
+      dispatch(setCredentials({ ...res.user }));
+      navigate("/doctor/verify/otp");
     } catch (err) {
       const error = err as ErrorResponse;
       if (error.data?.errors) {
@@ -46,8 +51,8 @@ const useDoctorSignUp = () => {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     isLoading,
-    watch
+    watch,
   };
 };
- 
+
 export default useDoctorSignUp;
