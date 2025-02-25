@@ -1,10 +1,16 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { addDays, addWeeks, addMonths, format } from "date-fns";
 import { useAddSlotsMutation, useCancelSlotMutation, useGetAllSlotsQuery } from "../../redux/api/doctorApi";
 import SlotList from "../../components/Doctor/SlotList";
 import { Slot } from "../../types/Slot";
 import { ErrorResponse } from "../../types/userTypes";
 import ConsultationCalendar from "../../components/Doctor/ConsultationCalendar";
+
+type RecurrencePattern = {
+  type: "daily" | "weekly" | "monthly";
+  endDate: Date;
+};
 
 const DoctorDashboardPage = () => {
   const [cancelSlot, { isLoading: isCancelLoading }] = useCancelSlotMutation();
@@ -22,36 +28,78 @@ const DoctorDashboardPage = () => {
   const [startTime, setStartTime] = useState<string>("");
   const [endTime, setEndTime] = useState<string>("");
 
-  const handleSubmit = async () => {
+  const createSlotPayload = (date: Date) => {
+    const startDateTime = new Date(date);
+    const [startHour, startMinute] = startTime.split(/[: ]/);
+    startDateTime.setHours(
+      startTime.includes("PM") ? (parseInt(startHour) % 12) + 12 : parseInt(startHour),
+      parseInt(startMinute)
+    );
+
+    const endDateTime = new Date(date);
+    const [endHour, endMinute] = endTime.split(/[: ]/);
+    endDateTime.setHours(
+      endTime.includes("PM") ? (parseInt(endHour) % 12) + 12 : parseInt(endHour),
+      parseInt(endMinute)
+    );
+
+    return {
+      startTime: startDateTime.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+      endTime: endDateTime.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+      date: date.toLocaleDateString("en-US", { timeZone: "Asia/Kolkata" }),
+      consultationType,
+    };
+  };
+  const generateDatesFromPattern = (startDate: Date, pattern: RecurrencePattern): Date[] => {
+    const dates: Date[] = [];
+    let currentDate = startDate;
+
+    while (currentDate <= pattern.endDate) {
+      dates.push(new Date(currentDate));
+      if (pattern.type === "daily") {
+        currentDate = addDays(currentDate, 1);
+      } else if (pattern.type === "weekly") {
+        currentDate = addWeeks(currentDate, 1);
+      } else if (pattern.type === "monthly") {
+        currentDate = addMonths(currentDate, 1);
+      }
+    }
+
+    return dates;
+  };
+
+  const handleSubmit = async (recurrencePattern?: RecurrencePattern) => {
     if (!selectedDate || !consultationType || !startTime || !endTime) {
       toast.error("Please fill all the fields before submitting.");
       return;
     }
 
     try {
-      const startDateTime = new Date(selectedDate);
-      const [startHour, startMinute] = startTime.split(/[: ]/);
-      startDateTime.setHours(
-        startTime.includes("PM") ? (parseInt(startHour) % 12) + 12 : parseInt(startHour),
-        parseInt(startMinute)
-      );
+      if (recurrencePattern) {
+        const recurringDates = generateDatesFromPattern(selectedDate, recurrencePattern);
+        const totalSlots = recurringDates.length;
 
-      const endDateTime = new Date(selectedDate);
-      const [endHour, endMinute] = endTime.split(/[: ]/);
-      endDateTime.setHours(
-        endTime.includes("PM") ? (parseInt(endHour) % 12) + 12 : parseInt(endHour),
-        parseInt(endMinute)
-      );
+        if (totalSlots > 0) {
+          toast.loading(`Creating ${totalSlots} recurring slots...`, { duration: 3000 });
 
-      const payload = {
-        startTime: startDateTime.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        endTime: endDateTime.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        date: selectedDate.toLocaleDateString("en-US", { timeZone: "Asia/Kolkata" }),
-        consultationType,
-      };
+          const slotPromises = recurringDates.map(async (date) => {
+            const payload = createSlotPayload(date);
+            return addSlots(payload).unwrap();
+          });
+          await Promise.all(slotPromises);
 
-      const res = await addSlots(payload).unwrap();
-      toast.success(res.message);
+          toast.success(
+            `Successfully created ${totalSlots} recurring slots from ${format(selectedDate, "MMM d")} to ${format(
+              recurrencePattern.endDate,
+              "MMM d"
+            )}`
+          );
+        }
+      } else {
+        const payload = createSlotPayload(selectedDate);
+        const res = await addSlots(payload).unwrap();
+        toast.success(res.message);
+      }
 
       setStartTime("");
       setEndTime("");
@@ -69,11 +117,11 @@ const DoctorDashboardPage = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-      <div className="w-full md:w-1/2 mt-7">
+    <div className="flex flex-col lg:flex-row items-start justify-center gap-4 lg:w-[80%] mx-auto">
+      <div className="w-full lg:w-1/2">
         <SlotList slots={slots} isLoading={isSlotsLoading} onCancel={cancelSlot} isCancelLoading={isCancelLoading} />
       </div>
-      <div className="w-full md:w-[440px]">
+      <div className="w-full lg:w-1/2">
         <ConsultationCalendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}

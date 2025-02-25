@@ -48,7 +48,7 @@ const SlotList = ({ slots, isLoading }: SlotListProps) => {
   const totalPages = Math.ceil(filteredSlots.length / slotsPerPage);
 
   return (
-    <div className="bg-white rounded-lg p-4 backdrop-blur-sm h-[60vh] flex flex-col">
+    <div className="bg-white rounded-lg p-4 backdrop-blur-sm lg:h-[80vh] sm:h-[60vh] md:h-[70vh] flex flex-col">
       <h2 className="text-black text-lg font-semibold mb-4">Scheduled Slots</h2>
 
       <div className="flex space-x-1 mb-4">
