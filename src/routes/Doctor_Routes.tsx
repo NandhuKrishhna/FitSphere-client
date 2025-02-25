@@ -9,6 +9,7 @@ import AppointmentTable from "../pages/Doctor/AppointmentManagmentPage";
 import RequireAuth from "../components/RequiredAuth";
 import DoctorChatPage from "@/pages/Doctor/DoctorChatPage";
 import { Roles } from "@/utils/Enums";
+import DoctorMainLayout from "@/components/Doctor/DoctorMainLayout";
 
 const Doctor_Routes = () => {
   return (
@@ -19,9 +20,11 @@ const Doctor_Routes = () => {
         <Route path="/registration" element={<ProfessionalDetailsForm />} />
         <Route path="/login" element={<DoctorLoginPage />} />
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
-          <Route path="/dashboard" element={<DoctorDashboardPage />} />
-          <Route path="/appointments" element={<AppointmentTable />} />
-          <Route path="/chat" element={<DoctorChatPage />} />
+          <Route element={<DoctorMainLayout />}>
+            <Route path="/dashboard" element={<DoctorDashboardPage />} />
+            <Route path="/appointments" element={<AppointmentTable />} />
+            <Route path="/chat" element={<DoctorChatPage />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

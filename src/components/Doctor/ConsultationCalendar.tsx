@@ -46,17 +46,16 @@ export default function ConsultationCalendar({
 
   const timeSlots = generateTimeSlots();
 
-  // Count slots by date
   const slotCountsByDate = slots.reduce((acc, slot) => {
-    const date = format(new Date(slot.date), "yyyy-MM-dd"); 
-    acc[date] = (acc[date] || 0) + 1; 
+    const date = format(new Date(slot.date), "yyyy-MM-dd");
+    acc[date] = (acc[date] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
   const nextFiveDays = Array.from({ length: 5 }).map((_, index) => {
     const date = addDays(startDate, index);
     const formattedDate = format(date, "yyyy-MM-dd");
-    const slots = slotCountsByDate[formattedDate] || 0; // Get slot count for the date
+    const slots = slotCountsByDate[formattedDate] || 0;
     return { date, slots };
   });
 
@@ -66,18 +65,19 @@ export default function ConsultationCalendar({
   };
 
   return (
-    <Card className="w-[440px] bg-white mt-9 p-4">
+    <Card className="w-[full] bg-white mt-9 p-4">
       <div className="flex flex-col items-center justify-center p-4 text-xl font-bold">
-      <h1 className="">Schedule a Time Slot for Appointments </h1>
-      <p className="text-sm font-normal">Please fill out all required fields to create a new time slot for patient appointments</p>
-
+        <h1 className="">Schedule a Time Slot for Appointments </h1>
+        <p className="text-sm font-normal">
+          Please fill out all required fields to create a new time slot for patient appointments
+        </p>
       </div>
       <div className="flex items-center justify-between mb-6">
         <Select>
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={format(startDate, "MMMM yyyy")} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-indigo-300 h-48">
             {Array.from({ length: 12 }).map((_, i) => (
               <SelectItem key={i} value={`month-${i + 1}`}>
                 {format(new Date(2024, i, 1), "MMMM yyyy")}
@@ -111,9 +111,7 @@ export default function ConsultationCalendar({
             {slots > 0 && (
               <div className="text-xs mt-1">
                 <span
-                  className={`inline-block w-2 h-2 rounded-full ${
-                    slots > 5 ? "bg-green-500" : "bg-yellow-500"
-                  } mr-1`}
+                  className={`inline-block w-2 h-2 rounded-full ${slots > 5 ? "bg-green-500" : "bg-yellow-500"} mr-1`}
                 />
                 {slots} slots
               </div>
@@ -145,7 +143,7 @@ export default function ConsultationCalendar({
         <div className="space-y-2">
           <div className="text-sm font-medium">Select Time (Indian Time)</div>
           <div className="grid grid-cols-2 gap-4">
-            <Select  value={startTime} onValueChange={setStartTime}>
+            <Select value={startTime} onValueChange={setStartTime}>
               <SelectTrigger>
                 <SelectValue placeholder="Start Time" />
               </SelectTrigger>

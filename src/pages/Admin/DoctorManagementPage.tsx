@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { ChevronDown, Filter, Search } from "lucide-react";
-import { useDoctorManagementQuery, useGetAllDoctorsQuery } from "../../redux/api/adminApi";
+import { useGetAllDoctorsQuery } from "../../redux/api/adminApi";
 import Sidebar from "../../components/Sidebar";
 import { DoctorWithDetails } from "../../types/DoctorTypes";
 import DoctorTable from "../../components/ui/DoctorTable";

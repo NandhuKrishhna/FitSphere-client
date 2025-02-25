@@ -2,7 +2,6 @@ import type React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { MessageCircle, Bell } from "lucide-react";
 import { AvatarDropdown } from "../App/DropDown";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useDoctorLogout } from "@/hooks/DoctorHooks/doctorLogoutHook";
@@ -46,24 +45,6 @@ export default function DoctorHeader() {
           </nav>
 
           <div className="flex items-center space-x-6">
-            <Link to="/messenger" className="text-gray-300 hover:text-white transition-colors" aria-label="Chat">
-              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <MessageCircle className="w-6 h-6" />
-              </motion.button>
-            </Link>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="text-gray-300 hover:text-white transition-colors relative"
-              aria-label="Notifications"
-            >
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-                3
-              </span>
-            </motion.button>
-
             <div className="relative">
               <AvatarDropdown
                 user={user}
