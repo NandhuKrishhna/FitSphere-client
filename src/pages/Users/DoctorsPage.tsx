@@ -1,4 +1,5 @@
-// DoctorsPage.tsx
+import type React from "react";
+
 import { useState } from "react";
 import DoctorCard from "../../components/App/Doctors";
 import Header from "../../components/Header";
@@ -21,7 +22,7 @@ export type DoctorwithDetails = {
 };
 
 const DoctorCardSkeleton = () => (
-  <div className="flex w-52 flex-col gap-4">
+  <div className="flex w-full sm:w-52 flex-col gap-4">
     <div className="skeleton h-32 w-full"></div>
     <div className="skeleton h-4 w-28"></div>
     <div className="skeleton h-4 w-full"></div>
@@ -67,14 +68,14 @@ const DoctorsPage = () => {
     <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
       <Header value={search} onChange={handleSearchChange} />
 
-      <div className="flex flex-col min-[528px]:flex-row gap-6 p-7 mt-14">
-        <div className="w-full absolute top-0 left-0 min-[528px]:relative min-[528px]:w-auto min-[528px]:top-auto">
+      <div className="flex flex-col p-7 mt-14 relative">
+        <div className="sm:w-64 mb-6 sm:mb-0 sm:mr-6 lg:mb-6 lg:ml-14">
           <FilterBar onApplyFilters={handleApplyFilters} />
         </div>
 
         <div className="flex-1">
           {isLoading && (
-            <div className="grid grid-cols-1 min-[417px]:grid-cols-2 min-[769px]:grid-cols-3 min-[1020px]:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {Array.from({ length: limit }).map((_, index) => (
                 <DoctorCardSkeleton key={index} />
               ))}
@@ -85,7 +86,7 @@ const DoctorsPage = () => {
 
           {data && (
             <>
-              <div className="grid grid-cols-1 min-[530px]:grid-cols-2 min-[837px]:grid-cols-3 min-[1115px]:grid-cols-4 gap-4 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
                 {data.doctors?.map((doc: DoctorwithDetails) => (
                   <DoctorCard
                     key={doc._id}

@@ -11,7 +11,7 @@ export const handleOptionClick = (
 ) => {
   if (option === "Chat") {
     dispatch(setSelectedUser(user));
-    navigate("/messenger");
+    navigate("/chat");
   } else if (option === "Video") {
     navigate("/video");
   } else if (option === "Audio") {

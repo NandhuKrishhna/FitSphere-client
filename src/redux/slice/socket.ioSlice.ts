@@ -42,8 +42,8 @@ const socketSlice = createSlice({
     addMessages: (state, action: PayloadAction<string>) => {
       state.messages.push(action.payload);
     },
-    addUserToSidebar: (state, action: PayloadAction<any>) => {
-      state.users.push(action.payload);
+    addUserToSidebar: (state, action: PayloadAction<string[]>) => {
+      state.users.push(...action.payload);
     },
   },
 });

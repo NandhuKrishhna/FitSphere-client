@@ -32,7 +32,7 @@ const UserRoutes = () => {
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/doctors/profile" element={<DoctorDetailsPage />} />
           <Route path="/wallet" element={<WalletPage />} />
-          <Route path="/messenger" element={<ChatPage />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/appointments" element={<AppointmentList />} />
           <Route path="/recipes" element={<RecipesGeneratorPage />} />
         </Route>

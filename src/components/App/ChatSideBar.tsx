@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -43,7 +42,7 @@ const ChatSideBar = () => {
             </div>
           ))
         ) : data && data.users ? (
-          data.users.map((user: SelectedUser) => (
+          data.users?.map((user: SelectedUser) => (
             <div
               key={user._id}
               onClick={() => dispatch(setSelectedUser(user))}
@@ -63,7 +62,7 @@ const ChatSideBar = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-zinc-100">{user.doctorDetails?.name || "Unknown"}</p>
-                <p className="text-sm text-zinc-400 truncate">{user.lastMessage || "No messages yet"}</p>
+                <p className="text-sm text-zinc-400 truncate">{user.lastMessage?.slice(0, 30) || "No messages yet"}</p>
               </div>
             </div>
           ))

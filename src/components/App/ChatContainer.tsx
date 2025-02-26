@@ -2,6 +2,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { MessageSkeleton } from "./MessageSkeleton";
 import { toIndianTime } from "@/utils/TimeAgo";
 import { Messages, MessagesData } from "@/types/ChatTypes";
+import { useEffect, useRef } from "react";
 
 const ChatContainer = ({
   messages,
@@ -12,22 +13,33 @@ const ChatContainer = ({
   selectedUser: string;
   isMessageLoading: boolean;
 }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   if (isMessageLoading) {
     return <MessageSkeleton />;
   }
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return (
-      <ScrollArea className="flex-1 p-4 flex items-center justify-center">
-        <p className="text-sm text-zinc-400 ">No messages yet. Start the conversation!</p>
+      <ScrollArea className="flex-1 flex items-center justify-center p-4">
+        <p className="text-sm text-zinc-400 italic flex items-center justify-center">
+          No messages yet. Start the conversation!
+        </p>
       </ScrollArea>
     );
   }
+  const limitedMessages = messages.slice(-5);
 
   return (
     <ScrollArea className="flex-1 p-4">
-      <div className="h-full space-y-4 overflow-y-auto">
-        {messages.map((message: Messages) => (
+      <div ref={scrollRef} className="h-full space-y-4 overflow-y-auto">
+        {limitedMessages.map((message: Messages) => (
           <div
             key={message._id}
             className={`flex ${message.senderId === selectedUser ? "justify-start" : "justify-end"}`}

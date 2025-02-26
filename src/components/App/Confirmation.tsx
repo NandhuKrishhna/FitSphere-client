@@ -67,9 +67,9 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
   const filteredSlots = useMemo(() => {
     if (!selectedDate || !groupedSlots[selectedDate]) return [];
-    return groupedSlots[selectedDate].filter(
-      (slot) => slot.status === "available" && new Date(slot.endTime) > new Date()
-    );
+    return groupedSlots[selectedDate]
+      .filter((slot) => slot.status === "available" && new Date(slot.endTime) > new Date())
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   }, [selectedDate, groupedSlots]);
 
   const handleSlotClick = (slot: Slot) => {
@@ -79,7 +79,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
   if (!slots) {
     return (
-      <Card className="w-[440px] bg-white">
+      <Card className="w-full bg-white">
         <CardContent className="h-32 flex items-center justify-center">
           <div className="text-gray-500">Loading slots...</div>
         </CardContent>
@@ -89,7 +89,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
   if (!slots.success) {
     return (
-      <Card className="w-[440px] bg-white">
+      <Card className="w-full bg-white">
         <CardContent className="h-32 flex items-center justify-center">
           <div className="text-red-500">{slots.message || "Failed to load slots"}</div>
         </CardContent>
@@ -98,31 +98,31 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
   }
 
   return (
-    <Card className="w-[440px] bg-white">
-      <CardHeader className="pb-4">
+    <Card className="w-full md:w-[440px] bg-white">
+      <CardHeader className="pb-2 md:pb-4">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-medium">
+          <CardTitle className="text-base md:text-lg font-medium">
             {"You're about to book a 30-minute consultation with"}
-            <div className="font-semibold mt-1">
+            <div className="font-semibold mt-1 text-sm md:text-base">
               {name} ({dept})
             </div>
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-2 overflow-x-auto pb-4">
+        <div className="flex gap-2 overflow-x-auto pb-4 -mx-1 px-1">
           {datesArray.map((date) => (
             <button
               key={date.isoDate}
               onClick={() => setSelectedDate(date.isoDate)}
-              className={`flex-shrink-0 w-[72px] p-3 rounded-lg border ${
+              className={`flex-shrink-0 w-[60px] md:w-[72px] p-2 md:p-3 rounded-lg border ${
                 selectedDate === date.isoDate
                   ? "border-purple-500 bg-purple-50"
                   : "border-gray-200 hover:border-purple-500"
               }`}
             >
-              <div className="text-sm text-purple-600">{date.day}</div>
-              <div className="text-xl font-semibold mt-1">{date.date}</div>
+              <div className="text-xs md:text-sm text-purple-600">{date.day}</div>
+              <div className="text-lg md:text-xl font-semibold mt-1">{date.date}</div>
               {date.slots > 0 ? (
                 <div className="text-xs mt-1">
                   <span
@@ -143,7 +143,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Select defaultValue="indian">
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-[120px] md:w-[140px] text-xs md:text-sm">
                   <SelectValue placeholder="Indian Time" />
                 </SelectTrigger>
                 <SelectContent>
@@ -151,10 +151,10 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 </SelectContent>
               </Select>
             </div>
-            <div className="text-sm text-gray-500">30 min meeting</div>
+            <div className="text-xs md:text-sm text-gray-500">30 min meeting</div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mt-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 mt-4">
             {filteredSlots.map((slot) => {
               const start = toZonedTime(new Date(slot.startTime), timeZone);
               const end = toZonedTime(new Date(slot.endTime), timeZone);
@@ -164,7 +164,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 <Button
                   key={slot._id}
                   variant="outline"
-                  className={`justify-start font-normal ${
+                  className={`justify-start font-normal text-xs md:text-sm ${
                     selectedSlotId === slot._id
                       ? "bg-purple-500 text-white hover:bg-purple-600"
                       : "bg-purple-50/50 hover:bg-purple-100"
@@ -178,7 +178,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           </div>
 
           {filteredSlots.length === 0 && selectedDate && (
-            <div className="text-center text-gray-500 mt-4">No available slots for this date</div>
+            <div className="text-center text-gray-500 mt-4 text-sm">No available slots for this date</div>
           )}
         </div>
       </CardContent>

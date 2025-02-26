@@ -23,20 +23,24 @@ const useSignUp = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await signUp(data).unwrap();
-      localStorage.setItem("userId", res.user._id);
-      toast.success(res.message);
-      dispatch(setCredentials({ ...res.response }));
+      localStorage.setItem("userId", res.response._id);
+      toast.success(res.message || "Signup successful!");
+      if (res.response) {
+        dispatch(setCredentials({ ...res.response }));
+      }
       navigate("/verify-email");
     } catch (err) {
+      console.error("Signup Error:", err);
+
       const error = err as ErrorResponse;
+      const errorMessage = error.data?.message || "An unexpected error occurred. Please try again.";
+
+      toast.error(errorMessage);
+
       if (error.data?.errors) {
         error.data.errors.forEach((err) => {
           toast.error(err.message);
         });
-      } else if (error.status === 409 && error.data?.message) {
-        toast.error(error.data.message);
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
       }
     }
   };

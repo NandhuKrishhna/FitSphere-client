@@ -3,10 +3,12 @@ import DoctorHeader from "./DoctorHeader";
 
 const DoctorMainLayout = () => {
   return (
-    <div className="bg-gradient-to-br from-gray-500 to-black min-h-screen">
+    <div className="bg-gradient-to-br from-gray-500 to-black min-h-screen flex flex-col">
       <DoctorHeader />
-      <main className="max-w-7xl mx-auto p-2">
-        <Outlet />
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

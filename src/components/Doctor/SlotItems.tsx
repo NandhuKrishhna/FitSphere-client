@@ -44,7 +44,8 @@ const SlotItem = ({ slot }: SlotItemProps) => {
       <div className="flex-col space-y-2">
         <p className="text-sm font-semibold">📅 Date: {formattedDate}</p>
         <p className="text-sm">
-          ⏳ Slot: {formattedStartTime} - {formattedEndTime}
+          ⏳ Slot: <span className="text-purple-700">{formattedStartTime} </span>-{" "}
+          <span className="text-purple-700">{formattedEndTime}</span>
         </p>
         <p className={`text-xs pl-1 ${slot.status === "booked" ? "text-red-500" : "text-green-500"}`}>
           {slot.status === "booked" ? "Booked" : "Available"}

@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Header from "@/components/Header";
 import ChatHeader from "@/components/App/ChatHeader";
 import ChatSideBar from "@/components/App/ChatSideBar";
 import { Paperclip, Send, Smile } from "lucide-react";
@@ -10,8 +9,8 @@ import { selectMessages, selectOnlineUsers, selectSelectedUser } from "@/redux/s
 import useSendMessage from "@/hooks/App/SendMessageHook";
 import { NoUserSelectedPlaceholder } from "@/framer-motion/NoUserSelectedPlaceHolder";
 import { useGetMessagesQuery } from "@/redux/api/chatApi";
-
-export default function ChatPage() {
+import Header from "../../components/Header";
+export default function DoctorChatPage() {
   const selectedUser = useSelector(selectSelectedUser);
   const { isLoading, setMessage, handleSendMessage, message } = useSendMessage(selectedUser?.doctorDetails._id);
   const { isLoading: isMessageLoading } = useGetMessagesQuery(
@@ -23,11 +22,12 @@ export default function ChatPage() {
   console.log("Messages", messages);
   console.log(onlineUsers);
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
       <Header />
+
       <div className="flex flex-1 bg-zinc-900">
         <ChatSideBar />
-        <div className="flex-1 flex flex-col ">
+        <div className="flex-1 flex flex-col">
           {selectedUser ? (
             <>
               <ChatHeader
@@ -35,7 +35,7 @@ export default function ChatPage() {
                 profilePic={selectedUser.doctorDetails.profilePicture}
                 id={selectedUser.doctorDetails._id}
               />
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 overflow-auto">
                 <ChatContainer
                   messages={messages}
                   selectedUser={selectedUser.doctorDetails._id}
