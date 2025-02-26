@@ -1,8 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import ChatHeader from "@/components/App/ChatHeader";
 import ChatSideBar from "@/components/App/ChatSideBar";
-import { Paperclip, Send, Smile } from "lucide-react";
 import ChatContainer from "@/components/App/ChatContainer";
 import { useSelector } from "react-redux";
 import { selectMessages, selectOnlineUsers, selectSelectedUser } from "@/redux/slice/socket.ioSlice";
@@ -10,6 +7,7 @@ import useSendMessage from "@/hooks/App/SendMessageHook";
 import { NoUserSelectedPlaceholder } from "@/framer-motion/NoUserSelectedPlaceHolder";
 import { useGetMessagesQuery } from "@/redux/api/chatApi";
 import Header from "../../components/Header";
+import ChatInput from "@/components/App/ChatInput";
 export default function DoctorChatPage() {
   const selectedUser = useSelector(selectSelectedUser);
   const { isLoading, setMessage, handleSendMessage, message } = useSendMessage(selectedUser?.doctorDetails._id);
@@ -42,35 +40,12 @@ export default function DoctorChatPage() {
                   isMessageLoading={isMessageLoading}
                 />
               </div>
-              <div className="p-4 border-t border-zinc-800">
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
-                    <Smile className="h-5 w-5" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
-                    <Paperclip className="h-5 w-5" />
-                  </Button>
-                  <Input
-                    placeholder="Type a message"
-                    className="bg-zinc-800 border-none text-zinc-100"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-zinc-400 hover:text-zinc-100"
-                    disabled={!message.trim() || isLoading}
-                    onClick={handleSendMessage}
-                  >
-                    {isLoading ? (
-                      <span className="loading loading-spinner loading-xs"></span>
-                    ) : (
-                      <Send className="h-5 w-5" />
-                    )}
-                  </Button>
-                </div>
-              </div>
+              <ChatInput
+                message={message}
+                setMessage={setMessage}
+                handleSendMessage={handleSendMessage}
+                isLoading={isLoading}
+              />
             </>
           ) : (
             <NoUserSelectedPlaceholder />

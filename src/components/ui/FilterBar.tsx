@@ -18,9 +18,11 @@ import { Label } from "../../components/ui/label";
 
 const specialties = [
   { value: "Cardiology", label: "Cardiology" },
-  { value: "Dermatology", label: "Dermatology" },
+  { value: "General Medicine", label: "General" },
   { value: "Neurology", label: "Neurology" },
   { value: "Pediatrics", label: "Pediatrics" },
+  { value: "Emergency Medicine", label: "Emergency" },
+  { value: "Endocrinology", label: "Endocrinology" },
   { value: "Orthopedics", label: "Orthopedics" },
 ];
 

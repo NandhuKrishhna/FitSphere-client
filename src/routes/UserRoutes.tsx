@@ -12,9 +12,9 @@ import WalletPage from "../pages/Users/WalletPage";
 import RequireAuth from "../components/RequiredAuth";
 import Layout from "../components/Layout";
 import ChatPage from "@/pages/Users/ChatPage";
-import AppointmentList from "@/components/App/AppointmentList";
 import { Roles } from "@/utils/Enums";
 import RecipesGeneratorPage from "@/pages/Users/RecipesPage";
+import AppointmentPage from "@/pages/Users/AppointmentPage";
 
 const UserRoutes = () => {
   return (
@@ -33,7 +33,7 @@ const UserRoutes = () => {
           <Route path="/doctors/profile" element={<DoctorDetailsPage />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/chat" element={<ChatPage />} />
-          <Route path="/appointments" element={<AppointmentList />} />
+          <Route path="/appointments" element={<AppointmentPage />} />
           <Route path="/recipes" element={<RecipesGeneratorPage />} />
         </Route>
       </Route>

@@ -1,7 +1,7 @@
 import { ScrollArea } from "../ui/scroll-area";
 import { MessageSkeleton } from "./MessageSkeleton";
 import { toIndianTime } from "@/utils/TimeAgo";
-import { Messages, MessagesData } from "@/types/ChatTypes";
+import { MessagesData } from "@/types/ChatTypes";
 import { useEffect, useRef } from "react";
 
 const ChatContainer = ({
@@ -9,7 +9,7 @@ const ChatContainer = ({
   selectedUser,
   isMessageLoading,
 }: {
-  messages: MessagesData | null;
+  messages: MessagesData[];
   selectedUser: string;
   isMessageLoading: boolean;
 }) => {
@@ -39,7 +39,7 @@ const ChatContainer = ({
   return (
     <ScrollArea className="flex-1 p-4">
       <div ref={scrollRef} className="h-full space-y-4 overflow-y-auto">
-        {limitedMessages.map((message: Messages) => (
+        {limitedMessages.map((message: MessagesData) => (
           <div
             key={message._id}
             className={`flex ${message.senderId === selectedUser ? "justify-start" : "justify-end"}`}

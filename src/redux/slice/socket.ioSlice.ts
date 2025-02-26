@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { SelectedUser } from "@/types/ChatTypes";
+import { MessagesData, SelectedUser } from "@/types/ChatTypes";
 
 interface SocketState {
-  messages: string[];
+  messages: MessagesData[];
   users: string[];
   selectedUser: SelectedUser | null;
   onlineUsers: string[];
@@ -35,11 +35,11 @@ const socketSlice = createSlice({
     setConnectionStatus: (state, action: PayloadAction<boolean>) => {
       state.isConnected = action.payload;
     },
-    setMessages: (state, action: PayloadAction<string[]>) => {
+    setMessages: (state, action: PayloadAction<MessagesData[]>) => {
       state.messages = action.payload;
     },
     resetSocketState: () => initialState,
-    addMessages: (state, action: PayloadAction<string>) => {
+    addMessages: (state, action: PayloadAction<MessagesData>) => {
       state.messages.push(action.payload);
     },
     addUserToSidebar: (state, action: PayloadAction<string[]>) => {
