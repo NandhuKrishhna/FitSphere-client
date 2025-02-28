@@ -12,6 +12,7 @@ import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Paym
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useNavigate } from "react-router-dom";
 import { Slot } from "../../components/App/SlotCalender";
+import { ErrorResponse } from "../LoginHook";
 
 export const useDoctorDetails = () => {
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);
@@ -106,6 +107,8 @@ export const useDoctorDetails = () => {
       initPay(response.order);
     } catch (error) {
       console.log(error);
+      const err = error as ErrorResponse;
+      if (err.data.message) return toast.error(err.data.message);
       toast.error("Failed to book slot. Please try again.");
     }
   };

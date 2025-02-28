@@ -1,10 +1,10 @@
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useResetPasswordMutation } from "../redux/api/apiSlice";
-import { emailScheme } from "../types/Validations/registerAsDoctorForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { AuthForgotPasswordInputs } from "@/components/App/AuthLayout";
+import { emailScheme } from "@/types/Validations/registerAsDoctorForm";
+import { useForgotPasswordMutation } from "@/redux/api/doctorApi";
 import { Roles } from "@/utils/Enums";
 interface ErrorResponse {
   data: {
@@ -13,9 +13,9 @@ interface ErrorResponse {
   };
   status: number;
 }
-const useForgotPasswordHook = () => {
+const useDoctorForgotPasswordHook = () => {
   const navigate = useNavigate();
-  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const {
     register,
     handleSubmit,
@@ -24,13 +24,13 @@ const useForgotPasswordHook = () => {
 
   const onSubmit: SubmitHandler<AuthForgotPasswordInputs> = async (data: AuthForgotPasswordInputs) => {
     try {
-      const role = Roles.USER;
-      const res = await resetPassword({ data, role }).unwrap();
+      const role = Roles.DOCTOR;
+      const res = await forgotPassword({ data, role }).unwrap();
       localStorage.setItem("ForgotPasswordEmail", res.email);
       localStorage.setItem("ForgotPasswordUserId", res.userId);
       console.log(res);
       toast.success(res.message);
-      navigate("/verify-reset-otp");
+      navigate("/doctor/verify-reset-otp");
     } catch (err) {
       const error = err as ErrorResponse;
       if (error.data?.message) {
@@ -57,4 +57,4 @@ const useForgotPasswordHook = () => {
   };
 };
 
-export default useForgotPasswordHook;
+export default useDoctorForgotPasswordHook;

@@ -17,6 +17,7 @@ export default function DoctorLoginPage() {
       footerLinkText="Sign Up"
       footerLinkPath="/doctor/signup"
       submitButtonText="Login"
+      forgotPasswordURL="/doctor/forgot-password"
     />
   );
 }

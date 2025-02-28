@@ -17,6 +17,7 @@ export default function LoginPage() {
       footerLinkText="Sign Up"
       footerLinkPath="/signup"
       submitButtonText="Login"
+      forgotPasswordURL="/forgot-password"
     />
   );
 }

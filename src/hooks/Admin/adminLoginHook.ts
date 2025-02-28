@@ -23,7 +23,7 @@ const useAdminLoginHook = () => {
       console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
-      navigate("/doctors/all");
+      navigate("/admin/users-management");
     } catch (err) {
       console.log(err);
       const error = err as ErrorResponse;

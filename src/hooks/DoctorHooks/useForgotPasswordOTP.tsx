@@ -1,8 +1,7 @@
+import { useVerifyResetPasswordCodeMutation } from "@/redux/api/doctorApi";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useVerifyEmailByOtpMutation } from "../../redux/api/doctorApi";
-
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;
@@ -10,29 +9,29 @@ interface ErrorResponse {
   };
   status: number;
 }
-const useDoctorEmailOtpVerificatio = () => {
+
+const useDoctorResetPasswordHook = () => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const navigate = useNavigate();
-  const [verifyEmailByOtp, { isLoading }] = useVerifyEmailByOtpMutation();
+  const [verifyResetPasswordCode, { isLoading }] = useVerifyResetPasswordCodeMutation();
 
   const validateForm = () => {
     const otpString = otp.join("");
-    console.log(otpString);
-    console.log(typeof otpString);
     if (otpString.length < 6) return toast.error("Please enter a valid code");
     return true;
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = validateForm();
     if (success === true) {
       try {
-        const userId = localStorage.getItem("userId");
-        const res = await verifyEmailByOtp({ code: otp.join(""), userId }).unwrap();
+        const userId = localStorage.getItem("ForgotPasswordUserId");
+        const res = await verifyResetPasswordCode({ code: otp.join(""), userId: userId }).unwrap();
         console.log(res);
         toast.success(res.message);
         setOtp(new Array(6).fill(""));
-        navigate("/doctor/registration");
+        navigate("/doctor/reset/new-password");
       } catch (err) {
         console.log(err);
         const error = err as ErrorResponse;
@@ -59,4 +58,4 @@ const useDoctorEmailOtpVerificatio = () => {
   };
 };
 
-export default useDoctorEmailOtpVerificatio;
+export default useDoctorResetPasswordHook;

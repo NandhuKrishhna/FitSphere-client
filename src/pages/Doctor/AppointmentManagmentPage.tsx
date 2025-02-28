@@ -64,7 +64,7 @@ const AppointmentTable = () => {
   const { data, isLoading, isError } = useGetAllAppointmentsQuery({
     userId: doctor?._id,
   });
-
+  console.log("Slot Data : ", data);
   const handleOpenDetails = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setShowModal(true);
@@ -325,7 +325,7 @@ const AppointmentTable = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-400 text-sm">Amount</p>
-                    <p className="text-white font-bold">${selectedAppointment.amount}</p>
+                    <p className="text-white font-bold">₹{selectedAppointment.amount}</p>
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Status</p>

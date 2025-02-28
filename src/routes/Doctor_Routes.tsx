@@ -10,6 +10,9 @@ import RequireAuth from "../components/RequiredAuth";
 import DoctorChatPage from "@/pages/Doctor/DoctorChatPage";
 import { Roles } from "@/utils/Enums";
 import DoctorMainLayout from "@/components/Doctor/DoctorMainLayout";
+import DoctorForgotPasswordPage from "@/pages/Doctor/DoctorForgotPassword";
+import DoctorForgotPasswordOTPPage from "@/pages/Doctor/DoctorForgotPasswordOTPPage";
+import SetNewPasswordPage from "@/pages/Doctor/SetNewPassword";
 
 const Doctor_Routes = () => {
   return (
@@ -19,6 +22,9 @@ const Doctor_Routes = () => {
         <Route path="/verify/otp" element={<DoctorOtpVerification />} />
         <Route path="/registration" element={<ProfessionalDetailsForm />} />
         <Route path="/login" element={<DoctorLoginPage />} />
+        <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
+        <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
+        <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
           <Route element={<DoctorMainLayout />}>
             <Route path="/dashboard" element={<DoctorDashboardPage />} />

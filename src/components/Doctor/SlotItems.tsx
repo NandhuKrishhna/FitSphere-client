@@ -1,4 +1,4 @@
-import { XCircle } from "lucide-react";
+import { Delete } from "lucide-react";
 import { Slot } from "../../types/Slot";
 import { useCancelSlotMutation } from "../../redux/api/doctorApi";
 import ConfirmDialog from "./AlertConfirmation";
@@ -47,9 +47,16 @@ const SlotItem = ({ slot }: SlotItemProps) => {
           ⏳ Slot: <span className="text-purple-700">{formattedStartTime} </span>-{" "}
           <span className="text-purple-700">{formattedEndTime}</span>
         </p>
-        <p className={`text-xs pl-1 ${slot.status === "booked" ? "text-red-500" : "text-green-500"}`}>
-          {slot.status === "booked" ? "Booked" : "Available"}
-        </p>
+        <span
+          className={`text-xs px-2 py-1 rounded-full font-semibold
+    ${slot.status === "booked" ? "bg-red-100 text-red-600" : ""} 
+    ${slot.status === "available" ? "bg-green-100 text-green-600" : ""} 
+    ${slot.status === "cancelled" ? "bg-gray-100 text-gray-600" : ""} 
+    ${slot.status === "completed" ? "bg-blue-100 text-blue-600" : ""} 
+    ${slot.status === "expired" ? "bg-yellow-100 text-yellow-600" : ""}`}
+        >
+          {slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}
+        </span>
       </div>
       {slot.status === "available" && cancelSlot && (
         <ConfirmDialog
@@ -62,7 +69,7 @@ const SlotItem = ({ slot }: SlotItemProps) => {
           color="bg-red-400"
           trigger={
             <button className="text-red-400 hover:text-red-600 transition" disabled={isCancelLoading}>
-              <XCircle size={24} />
+              <Delete size={24} />
             </button>
           }
         />

@@ -33,6 +33,7 @@ interface AuthLayoutProps {
   footerLinkText?: string;
   footerLinkPath?: string;
   submitButtonText?: string;
+  forgotPasswordURL?: string;
 }
 
 const AuthLayout = ({
@@ -50,6 +51,7 @@ const AuthLayout = ({
   footerLinkText,
   footerLinkPath,
   submitButtonText,
+  forgotPasswordURL,
 }: AuthLayoutProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -168,9 +170,9 @@ const AuthLayout = ({
                     </div>
                     {isSignUp && watch && <PasswordStrengthChecker password={watch("password")} />}
                     {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-                    {!isSignUp && (
+                    {!isSignUp && forgotPasswordURL && (
                       <motion.div className="flex items-center justify-between" variants={childVariants}>
-                        <Link to="/forgot-password" className="text-sm text-indigo-500 hover:text-indigo-400">
+                        <Link to={forgotPasswordURL} className="text-sm text-indigo-500 hover:text-indigo-400">
                           Forgot password?
                         </Link>
                       </motion.div>

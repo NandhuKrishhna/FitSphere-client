@@ -17,8 +17,8 @@ const SlotList = ({ slots, isLoading }: SlotListProps) => {
   const [filteredSlots, setFilteredSlots] = useState<Slot[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [consultationType, setConsultationType] = useState<"all" | "video" | "audio">("all");
-  const [status, setStatus] = useState<"all" | "booked" | "available" | "cancelled">("all");
-  const [date, setDate] = useState("");
+  const [status, setStatus] = useState<"all" | "booked" | "available" | "cancelled" | "completed" | "expired">("all");
+  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
 
   const slotsPerPage = 5;
 
@@ -70,6 +70,8 @@ const SlotList = ({ slots, isLoading }: SlotListProps) => {
             { label: "Booked", value: "booked" },
             { label: "Available", value: "available" },
             { label: "Cancelled", value: "cancelled" },
+            { label: "Completed", value: "completed" },
+            { label: "Expired", value: "expired" },
           ]}
           onChange={(value) => setStatus(value)}
         />

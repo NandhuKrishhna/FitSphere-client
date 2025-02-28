@@ -13,9 +13,9 @@ const Admin_Routes = () => {
       <Route path="/" element={<Layout />}>
         <Route path="login" element={<AdminLoginPage />} />
         <Route element={<RequireAuth allowedRoles={[Roles.ADMIN]} redirectTo="/admin/login" />}>
-          <Route path="users-management" element={<UserManagementDashboard />} />
-          <Route path="doctors-management" element={<DoctorManagement />} />
-          <Route path="notifications" element={<NotificationPage />} />
+          <Route path="/users-management" element={<UserManagementDashboard />} />
+          <Route path="/doctors-management" element={<DoctorManagement />} />
+          <Route path="/notifications" element={<NotificationPage />} />
         </Route>
       </Route>
     </Routes>

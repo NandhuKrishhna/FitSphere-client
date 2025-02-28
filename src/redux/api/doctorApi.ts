@@ -14,7 +14,7 @@ export const doctorApi = apiSlice.injectEndpoints({
       query: (data) => ({
         url: "/doctor/verify/otp",
         method: "POST",
-        body: { code: data },
+        body: data,
       }),
     }),
 
@@ -71,6 +71,28 @@ export const doctorApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["wallet"],
     }),
+
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: "/doctor/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    verifyResetPasswordCode: builder.mutation({
+      query: (data) => ({
+        url: "/doctor/verify/reset-password/otp",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    setNewPasswordForDoctor: builder.mutation({
+      query: (data) => ({
+        url: "/doctor/reset-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -84,4 +106,7 @@ export const {
   useGetAllSlotsQuery,
   useLazyDoctorLogoutQuery,
   useGetAllAppointmentsQuery,
+  useForgotPasswordMutation,
+  useVerifyResetPasswordCodeMutation,
+  useSetNewPasswordForDoctorMutation,
 } = doctorApi;

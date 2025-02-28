@@ -28,6 +28,7 @@ const useDoctorSignUp = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await doctorSignUp(data).unwrap();
+      localStorage.setItem("userId", res.user._id);
       console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.user }));

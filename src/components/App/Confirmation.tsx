@@ -17,11 +17,11 @@ interface CalendarProps {
 }
 
 export default function ConsultationModal({ slots, name, dept, onSlotClick }: CalendarProps) {
+  console.log("Slots from DoctorDetail:", slots);
   const timeZone = "Asia/Kolkata";
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
 
-  // Safely process slots data
   const { datesArray, groupedSlots } = useMemo(() => {
     const groups: { [key: string]: Slot[] } = {};
     const safeSlots = slots?.slots || [];
