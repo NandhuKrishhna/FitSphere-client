@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/api/doctorApi";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useState } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
 
 // Define interfaces for type safety
 interface PatientDetails {
@@ -196,9 +196,9 @@ const AppointmentTable = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
                     onClick={() => handleOpenDetails(appointment)}
-                    className="px-2 py-1 bg-purple-500 text-white rounded-md hover:bg-purple-700"
+                    className="text-purple-400 hover:text-purple-700"
                   >
-                    Details
+                    <Info />
                   </button>
                 </td>
               </tr>

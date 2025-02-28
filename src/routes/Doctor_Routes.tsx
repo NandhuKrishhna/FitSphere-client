@@ -13,6 +13,7 @@ import DoctorMainLayout from "@/components/Doctor/DoctorMainLayout";
 import DoctorForgotPasswordPage from "@/pages/Doctor/DoctorForgotPassword";
 import DoctorForgotPasswordOTPPage from "@/pages/Doctor/DoctorForgotPasswordOTPPage";
 import SetNewPasswordPage from "@/pages/Doctor/SetNewPassword";
+import DoctorProflePage from "@/pages/Doctor/DoctorProflePage";
 
 const Doctor_Routes = () => {
   return (
@@ -25,6 +26,8 @@ const Doctor_Routes = () => {
         <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
         <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
         <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
+        <Route path="/profile" element={<DoctorProflePage />} />
+        {/*Protected Routes*/}
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
           <Route element={<DoctorMainLayout />}>
             <Route path="/dashboard" element={<DoctorDashboardPage />} />
