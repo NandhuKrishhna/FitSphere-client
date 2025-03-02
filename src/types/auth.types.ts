@@ -4,25 +4,24 @@ export type AuthUser = {
   email?: string;
   profilePicture?: string;
   role?: string;
-  accessToken: string; 
+  accessToken: string;
 };
 
-
-export type Doctor ={
+export type Doctor = {
   _id?: string;
   name?: string;
   email?: string;
   profilePicture?: string;
   role?: string;
-  accessToken: string; 
-}
+  accessToken: string;
+};
 
 export type Admin = {
-  _id : string;
-  name : string;
-  email : string;
-  profilePic : string;
-}
+  _id: string;
+  name: string;
+  email: string;
+  profilePic: string;
+};
 
 export interface DoctorRegistrationMetadata {
   doctorName?: string;
@@ -36,13 +35,26 @@ export interface DoctorRegistrationMetadata {
     clinicLocations?: string;
     medicalLicenseNumber?: string;
     profilePicture?: string;
-    gender?:string;
-    officeAddress?:string;
-    consultationLanguages?:string;
-    
+    gender?: string;
+    officeAddress?: string;
+    consultationLanguages?: string;
   };
 }
 
+export interface AppNotificationMetaDate {
+  appointmentId: string;
+  meetingId: string;
+}
+
+export interface AppNotification {
+  _id: string;
+  userId: string;
+  type: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  metadata: AppNotificationMetaDate;
+}
 
 export interface Notification {
   _id: string;
@@ -50,7 +62,7 @@ export interface Notification {
   message: string;
   read: boolean;
   createdAt: string;
-  metadata?: DoctorRegistrationMetadata;
+  metadata: DoctorRegistrationMetadata;
 }
 export type UserType = {
   _id: string;
@@ -69,7 +81,3 @@ export type UserResponse = {
   success: boolean;
   users: UserType[];
 };
-
-
-
-

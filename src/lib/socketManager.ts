@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { AppDispatch } from "@/redux/store";
 import { addMessages, setConnectionStatus, setOnlineUsers } from "@/redux/slice/socket.ioSlice";
+import { MessagesData } from "@/types/ChatTypes";
 
 let socket: Socket | null = null;
 
@@ -28,8 +29,8 @@ export const connectSocket = (userId: string, dispatch: AppDispatch) => {
     dispatch(setConnectionStatus(false));
   });
 
-  socket.on("newMessage", (message: string) => {
-    console.log("a new message is received", message);
+  socket.on("newMessage", (message: MessagesData) => {
+    console.log("A new message is received", message);
     dispatch(addMessages(message));
   });
 };

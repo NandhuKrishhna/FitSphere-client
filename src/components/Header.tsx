@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Bell, MessageSquare, Search, Settings } from "lucide-react";
 import { useLogout } from "@/hooks/userLogoutHook";
@@ -12,6 +12,9 @@ import { AvatarFallback, AvatarImage } from "./ui/avatar";
 import { AvatarDropdown } from "./App/DropDown";
 import { Input } from "./ui/input";
 import { motion } from "framer-motion";
+import { useGetNotificationsQuery } from "@/redux/api/notificationApi";
+import { getSocket } from "@/lib/socketManager";
+import { AppNotification } from "@/types/auth.types";
 
 type Props = {
   value?: string;
@@ -23,6 +26,27 @@ export default function DoctorHeader({ value, onChange }: Props) {
   const user = useSelector(selectCurrentUser);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const { data: notifications, isLoading: isNotificationLoading } = useGetNotificationsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+  console.log("All Notifications : ", notifications);
+  const navigate = useNavigate();
+  const handleJoinMeeting = (meetId: string) => {
+    const socket = getSocket();
+    if (!socket) {
+      console.error("Socket is not connected");
+      return;
+    }
+
+    const email = user?.email;
+    console.log("Emitting room:join event", { email, meetId });
+
+    socket.emit("room:join", { email, meetId });
+
+    navigate(`/meeting/${meetId}`);
+  };
 
   return (
     <header className="bg-gradient-to-r from-purple-900 to-indigo-900 border-b border-purple-700/50 sticky top-0 z-50">
@@ -91,10 +115,12 @@ export default function DoctorHeader({ value, onChange }: Props) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative text-gray-300 hover:text-white">
                   <Bell className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  {notifications?.allNotifications?.length > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80 bg-indigo-300">
+              <DropdownMenuContent align="end" className="w-80 bg-white shadow-lg rounded-lg border border-gray-200">
                 <div className="flex items-center justify-between p-4 border-b">
                   <h3 className="font-medium">Notifications</h3>
                   <Button variant="ghost" size="sm" className="text-xs text-purple-600">
@@ -102,22 +128,44 @@ export default function DoctorHeader({ value, onChange }: Props) {
                   </Button>
                 </div>
                 <div className="max-h-80 overflow-y-auto">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="p-4 border-b hover:bg-gray-50 cursor-pointer">
-                      <div className="flex gap-3">
-                        <Avatar className="h-9 w-9">
-                          <AvatarImage src={`/placeholder.svg?height=36&width=36`} />
-                          <AvatarFallback>P{i}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm">
-                            <span className="font-medium">Patient {i}</span> booked an appointment
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">Today at 10:0{i} AM</p>
+                  {isNotificationLoading ? (
+                    <div className="p-4 text-center text-gray-500">Loading notifications...</div>
+                  ) : notifications?.allNotifications?.length > 0 ? (
+                    notifications.allNotifications.map((notification: AppNotification) => (
+                      <div key={notification._id} className="p-4 border-b hover:bg-gray-50 cursor-pointer">
+                        <div className="flex gap-3">
+                          <Avatar className="h-9 w-9">
+                            <AvatarImage src={`/placeholder.svg?height=36&width=36`} />
+                            <AvatarFallback>{notification.type.charAt(0).toUpperCase()}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="text-sm">
+                              <span className="font-medium">{notification.message}</span>
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {new Date(notification.createdAt).toLocaleString()}
+                            </p>
+                            {notification.type === "appointment" && notification.metadata?.meetingId && (
+                              <div className="mt-2">
+                                <Button
+                                  onClick={() => {
+                                    handleJoinMeeting(notification.metadata.meetingId);
+                                  }}
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-xs bg-purple-600 text-white hover:bg-purple-700"
+                                >
+                                  Join Meeting
+                                </Button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">No notifications</div>
+                  )}
                 </div>
                 <div className="p-2 border-t">
                   <Button variant="ghost" size="sm" className="w-full text-purple-600">

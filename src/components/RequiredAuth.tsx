@@ -11,8 +11,8 @@ const RequireAuth = ({ allowedRoles, redirectTo }: RequireAuthProps) => {
   const location = useLocation();
   const token = useSelector(selectCurrentToken);
   const authUser = useSelector(selectCurrentUser);
-  console.log(token);
-  console.log(authUser);
+  // console.log(token);
+  // console.log(authUser);
 
   return token ? (
     allowedRoles.includes(authUser?.role ?? "") ? (
