@@ -29,6 +29,7 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
     indexOfLastItem,
     indexOfFirstItem,
   } = useAppointmentData();
+  console.log(currentItems);
   const { selectedAppointment, isDialogOpen, setIsDialogOpen, handleCancelAppointment, openDetailsDialog } =
     useAppointmentActions();
   const renderSortIcon = (field: string) => {

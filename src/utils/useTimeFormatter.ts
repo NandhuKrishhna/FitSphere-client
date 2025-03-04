@@ -1,10 +1,8 @@
-export const formatToIndianTime = (dateString: string): string => {
-  return new Date(dateString).toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-    timeZone: "Asia/Kolkata",
-  });
+import { format, toZonedTime } from "date-fns-tz";
+
+export const formatToIndianTime = (utcTime: string) => {
+  const zonedDate = toZonedTime(utcTime, "UTC"); // Keep it in UTC
+  return format(zonedDate, "hh:mm a"); // Format without conversion
 };
 
 export const formatDate = (dateString: string): string => {

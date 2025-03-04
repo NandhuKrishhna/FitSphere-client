@@ -4,7 +4,6 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Slot } from "./SlotCalender";
-
 interface CalendarProps {
   name?: string;
   dept: string;
@@ -156,9 +155,12 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
           <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 mt-4">
             {filteredSlots.map((slot) => {
-              const start = toZonedTime(new Date(slot.startTime), timeZone);
-              const end = toZonedTime(new Date(slot.endTime), timeZone);
-              const timeLabel = `${format(start, "h:mm a")} - ${format(end, "h:mm a")}`;
+              const startUtc = toZonedTime(new Date(slot.startTime), "UTC");
+              const endUtc = toZonedTime(new Date(slot.endTime), "UTC");
+
+              const timeLabel = `${format(startUtc, "h:mm a", { timeZone: "UTC" })} - ${format(endUtc, "h:mm a", {
+                timeZone: "UTC",
+              })}`;
 
               return (
                 <Button
