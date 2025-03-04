@@ -29,6 +29,8 @@ const useDoctorSignUp = () => {
     try {
       const res = await doctorSignUp(data).unwrap();
       localStorage.setItem("userId", res.user._id);
+      localStorage.setItem("doctorInfo", JSON.stringify(res.user));
+
       console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.user }));

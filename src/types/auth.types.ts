@@ -24,21 +24,19 @@ export type Admin = {
 };
 
 export interface DoctorRegistrationMetadata {
-  doctorName?: string;
-  newDoctorDetails?: {
-    primarySpecialty?: string;
-    bio?: string;
-    experience?: number;
-    consultationFees?: number;
-    professionalEmail?: string;
-    contactPhoneNumber?: string;
-    clinicLocations?: string;
-    medicalLicenseNumber?: string;
-    profilePicture?: string;
-    gender?: string;
-    officeAddress?: string;
-    consultationLanguages?: string;
-  };
+  name?: string;
+  primarySpecialty?: string;
+  bio?: string;
+  experience?: number;
+  consultationFees?: number;
+  professionalEmail?: string;
+  contactPhoneNumber?: string;
+  clinicLocations?: string;
+  medicalLicenseNumber?: string;
+  profilePicture?: string;
+  gender?: string;
+  officeAddress?: string;
+  consultationLanguages?: string;
 }
 
 export interface AppNotificationMetaDate {

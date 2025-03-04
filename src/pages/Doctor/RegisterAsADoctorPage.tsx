@@ -67,7 +67,8 @@ export default function ProfessionalDetailsForm() {
       professionalSchema.parse(formData);
       console.log("Form data is valid:", formData);
       const userId = localStorage.getItem("userId");
-      const response = await registerAsDoctor({ formData, userId }).unwrap();
+      const doctorInfo = JSON.parse(localStorage.getItem("doctorInfo") || "{}");
+      const response = await registerAsDoctor({ formData, userId, doctorInfo }).unwrap();
       console.log("Registration successful:", response);
       setShowSuccess(true);
     } catch (error) {
