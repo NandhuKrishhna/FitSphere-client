@@ -15,6 +15,7 @@ import DoctorForgotPasswordOTPPage from "@/pages/Doctor/DoctorForgotPasswordOTPP
 import SetNewPasswordPage from "@/pages/Doctor/SetNewPassword";
 import DoctorProflePage from "@/pages/Doctor/DoctorProflePage";
 import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
+import ConsultationPage from "@/pages/Doctor/ConsultationPage";
 
 const Doctor_Routes = () => {
   return (
@@ -34,7 +35,8 @@ const Doctor_Routes = () => {
             <Route path="/dashboard" element={<DoctorDashboardPage />} />
             <Route path="/appointments" element={<AppointmentTable />} />
             <Route path="/chat" element={<DoctorChatPage />} />
-            <Route path="/meeting/:meetingId" element={<MeetingPage />} />
+            <Route path="/create-meet" element={<MeetingPage />} />
+            <Route path="/consultation/:meetId" element={<ConsultationPage />} />
           </Route>
         </Route>
       </Route>

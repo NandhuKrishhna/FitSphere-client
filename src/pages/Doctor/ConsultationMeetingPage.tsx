@@ -1,200 +1,115 @@
-import { getSocket } from "@/lib/socketManager";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import peer from "@/services/peer";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, Video, Plus, Clipboard, X } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
+import { Roles } from "@/utils/Enums";
 
-const MeetingPage: React.FC = () => {
-  const socket = getSocket();
-  const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
-  const [myStream, setMyStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const myVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+export default function MeetingPage() {
+  const user = useSelector(selectCurrentUser);
+  const [meetId, setMeetId] = useState("");
+  const [newMeetId, setNewMeetId] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
 
-  // handlingUserJoined
-  const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
-    console.log(`User ${email} joined with ID: ${id}`);
-    setRemoteSocketId(id);
-  }, []);
+  const handleCreateRoom = () => {
+    const id = uuidv4();
+    setNewMeetId(id);
+    setShowPopup(true);
+  };
 
-  // handlerCallUser
-  const handleCallUser = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
+  const handleCopy = () => {
+    navigator.clipboard.writeText(newMeetId);
+    toast.success("Meeting ID copied to clipboard!");
+  };
 
-    const offer = await peer.getOffer();
-    socket?.emit("user:call", { to: remoteSocketId, offer });
-
-    setMyStream(stream);
-  }, [remoteSocketId, socket]);
-
-  // Handle incoming call
-  const handleIncomingCall = useCallback(
-    async ({ from, offer }: { from: string; offer: RTCSessionDescription }) => {
-      setRemoteSocketId(from);
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-
-      setMyStream(stream);
-      console.log("Incoming call", from, offer);
-      const ans = await peer.getAnswer(offer);
-      socket?.emit("call:acceped", { to: from, ans });
-    },
-    [socket]
-  );
-  const sendStreams = useCallback(() => {
-    if (myStream) {
-      for (const track of myStream.getTracks()) {
-        peer?.peer?.addTrack(track, myStream);
-      }
+  const handleJoinMeet = () => {
+    if (!user) {
+      console.error("User data is missing");
+      return;
     }
-  }, [myStream]);
 
-  const handleCallAccepted = useCallback(
-    ({ from, ans }: { from: string; ans: RTCSessionDescription }) => {
-      peer.setLocalDescription(ans);
-      console.log("call accepted", from, ans);
-      sendStreams();
-    },
-    [sendStreams]
-  );
-
-  const handleNegotiationIncoming = useCallback(
-    async ({ from, offer }: { from: string; offer: RTCSessionDescription }) => {
-      const ans = await peer.getAnswer(offer);
-      socket?.emit("peer:nego:done", { to: from, ans });
-    },
-    [socket]
-  );
-
-  useEffect(() => {
-    peer.peer?.addEventListener("track", async (ev) => {
-      const remoteStream = ev.streams;
-      console.log("GOT TRACK!");
-      setRemoteStream(remoteStream[0]);
-    });
-  });
-
-  const handleNegotiationFinal = useCallback(async ({ ans }: { from: string; ans: RTCSessionDescription }) => {
-    await peer.setLocalDescription(ans);
-  }, []);
-
-  const handleNegoNeeded = useCallback(async () => {
-    const offer = await peer.getOffer();
-    socket?.emit("peer:nego:needed", { offer, to: remoteSocketId });
-  }, [remoteSocketId, socket]);
-
-  useEffect(() => {
-    peer.peer?.addEventListener("negotiationneeded", handleNegoNeeded);
-    return () => {
-      peer.peer?.removeEventListener("negotiationneeded", handleNegoNeeded);
-    };
-  }, [handleNegoNeeded]);
-  // Effect for socket event listeners
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("user:joined", handleUserJoined);
-    socket.on("incoming:call", handleIncomingCall);
-    socket.on("call:accepted", handleCallAccepted);
-    socket.on("peer:nego:needed", handleNegotiationIncoming);
-    socket.on("peer:nego:final", handleNegotiationFinal);
-
-    return () => {
-      socket.off("user:joined", handleUserJoined);
-      socket.off("incoming:call", handleIncomingCall);
-      socket.off("call:accepted", handleCallAccepted);
-      socket.off("peer:nego:needed", handleNegotiationIncoming);
-      socket.off("peer:nego:final", handleNegotiationFinal);
-    };
-  }, [
-    socket,
-    handleUserJoined,
-    handleIncomingCall,
-    handleCallAccepted,
-    handleNegotiationIncoming,
-    handleNegotiationFinal,
-  ]);
-
-  // Effect to set video stream when myStream changes
-  useEffect(() => {
-    if (myStream && myVideoRef.current) {
-      myVideoRef.current.srcObject = myStream;
+    if (!meetId?.trim()) {
+      console.error("Meeting ID is invalid:", meetId);
+      return;
     }
-  }, [myStream]);
 
-  useEffect(() => {
-    if (remoteStream && remoteVideoRef.current) {
-      remoteVideoRef.current.srcObject = remoteStream;
-    }
-  }, [remoteStream]);
+    const navigateTo = user.role === Roles.USER ? `/consultation/${meetId}` : `/doctor/consultation/${meetId}`;
+
+    console.log("Navigating to:", navigateTo);
+    navigate(navigateTo);
+  };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Welcome to the meeting</h1>
-      <h4 className="text-lg mb-4">{remoteSocketId ? "Connected" : "No one in room"}</h4>
+    <div className="w-full max-w-md items-center justify-center bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="p-8">
+        <div className="flex items-center justify-center mb-8">
+          <Video className="h-10 w-10 text-primary" />
+          <h1 className="text-3xl font-bold ml-3 text-gray-800">MeetConnect</h1>
+        </div>
 
-      <div className="flex gap-2 mb-4">
-        {remoteSocketId && (
-          <button
-            onClick={handleCallUser}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            CALL
-          </button>
-        )}
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-xl font-medium text-gray-700 mb-3">Join a meeting</h2>
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                placeholder="Enter meeting ID"
+                value={meetId}
+                onChange={(e) => setMeetId(e.target.value)}
+                className="flex-1 focus:ring-2 focus:ring-primary/50"
+              />
+              <Button className="px-4" disabled={!meetId.trim()} onClick={handleJoinMeet}>
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
 
-        {myStream && (
-          <button
-            onClick={sendStreams}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Send Stream
-          </button>
-        )}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">or</span>
+            </div>
+          </div>
+          <Button className="w-full py-6 text-lg" variant="default" onClick={handleCreateRoom}>
+            <Plus className="h-5 w-5 mr-2" />
+            Create New Room
+          </Button>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* My Video Stream */}
-        {myStream && (
-          <div className="mb-4">
-            <h2 className="text-xl mb-2">My Stream</h2>
-            <video
-              ref={myVideoRef}
-              autoPlay
-              playsInline
-              muted
-              className="bg-gray-100 rounded"
-              style={{
-                width: "300px",
-                height: "225px",
-              }}
-            />
-          </div>
-        )}
-
-        {/* Remote Video Stream */}
-        {remoteStream && (
-          <div className="mb-4">
-            <h2 className="text-xl mb-2">Remote Stream</h2>
-            <video
-              ref={remoteVideoRef}
-              autoPlay
-              playsInline
-              className="bg-gray-100 rounded"
-              style={{
-                width: "300px",
-                height: "225px",
-              }}
-            />
-          </div>
-        )}
+      <div className="px-8 py-4 bg-gray-50 border-t border-gray-100">
+        <p className="text-center text-sm text-gray-500">Secure, reliable video meetings for teams of all sizes</p>
       </div>
+
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">Your Meeting ID</h2>
+              <button onClick={() => setShowPopup(false)}>
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+            <div className="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
+              <span className="text-gray-800 font-mono">{newMeetId}</span>
+              <button onClick={handleCopy} className="text-primary">
+                <Clipboard className="h-5 w-5 hover:text-indigo-400" />
+              </button>
+            </div>
+            <p className="text-sm text-purple-400 italic">Copy the Meeting ID and share it with participants. </p>
+            <Button className="mt-4 w-full" onClick={handleJoinMeet}>
+              Start Meeting
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default MeetingPage;
+}

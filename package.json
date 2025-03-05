@@ -46,6 +46,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.474.0",
     "path": "^0.12.7",
+    "peerjs": "^1.5.4",
     "react": "^18.3.1",
     "react-datepicker": "^8.1.0",
     "react-day-picker": "^8.10.1",
@@ -63,11 +64,13 @@
     "styled-components": "^6.1.14",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.1.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/node": "^22.13.4",
+    "@types/peerjs": "^1.1.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@types/simple-peer": "^9.11.8",

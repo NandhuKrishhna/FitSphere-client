@@ -1,40 +1,29 @@
-class PeerService {
-  peer: RTCPeerConnection | null = null;
+import { getSocket } from "@/lib/socketManager";
+import Peer from "peerjs";
+import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+const usePeer = () => {
+  const socket = getSocket();
+  const roomId = useParams().meetId;
+  const [peer, setPeer] = useState<Peer | null>(null);
+  const [myId, setMyId] = useState<string | undefined>(undefined);
+  const isPeerSet = useRef(false);
+  useEffect(() => {
+    if (isPeerSet.current || !roomId || !socket) return;
+    isPeerSet.current = true;
+    (async function initPeer() {
+      const myPeer = new (await import("peerjs")).default();
+      setPeer(myPeer);
 
-  constructor() {
-    if (!this.peer) {
-      this.peer = new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: ["stun:stun.l.google.com:19302", "stun:global.stun.twilio.com:3478"],
-          },
-        ],
+      myPeer.on("open", (id) => {
+        console.log("your peer id is ", id);
+        setMyId(id);
+        socket?.emit("join-room", roomId, id);
       });
-    }
-  }
+    })();
+  }, [roomId, socket]);
 
-  async getAnswer(offer: RTCSessionDescription) {
-    if (this.peer) {
-      await this.peer.setRemoteDescription(new RTCSessionDescription(offer));
-      const ans = await this.peer.createAnswer();
-      await this.peer.setLocalDescription(new RTCSessionDescription(ans));
-      return ans;
-    }
-  }
+  return { peer, myId };
+};
 
-  async getOffer() {
-    if (this.peer) {
-      const offer = await this.peer.createOffer();
-      await this.peer.setLocalDescription(new RTCSessionDescription(offer));
-      return offer;
-    }
-  }
-
-  async setLocalDescription(ans: RTCSessionDescription) {
-    if (this.peer) {
-      await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
-    }
-  }
-}
-
-export default new PeerService();
+export default usePeer;

@@ -16,6 +16,7 @@ import { Roles } from "@/utils/Enums";
 import RecipesGeneratorPage from "@/pages/Users/RecipesPage";
 import AppointmentPage from "@/pages/Users/AppointmentPage";
 import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
+import ConsultationPage from "@/pages/Doctor/ConsultationPage";
 
 const UserRoutes = () => {
   return (
@@ -36,7 +37,8 @@ const UserRoutes = () => {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/appointments" element={<AppointmentPage />} />
           <Route path="/recipes" element={<RecipesGeneratorPage />} />
-          <Route path="/meeting/:meetingId" element={<MeetingPage />} />
+          <Route path="/create-meet" element={<MeetingPage />} />
+          <Route path="/consultation/:meetId" element={<ConsultationPage />} />
         </Route>
       </Route>
     </Routes>
