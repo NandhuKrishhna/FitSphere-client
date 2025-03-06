@@ -46,11 +46,16 @@ const ChatContainer = ({
           >
             <div
               className={`max-w-[70%] rounded-lg p-3 ${
-                message.senderId === selectedUser ? "bg-violet-600 text-white" : "bg-zinc-800 text-zinc-100"
+                message.senderId === selectedUser ? "bg-violet-400 text-white" : "bg-[#6A67C1] text-purple-100"
               }`}
             >
-              <p className="text-sm">{message.message}</p>
-              <span className="text-xs opacity-70 mt-1 block text-right">{toIndianTime(message.createdAt)}</span>
+              {" "}
+              <div className="flex gap-6">
+                <p className="text-md">{message.message}</p>
+                <span className="text-xs opacity-70 mt-1 block text-indigo-100 text-right">
+                  {toIndianTime(message.createdAt)}
+                </span>
+              </div>
             </div>
           </div>
         ))}

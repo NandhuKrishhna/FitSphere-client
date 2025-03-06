@@ -17,6 +17,13 @@ import RecipesGeneratorPage from "@/pages/Users/RecipesPage";
 import AppointmentPage from "@/pages/Users/AppointmentPage";
 import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
 import ConsultationPage from "@/pages/Doctor/ConsultationPage";
+import AgeSelector from "@/pages/Users/EnterAgePage";
+import AgeGenderSelector from "@/pages/Users/AgeGenderSelector";
+import ActivityLevelSelectionPage from "@/pages/Users/ActivityLevel";
+import CurrentWeightSelection from "@/pages/Users/CurrentWeightSelector";
+import TargetWeightSelectionPage from "@/pages/Users/TargetWeight";
+import WeeksToGoalSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
+import WeekSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
 
 const UserRoutes = () => {
   return (
@@ -28,6 +35,16 @@ const UserRoutes = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/verify-reset-otp" element={<ResetPasswordOtp />} />
         <Route path="/reset/new-password" element={<ResetPasswordPage />} />
+        {/* 
+         // TODO : move these routes to protected;
+        */}
+        <Route path="/age" element={<AgeSelector />} />
+        <Route path="/gender" element={<AgeGenderSelector />} />
+        <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
+        <Route path="/current-weight" element={<CurrentWeightSelection />} />
+        <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
+        <Route path="/select-week" element={<WeekSelectionPage />} />
+        <Route path="/dieases" element={<WeeksToGoalSelectionPage />} />
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
           <Route path="/doctors/all" element={<DoctorsPage />} />
