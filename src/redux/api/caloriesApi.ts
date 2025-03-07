@@ -28,4 +28,4 @@ export const chatApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useSearchFoodItemsMutation, useGenerateRecipeMutation } = chatApi;
+export const { useSearchFoodItemsMutation, useGenerateRecipeMutation, useUserHealthDetailMutation } = chatApi;
