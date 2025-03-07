@@ -24,6 +24,7 @@ import CurrentWeightSelection from "@/pages/Users/CurrentWeightSelector";
 import TargetWeightSelectionPage from "@/pages/Users/TargetWeight";
 import WeekSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
 import HeightSelector from "@/pages/Users/HeightSelector";
+import HomePage from "@/pages/Users/HomePage";
 
 const UserRoutes = () => {
   return (
@@ -45,6 +46,7 @@ const UserRoutes = () => {
         <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
         <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
         <Route path="/select-week" element={<WeekSelectionPage />} />
+        <Route path="/home" element={<HomePage />} />
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
           <Route path="/doctors/all" element={<DoctorsPage />} />

@@ -4,18 +4,10 @@ import { ErrorResponse } from "react-router-dom";
 
 const useUserHealthDetails = () => {
   const [userHealthDetail, { isLoading }] = useUserHealthDetailMutation();
-
-  // Function to get value from localStorage without extra quotes
   const getLocalStorageValue = (key: string) => localStorage.getItem(key) || "";
-
-  // Ensure correct number conversion for weight
   const weight = Number(getLocalStorageValue("weight"));
   const targetWeight = Number(getLocalStorageValue("targetWeight"));
-
-  // Determine goal based on weight difference
   const goal = targetWeight > weight ? "gain" : targetWeight < weight ? "lose" : "maintain";
-
-  // Ensure gender and activity level are valid
   const gender = getLocalStorageValue("gender").replace(/"/g, "");
   const activityLevel = getLocalStorageValue("activityLevel").replace(/"/g, "");
   const weeks = getLocalStorageValue("weeksToGoal").replace(/"/g, "");
