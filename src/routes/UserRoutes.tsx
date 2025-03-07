@@ -40,11 +40,11 @@ const UserRoutes = () => {
         */}
         <Route path="/age" element={<AgeSelector />} />
         <Route path="/gender" element={<AgeGenderSelector />} />
-        <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
+        <Route path="/height" element={<HeightSelector />} />
         <Route path="/current-weight" element={<CurrentWeightSelection />} />
         <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
+        <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
         <Route path="/select-week" element={<WeekSelectionPage />} />
-        <Route path="/height" element={<HeightSelector />} />
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
           <Route path="/doctors/all" element={<DoctorsPage />} />
