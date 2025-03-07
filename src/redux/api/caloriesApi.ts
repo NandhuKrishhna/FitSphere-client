@@ -9,7 +9,7 @@ export const chatApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-
+    //* These are reciepe regenerator endpoints.
     searchFoodItems: builder.mutation({
       query: (data) => ({
         url: "/app/serach-food",
@@ -25,7 +25,19 @@ export const chatApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    getUserHealthDetails: builder.query({
+      query: () => ({
+        url: "/app/get-userHealthDetails",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useSearchFoodItemsMutation, useGenerateRecipeMutation, useUserHealthDetailMutation } = chatApi;
+export const {
+  useSearchFoodItemsMutation,
+  useGenerateRecipeMutation,
+  useUserHealthDetailMutation,
+  useGetUserHealthDetailsQuery,
+} = chatApi;
