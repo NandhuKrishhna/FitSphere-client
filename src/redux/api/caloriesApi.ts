@@ -32,6 +32,13 @@ export const chatApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    getUserFoodLogsDetails: builder.query({
+      query: () => ({
+        url: "/app/get-userFoodLogsDetails",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
