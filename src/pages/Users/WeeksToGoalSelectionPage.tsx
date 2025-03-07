@@ -47,7 +47,7 @@ export default function WeeksGoalSelector() {
       subtitle="Select the number of weeks to achieve your goals"
       step={5}
       totalSteps={6}
-      backAction={() => navigate("/activity")}
+      backAction={() => navigate("/activity-level")}
       nextAction={handleSave}
       nextDisabled={!isSelected || isLoading}
       nextLabel={isLoading ? "Saving..." : "Save"}
