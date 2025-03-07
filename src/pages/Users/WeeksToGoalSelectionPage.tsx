@@ -1,68 +1,121 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import ProgressBar from "@/components/App/ProgressBar";
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function WeekSelectionPage() {
-  const [selectedWeek, setSelectedWeek] = useState<string | null>(null);
+type WeekOption = "1" | "2" | "3" | "4" | null;
+
+export default function WeeksGoalSelector() {
+  const [selectedWeeks, setSelectedWeeks] = useState<WeekOption>(() => {
+    const storedWeeks = localStorage.getItem("selectedWeeks");
+    return (storedWeeks as WeekOption) || null;
+  });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const savedWeek = localStorage.getItem("selectedWeek");
-    if (savedWeek) {
-      setSelectedWeek(savedWeek);
+    if (selectedWeeks) {
+      localStorage.setItem("selectedWeeks", selectedWeeks);
     }
-  }, []);
+  }, [selectedWeeks]);
 
-  const handleWeekSelect = (week: string) => {
-    setSelectedWeek(week);
-    localStorage.setItem("selectedWeek", week);
+  const handleSave = () => {
+    if (selectedWeeks) {
+      localStorage.setItem("selectedWeeks", selectedWeeks);
+      // You can add additional save logic here
+      // Either navigate to a results page or show a success message
+      navigate("/results");
+    }
   };
 
+  const handlePrevPage = () => {
+    navigate("/activity");
+  };
+
+  const weekOptions = [
+    {
+      id: "1",
+      title: "1 Week",
+      description: "Quick results, intense plan",
+    },
+    {
+      id: "2",
+      title: "2 Weeks",
+      description: "Balanced approach",
+    },
+    {
+      id: "3",
+      title: "3 Weeks",
+      description: "Steady progress",
+    },
+    {
+      id: "4",
+      title: "4 Weeks",
+      description: "Gradual, sustainable change",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-950 to-black text-white flex flex-col">
-      <header className="p-6">
-        <h1 className="text-2xl font-bold italic">
-          FitSphere <span className="inline-block w-3 h-3 bg-cyan-400 rounded-full ml-1"></span>
-        </h1>
-      </header>
+    <div className="flex flex-col items-center justify-between h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900 text-white p-6">
+      <ProgressBar step={5} totalSteps={6} />
 
-      <ProgressBar step={3} totalSteps={7} />
+      <div className="flex-1 flex items-center justify-center flex-col w-full max-w-md">
+        <h1 className="text-4xl font-bold mb-4 text-center">how quickly do you want results?</h1>
+        <p className="mb-10">Select the number of weeks to achieve your goals</p>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h2 className="text-3xl font-medium mb-16 text-center">Select Your Plan Duration</h2>
-          <div className="flex flex-col space-y-4 w-full max-w-md">
-            {["1 Week", "2 Weeks", "3 Weeks", "4 Weeks"].map((week, index) => (
-              <button
-                key={index}
-                onClick={() => handleWeekSelect(week)}
-                className={`w-full py-4 rounded-lg flex items-center justify-center transition-all text-lg font-medium border-2 border-transparent ${
-                  selectedWeek === week
-                    ? "bg-purple-700 border-purple-400"
-                    : "bg-white text-purple-900 hover:bg-gray-200"
-                }`}
+        <div className="grid grid-cols-1 gap-4 w-full">
+          {weekOptions.map((option) => (
+            <div
+              key={option.id}
+              onClick={() => setSelectedWeeks(option.id as WeekOption)}
+              className={`
+                flex flex-col p-4 rounded-xl cursor-pointer transition-all duration-300
+                ${
+                  selectedWeeks === option.id
+                    ? "bg-purple-600 shadow-lg border-2 border-yellow-300"
+                    : "bg-purple-800 hover:bg-purple-700 border-2 border-transparent"
+                }
+              `}
+            >
+              <span
+                className={`text-xl font-semibold ${selectedWeeks === option.id ? "text-yellow-300" : "text-white"}`}
               >
-                {week}
-              </button>
-            ))}
-          </div>
-        </motion.div>
+                {option.title}
+              </span>
+              <span className="text-sm opacity-80 mt-1">{option.description}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Navigation */}
-      <div className="p-6 flex justify-between">
-        <button className="flex items-center justify-center px-6 py-3 rounded-full bg-purple-900 hover:bg-purple-800 transition-colors">
-          <ArrowLeft className="mr-2" size={18} />
+      <div className="w-full flex justify-between mt-8 mb-4 max-w-md">
+        <button
+          onClick={handlePrevPage}
+          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
           Back
         </button>
+
         <button
-          className={`flex items-center justify-center px-6 py-3 rounded-full transition-colors ${
-            !selectedWeek ? "bg-purple-900/50 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-500"
-          }`}
-          disabled={!selectedWeek}
+          onClick={handleSave}
+          className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!selectedWeeks}
         >
-          Next
-          <ArrowRight className="ml-2" size={18} />
+          Save
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
       </div>
     </div>

@@ -32,7 +32,7 @@ const useVerificationCodeHook = () => {
         toast.success(res.message);
         setOtp(new Array(6).fill(""));
         localStorage.removeItem("userId");
-        navigate("/doctors/all");
+        navigate("/age");
       } catch (err) {
         console.log(err);
         const error = err as ErrorResponse;

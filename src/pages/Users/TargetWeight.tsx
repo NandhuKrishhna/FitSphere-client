@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import ProgressBar from "@/components/App/ProgressBar";
 
 export default function TargetWeightSelectionPage() {
   const currentWeight = parseInt(localStorage.getItem("selectedWeight") || "70", 10);
@@ -53,20 +54,21 @@ export default function TargetWeightSelectionPage() {
   };
 
   const handleNextPage = () => {
-    const minHealthyWeight = currentWeight * 0.8; // Allow up to 20% weight reduction
-    const maxHealthyWeight = currentWeight * 1.3; // Allow up to 30% weight gain
+    const minHealthyWeight = currentWeight * 0.8;
+    const maxHealthyWeight = currentWeight * 1.3;
 
     if (targetWeight < minHealthyWeight) {
       toast.error("This target weight is too low and may be unhealthy!");
     } else if (targetWeight > maxHealthyWeight) {
       toast.error("This target weight is too high and may be unhealthy!");
     } else {
-      navigate("/nextPage");
+      navigate("/activity-level");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-between h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900 text-white p-6">
+      <ProgressBar step={5} totalSteps={6} />
       <div className="flex-1 flex items-center justify-center flex-col w-full max-w-md">
         <h1 className="text-4xl font-bold mb-4 text-center">Set Your Target Weight</h1>
         <p className="mb-16">Scroll to select your target weight</p>
@@ -102,7 +104,7 @@ export default function TargetWeightSelectionPage() {
       <div className="w-full flex justify-between mt-8 mb-4 max-w-md">
         <button
           className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl"
-          onClick={() => navigate("/currentWeight")}
+          onClick={() => navigate("/current-weight")}
         >
           Back
         </button>

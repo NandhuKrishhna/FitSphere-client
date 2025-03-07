@@ -18,12 +18,12 @@ import AppointmentPage from "@/pages/Users/AppointmentPage";
 import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
 import ConsultationPage from "@/pages/Doctor/ConsultationPage";
 import AgeSelector from "@/pages/Users/EnterAgePage";
-import AgeGenderSelector from "@/pages/Users/AgeGenderSelector";
+import AgeGenderSelector from "@/pages/Users/GenderSelector";
 import ActivityLevelSelectionPage from "@/pages/Users/ActivityLevel";
 import CurrentWeightSelection from "@/pages/Users/CurrentWeightSelector";
 import TargetWeightSelectionPage from "@/pages/Users/TargetWeight";
-import WeeksToGoalSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
 import WeekSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
+import HeightSelector from "@/pages/Users/HeightSelector";
 
 const UserRoutes = () => {
   return (
@@ -44,7 +44,7 @@ const UserRoutes = () => {
         <Route path="/current-weight" element={<CurrentWeightSelection />} />
         <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
         <Route path="/select-week" element={<WeekSelectionPage />} />
-        <Route path="/dieases" element={<WeeksToGoalSelectionPage />} />
+        <Route path="/height" element={<HeightSelector />} />
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
           <Route path="/doctors/all" element={<DoctorsPage />} />

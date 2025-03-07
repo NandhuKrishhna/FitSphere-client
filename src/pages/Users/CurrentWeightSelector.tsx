@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import ProgressBar from "@/components/App/ProgressBar";
 
 export default function WeightSelectionPage() {
   const [selectedWeight, setSelectedWeight] = useState(() => {
@@ -39,7 +40,7 @@ export default function WeightSelectionPage() {
   };
 
   const handleNextPage = () => {
-    navigate("/next-step");
+    navigate("/target-weight");
   };
 
   const handleWeightClick = (weight: number) => {
@@ -56,6 +57,7 @@ export default function WeightSelectionPage() {
 
   return (
     <div className="flex flex-col items-center justify-between h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900 text-white p-6">
+      <ProgressBar step={4} totalSteps={6} />
       <div className="flex-1 flex items-center justify-center flex-col w-full max-w-md">
         <h1 className="text-4xl font-bold mb-4 text-center">What's your current weight?</h1>
         <p className="mb-16">Scroll to select your weight (kg)</p>
@@ -89,7 +91,7 @@ export default function WeightSelectionPage() {
       <div className="w-full flex justify-between mt-8 mb-4 max-w-md">
         <button
           className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl"
-          onClick={() => navigate("/previous-step")}
+          onClick={() => navigate("/height")}
         >
           <ArrowLeft size={18} /> Back
         </button>

@@ -3,87 +3,88 @@ import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AgeSelector() {
-  const [selectedAge, setSelectedAge] = useState<number>(() => {
-    const storedAge = localStorage.getItem("selectedAge");
-    return storedAge ? parseInt(storedAge, 10) : 20;
+export default function HeightSelector() {
+  const [selectedHeight, setSelectedHeight] = useState<number>(() => {
+    const storedHeight = localStorage.getItem("selectedHeight");
+    return storedHeight ? parseInt(storedHeight, 10) : 170;
   });
-  const [visibleAges, setVisibleAges] = useState<number[]>([]);
+  const [visibleHeights, setVisibleHeights] = useState<number[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  useEffect(() => {
-    localStorage.setItem("selectedAge", selectedAge.toString());
-  }, [selectedAge]);
 
   useEffect(() => {
-    const newVisibleAges = [];
+    localStorage.setItem("selectedHeight", selectedHeight.toString());
+  }, [selectedHeight]);
+
+  useEffect(() => {
+    const newVisibleHeights = [];
     for (let i = -2; i <= 2; i++) {
-      const age = selectedAge + i;
-      if (age >= 15 && age <= 100) {
-        newVisibleAges.push(age);
+      const height = selectedHeight + i;
+      if (height >= 140 && height <= 220) {
+        newVisibleHeights.push(height);
       }
     }
-    setVisibleAges(newVisibleAges);
-  }, [selectedAge]);
+    setVisibleHeights(newVisibleHeights);
+  }, [selectedHeight]);
 
-  const handlePrevAge = () => {
-    if (selectedAge > 15) {
-      setSelectedAge(selectedAge - 1);
+  const handlePrevHeight = () => {
+    if (selectedHeight > 140) {
+      setSelectedHeight(selectedHeight - 1);
     }
   };
 
-  const handleNextAge = () => {
-    if (selectedAge < 100) {
-      setSelectedAge(selectedAge + 1);
+  const handleNextHeight = () => {
+    if (selectedHeight < 220) {
+      setSelectedHeight(selectedHeight + 1);
     }
   };
 
   const handleNextPage = () => {
-    if (selectedAge) {
-      navigate("/gender");
+    if (selectedHeight) {
+      navigate("/current-weight");
     }
   };
 
-  const handleAgeClick = (age: number) => {
-    setSelectedAge(age);
+  const handleHeightClick = (height: number) => {
+    setSelectedHeight(height);
   };
 
   const handleWheel = (e: React.WheelEvent) => {
     if (e.deltaY > 0) {
-      handleNextAge();
+      handleNextHeight();
     } else {
-      handlePrevAge();
+      handlePrevHeight();
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-between h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900 text-white p-6">
-      <ProgressBar step={1} totalSteps={6} />
+      <ProgressBar step={3} totalSteps={6} />
       <div className="flex-1 flex items-center justify-center flex-col w-full max-w-md">
-        <h1 className="text-4xl font-bold mb-4 text-center">whats your age?</h1>
-        <p className="mb-16">Scroll to select your age</p>
+        <h1 className="text-4xl font-bold mb-4 text-center">what's your height?</h1>
+        <p className="mb-16">Scroll to select your height in cm</p>
 
         <div
           ref={scrollContainerRef}
           className="relative flex flex-col items-center justify-center h-60 overflow-hidden"
           onWheel={handleWheel}
         >
-          {visibleAges.map((age) => (
+          {visibleHeights.map((height) => (
             <div
-              key={age}
-              onClick={() => handleAgeClick(age)}
+              key={height}
+              onClick={() => handleHeightClick(height)}
               className={`
                 transition-all duration-300 ease-in-out cursor-pointer text-center py-2 w-full
                 ${
-                  age === selectedAge
+                  height === selectedHeight
                     ? "text-4xl font-bold text-yellow-300"
-                    : Math.abs(age - selectedAge) === 1
+                    : Math.abs(height - selectedHeight) === 1
                     ? "text-2xl opacity-60"
                     : "text-xl opacity-40"
                 }
               `}
             >
-              {age}
+              {height} cm
             </div>
           ))}
         </div>
@@ -91,8 +92,8 @@ export default function AgeSelector() {
 
       <div className="w-full flex justify-between mt-8 mb-4 max-w-md">
         <button
-          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={true}
+          onClick={() => navigate("/gender")}
+          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -107,7 +108,7 @@ export default function AgeSelector() {
         <button
           onClick={handleNextPage}
           className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={selectedAge >= 100}
+          disabled={!selectedHeight}
         >
           Next
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

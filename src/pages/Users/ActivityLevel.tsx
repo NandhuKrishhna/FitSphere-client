@@ -1,68 +1,117 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import ProgressBar from "@/components/App/ProgressBar";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function ActivityLevelSelectionPage() {
-  const [activityLevel, setActivityLevel] = useState<string | null>(null);
+type ActivityLevel = "sedentary" | "light" | "moderate" | "active" | null;
+
+export default function ActivityLevelSelector() {
+  const [selectedActivity, setSelectedActivity] = useState<ActivityLevel>(() => {
+    const storedActivity = localStorage.getItem("selectedActivity");
+    return (storedActivity as ActivityLevel) || null;
+  });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const savedActivityLevel = localStorage.getItem("activityLevel");
-    if (savedActivityLevel) {
-      setActivityLevel(savedActivityLevel);
+    if (selectedActivity) {
+      localStorage.setItem("selectedActivity", selectedActivity);
     }
-  }, []);
+  }, [selectedActivity]);
 
-  const handleActivitySelect = (selectedLevel: string) => {
-    setActivityLevel(selectedLevel);
-    localStorage.setItem("activityLevel", selectedLevel);
+  const handleNextPage = () => {
+    if (selectedActivity) {
+      navigate("/goals");
+    }
   };
 
+  const handlePrevPage = () => {
+    navigate("/height");
+  };
+
+  const activityOptions = [
+    {
+      id: "sedentary",
+      title: "Sedentary",
+      description: "Little to no exercise, desk job",
+    },
+    {
+      id: "light",
+      title: "Light",
+      description: "Light exercise 1-3 times/week",
+    },
+    {
+      id: "moderate",
+      title: "Moderate",
+      description: "Moderate exercise 3-5 times/week",
+    },
+    {
+      id: "active",
+      title: "Active",
+      description: "Very active, exercise 6-7 times/week",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-950 to-black text-white flex flex-col">
-      <header className="p-6">
-        <h1 className="text-2xl font-bold italic">
-          FitSphere <span className="inline-block w-3 h-3 bg-cyan-400 rounded-full ml-1"></span>
-        </h1>
-      </header>
+    <div className="flex flex-col items-center justify-between h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900 text-white p-6">
+      <ProgressBar step={5} totalSteps={6} />
 
-      <ProgressBar step={2} totalSteps={7} />
+      <div className="flex-1 flex items-center justify-center flex-col w-full max-w-md">
+        <h1 className="text-4xl font-bold mb-4 text-center">what's your activity level?</h1>
+        <p className="mb-10">Select how active you are on a weekly basis</p>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h2 className="text-3xl font-medium mb-16 text-center">How active are you?</h2>
-          <div className="flex flex-col space-y-4 w-full max-w-md">
-            {["Little or No Activity", "Lightly Active", "Moderately Active", "Very Active"].map((level, index) => (
-              <button
-                key={index}
-                onClick={() => handleActivitySelect(level)}
-                className={`w-full py-4 rounded-lg flex items-center justify-center transition-all text-lg font-medium border-2 border-transparent ${
-                  activityLevel === level
-                    ? "bg-purple-700 border-purple-400"
-                    : "bg-white text-purple-900 hover:bg-gray-200"
-                }`}
+        <div className="grid grid-cols-1 gap-4 w-full">
+          {activityOptions.map((option) => (
+            <div
+              key={option.id}
+              onClick={() => setSelectedActivity(option.id as ActivityLevel)}
+              className={`
+                flex flex-col p-4 rounded-xl cursor-pointer transition-all duration-300
+                ${
+                  selectedActivity === option.id
+                    ? "bg-purple-600 shadow-lg border-2 border-yellow-300"
+                    : "bg-purple-800 hover:bg-purple-700 border-2 border-transparent"
+                }
+              `}
+            >
+              <span
+                className={`text-xl font-semibold ${selectedActivity === option.id ? "text-yellow-300" : "text-white"}`}
               >
-                {level}
-              </button>
-            ))}
-          </div>
-        </motion.div>
+                {option.title}
+              </span>
+              <span className="text-sm opacity-80 mt-1">{option.description}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Navigation */}
-      <div className="p-6 flex justify-between">
-        <button className="flex items-center justify-center px-6 py-3 rounded-full bg-purple-900 hover:bg-purple-800 transition-colors">
-          <ArrowLeft className="mr-2" size={18} />
+      <div className="w-full flex justify-between mt-8 mb-4 max-w-md">
+        <button
+          onClick={handlePrevPage}
+          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
           Back
         </button>
+
         <button
-          className={`flex items-center justify-center px-6 py-3 rounded-full transition-colors ${
-            !activityLevel ? "bg-purple-900/50 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-500"
-          }`}
-          disabled={!activityLevel}
+          onClick={handleNextPage}
+          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!selectedActivity}
         >
           Next
-          <ArrowRight className="ml-2" size={18} />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
       </div>
     </div>
