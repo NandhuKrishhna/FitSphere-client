@@ -33,10 +33,11 @@ export const chatApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    getUserFoodLogsDetails: builder.query({
-      query: () => ({
-        url: "/app/get-userFoodLogsDetails",
-        method: "GET",
+    getUserFoodLogsDetails: builder.mutation({
+      query: (data) => ({
+        url: "/app/get-foodlog",
+        method: "POST",
+        body: data,
       }),
     }),
   }),
@@ -47,4 +48,5 @@ export const {
   useGenerateRecipeMutation,
   useUserHealthDetailMutation,
   useGetUserHealthDetailsQuery,
+  useGetUserFoodLogsDetailsMutation,
 } = chatApi;
