@@ -1,9 +1,11 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useGetWalletQuery } from "../../redux/api/appApi";
-import Header from "../../components/Header";
 import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
 import WalletSkeleton from "@/components/skeleton/WalletSkeleton";
+import Header from "@/components/App/Header";
+import Navigation from "@/components/App/Navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 interface Transaction {
   _id: string;
   description: string;
@@ -36,11 +38,12 @@ export default function WalletPage() {
   const paginatedTransactions = transactions.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
-    <div className="min-h-screen bg-black ">
+    <div className="min-h-screen bg-[#121212] text-white">
       <Header />
+      <Navigation />
       <div className="max-w-3xl mt-10 mx-auto">
-        <div className="bg-zinc-800 shadow-xl rounded-lg overflow-hidden">
-          <div className="px-4 py-5 sm:p-6 bg-gradient-to-r from-indigo-700 to-indigo-900 text-white">
+        <div className="bg-zinc-800 shadow-xl lg:rounded-lg overflow-hidden">
+          <div className="px-4 py-5 sm:p-6 bg-purple-600 text-white">
             <h3 className="text-lg leading-6 font-medium">Your Wallet</h3>
             <div className="mt-2 text-3xl font-bold">
               {walletData?.response.currency} {balance.toFixed(2)}
@@ -75,7 +78,7 @@ export default function WalletPage() {
                   disabled={currentPage === 1}
                   className="px-3 py-2 rounded-l-md border border-zinc-600 bg-zinc-700 text-sm font-medium text-white hover:bg-zinc-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  <ChevronLeft />
                 </button>
                 <span className="px-3 py-2 border-t border-b border-zinc-600 bg-zinc-700 text-sm font-medium text-white">
                   Page {currentPage} of {pageCount}
@@ -85,7 +88,7 @@ export default function WalletPage() {
                   disabled={currentPage === pageCount}
                   className="px-3 py-2 rounded-r-md border border-zinc-600 bg-zinc-700 text-sm font-medium text-white hover:bg-zinc-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  <ChevronRight />
                 </button>
               </nav>
             </div>
