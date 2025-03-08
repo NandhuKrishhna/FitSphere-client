@@ -3,11 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import useSearchRecipesHook from "@/hooks/App/SearchRecipes";
 import RecipeCard from "@/components/App/RecipeCard";
-import Header from "@/components/Header";
 import { Skeleton } from "@/components/ui/skeleton";
 import useGetRecipesDetails from "@/hooks/App/getRecipesDetails";
 import { useState } from "react";
 import RecipeDetailsModal from "@/components/App/RecipeModal";
+import Navigation from "@/components/App/Navigation";
+import Header from "@/components/App/Header";
 
 export default function RecipesGeneratorPage() {
   const { isLoading, handleSearch, responseData, setSearchResults, searchResults } = useSearchRecipesHook();
@@ -20,8 +21,9 @@ export default function RecipesGeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
+    <div className="min-h-screen flex flex-col bg-[#121212] text-white">
       <Header />
+      <Navigation />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-4xl font-bold text-center mb-8 text-white">Recipe Generator</h1>
 
