@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+
 export function NoUserSelectedPlaceholder() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center text-zinc-400">
@@ -15,6 +16,7 @@ export function NoUserSelectedPlaceholder() {
         <MessageCircle className="w-16 h-16 text-zinc-500" />
       </motion.div>
       <p className="mt-4 text-lg">Select a user to start chatting!</p>
+      <p className="mt-2 text-sm text-zinc-500 hidden sm:block">Or continue browsing in the sidebar</p>
     </div>
   );
 }
