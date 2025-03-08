@@ -1,6 +1,6 @@
 import { apiSlice } from "./EntryApiSlice";
 
-export const chatApi = apiSlice.injectEndpoints({
+export const caloriesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     userHealthDetail: builder.mutation({
       query: (data) => ({
@@ -33,12 +33,13 @@ export const chatApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    getUserFoodLogsDetails: builder.mutation({
+    getUserFoodLogsDetails: builder.query({
       query: (data) => ({
         url: "/app/get-foodlog",
         method: "POST",
         body: data,
       }),
+      providesTags: ["foodlogs"],
     }),
 
     searchFood: builder.mutation({
@@ -48,6 +49,22 @@ export const chatApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    addFoodLog: builder.mutation({
+      query: (data) => ({
+        url: "/app/add-foodlog",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["foodlogs"],
+    }),
+    deleteFoodLog: builder.mutation({
+      query: (data) => ({
+        url: "/app/delete-food",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["foodlogs"],
+    }),
   }),
 });
 
@@ -56,6 +73,8 @@ export const {
   useGenerateRecipeMutation,
   useUserHealthDetailMutation,
   useGetUserHealthDetailsQuery,
-  useGetUserFoodLogsDetailsMutation,
+  useGetUserFoodLogsDetailsQuery,
   useSearchFoodMutation,
-} = chatApi;
+  useAddFoodLogMutation,
+  useDeleteFoodLogMutation,
+} = caloriesApi;
