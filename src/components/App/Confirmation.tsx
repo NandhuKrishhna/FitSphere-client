@@ -1,9 +1,13 @@
+"use client";
+
 import { useState, useMemo, useEffect } from "react";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
-import { Slot } from "./SlotCalender";
+import type { Slot } from "./SlotCalender";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 interface CalendarProps {
   name?: string;
   dept: string;
@@ -16,10 +20,10 @@ interface CalendarProps {
 }
 
 export default function ConsultationModal({ slots, name, dept, onSlotClick }: CalendarProps) {
-  console.log("Slots from DoctorDetail:", slots);
   const timeZone = "Asia/Kolkata";
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  const [visibleDatesStart, setVisibleDatesStart] = useState(0);
 
   const { datesArray, groupedSlots } = useMemo(() => {
     const groups: { [key: string]: Slot[] } = {};
@@ -43,6 +47,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
             isoDate,
             day: format(date, "EEE", { timeZone }),
             date: format(date, "d", { timeZone }),
+            month: format(date, "MMM", { timeZone }),
             slots: groups[isoDate].filter((s) => s.status === "available").length,
           };
         } catch (error) {
@@ -50,7 +55,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           return null;
         }
       })
-      .filter(Boolean) as { isoDate: string; day: string; date: string; slots: number }[];
+      .filter(Boolean) as { isoDate: string; day: string; date: string; month: string; slots: number }[];
 
     return {
       datesArray: dates,
@@ -76,11 +81,26 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
     onSlotClick(slot);
   };
 
+  const handlePrevDates = () => {
+    setVisibleDatesStart(Math.max(0, visibleDatesStart - 1));
+  };
+
+  const handleNextDates = () => {
+    if (visibleDatesStart + 4 < datesArray.length) {
+      setVisibleDatesStart(visibleDatesStart + 1);
+    }
+  };
+
+  // Calculate how many dates to show based on screen size
+  const visibleDatesCount = 4; // Default for mobile
+  const visibleDates = datesArray.slice(visibleDatesStart, visibleDatesStart + visibleDatesCount);
+  const hasMoreDates = visibleDatesStart + visibleDatesCount < datesArray.length;
+
   if (!slots) {
     return (
-      <Card className="w-full bg-white">
+      <Card className="w-full bg-white dark:bg-gray-800 dark:border-gray-700">
         <CardContent className="h-32 flex items-center justify-center">
-          <div className="text-gray-500">Loading slots...</div>
+          <div className="text-gray-500 dark:text-gray-400">Loading slots...</div>
         </CardContent>
       </Card>
     );
@@ -88,7 +108,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
   if (!slots.success) {
     return (
-      <Card className="w-full bg-white">
+      <Card className="w-full bg-white dark:bg-gray-800 dark:border-gray-700">
         <CardContent className="h-32 flex items-center justify-center">
           <div className="text-red-500">{slots.message || "Failed to load slots"}</div>
         </CardContent>
@@ -97,7 +117,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
   }
 
   return (
-    <Card className="w-full md:w-[440px] bg-white">
+    <Card className="w-full bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
       <CardHeader className="pb-2 md:pb-4">
         <div className="flex justify-between items-center">
           <CardTitle className="text-base md:text-lg font-medium">
@@ -109,36 +129,57 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-2 overflow-x-auto pb-4 -mx-1 px-1">
-          {datesArray.map((date) => (
-            <button
-              key={date.isoDate}
-              onClick={() => setSelectedDate(date.isoDate)}
-              className={`flex-shrink-0 w-[60px] md:w-[72px] p-2 md:p-3 rounded-lg border ${
-                selectedDate === date.isoDate
-                  ? "border-purple-500 bg-purple-50"
-                  : "border-gray-200 hover:border-purple-500"
-              }`}
-            >
-              <div className="text-xs md:text-sm text-purple-600">{date.day}</div>
-              <div className="text-lg md:text-xl font-semibold mt-1">{date.date}</div>
-              {date.slots > 0 ? (
-                <div className="text-xs mt-1">
-                  <span
-                    className={`inline-block w-2 h-2 rounded-full ${
-                      date.slots > 5 ? "bg-green-500" : "bg-yellow-500"
-                    } mr-1`}
-                  />
-                  {date.slots} slots
-                </div>
-              ) : (
-                <div className="text-xs mt-1 text-red-500">No slots</div>
-              )}
-            </button>
-          ))}
+        <div className="flex items-center">
+          <button
+            onClick={handlePrevDates}
+            disabled={visibleDatesStart === 0}
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <div className="flex-1 overflow-hidden">
+            <div className="flex gap-2 justify-between px-1">
+              {visibleDates.map((date) => (
+                <button
+                  key={date.isoDate}
+                  onClick={() => setSelectedDate(date.isoDate)}
+                  className={`flex-1 min-w-0 p-2 md:p-3 rounded-lg border ${
+                    selectedDate === date.isoDate
+                      ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-700"
+                      : "border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-700"
+                  }`}
+                >
+                  <div className="text-xs md:text-sm text-purple-600 dark:text-purple-400">{date.day}</div>
+                  <div className="text-lg md:text-xl font-semibold mt-1">{date.date}</div>
+                  <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{date.month}</div>
+                  {date.slots > 0 ? (
+                    <div className="text-xs mt-1 flex items-center justify-center">
+                      <span
+                        className={`inline-block w-2 h-2 rounded-full ${
+                          date.slots > 5 ? "bg-green-500" : "bg-yellow-500"
+                        } mr-1`}
+                      />
+                      <span className="truncate">{date.slots} slots</span>
+                    </div>
+                  ) : (
+                    <div className="text-xs mt-1 text-red-500">No slots</div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleNextDates}
+            disabled={!hasMoreDates}
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Select defaultValue="indian">
@@ -150,10 +191,10 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 </SelectContent>
               </Select>
             </div>
-            <div className="text-xs md:text-sm text-gray-500">30 min meeting</div>
+            <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">30 min meeting</div>
           </div>
 
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-4">
             {filteredSlots.map((slot) => {
               const startUtc = toZonedTime(new Date(slot.startTime), "UTC");
               const endUtc = toZonedTime(new Date(slot.endTime), "UTC");
@@ -168,8 +209,8 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                   variant="outline"
                   className={`justify-start font-normal text-xs md:text-sm ${
                     selectedSlotId === slot._id
-                      ? "bg-purple-500 text-white hover:bg-purple-600"
-                      : "bg-purple-50/50 hover:bg-purple-100"
+                      ? "bg-purple-500 text-white hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-800"
+                      : "bg-purple-50/50 hover:bg-purple-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
                   }`}
                   onClick={() => handleSlotClick(slot)}
                 >
@@ -180,7 +221,9 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           </div>
 
           {filteredSlots.length === 0 && selectedDate && (
-            <div className="text-center text-gray-500 mt-4 text-sm">No available slots for this date</div>
+            <div className="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">
+              No available slots for this date
+            </div>
           )}
         </div>
       </CardContent>
