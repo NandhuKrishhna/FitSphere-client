@@ -105,11 +105,12 @@ export const useDoctorDetails = () => {
         console.log("Payment failed event triggered", response);
         toast.error(`Payment failed: ${response.error.description || "Please try again later"}`);
 
-        if (rzp) {
-          rzp.close();
-        }
-        await handlePaymentFailure(order.id);
-        navigate("/appointments");
+        // **Automatically close the modal**
+        rzp.close();
+        setTimeout(async () => {
+          await handlePaymentFailure(order.id);
+          navigate("/appointments");
+        }, 500);
       });
 
       rzp.open();
