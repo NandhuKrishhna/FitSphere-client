@@ -1,6 +1,5 @@
 import React from "react";
 import { Video, Calendar, Clock, Info, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Search } from "lucide-react";
-import Header from "../../components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppointmentListProps } from "@/utils/Appointment";
@@ -11,6 +10,8 @@ import { useAppointmentData } from "@/hooks/App/useAppointmentData";
 import { useAppointmentActions } from "@/hooks/App/useAppointmentActions";
 import Dropdown from "../../components/Doctor/DrpDown";
 import AppointmentDetailsDialog from "../../components/App/AppointmentDetailDialog";
+import Navigation from "@/components/App/Navigation";
+import Header from "@/components/App/Header";
 const AppointmentPage: React.FC<AppointmentListProps> = () => {
   const {
     isLoading,
@@ -38,8 +39,9 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
+    <div className="min-h-screen bg-[#121212] text-white">
       <Header />
+      <Navigation />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="p-6 bg-indigo-300">
