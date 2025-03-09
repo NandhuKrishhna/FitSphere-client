@@ -50,7 +50,6 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
               <Video className="w-6 h-6 text-blue-600" />
             </div>
 
-            {/* Filters and Search */}
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="flex-1">
                 <div className="relative">
@@ -91,7 +90,6 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
               </div>
             </div>
 
-            {/* Sorting Headers */}
             <div className="hidden md:grid grid-cols-12 bg-violet-300 p-4 rounded-t-lg font-medium text-gray-700 mb-2">
               <div className="col-span-4">
                 <button onClick={() => handleSort("doctor")} className="flex items-center gap-1 hover:text-blue-600">
@@ -108,7 +106,7 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
                   onClick={() => handleSort("consultationType")}
                   className="flex items-center gap-1 hover:text-blue-600"
                 >
-                  Type {renderSortIcon("consultationType")}
+                  PaymentStatus {renderSortIcon("paymentStatus")}
                 </button>
               </div>
               <div className="col-span-1">
@@ -139,7 +137,6 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
                     className="bg-indigo-200 p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                      {/* Doctor Info */}
                       <div className="md:col-span-4">
                         <div className="flex items-center space-x-3">
                           <img
@@ -168,17 +165,24 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
 
                       <div className="md:col-span-2">
                         <div className="flex items-center">
-                          <Video className="w-4 h-4 mr-2 text-blue-500" />
-                          <span className="text-sm text-gray-700 capitalize">{appointment.consultationType}</span>
+                          <span
+                            className={`px-2 py-1 text-xs font-semibold rounded-lg w-24 text-center 
+                                  ${
+                                    appointment.paymentStatus === "pending"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : appointment.paymentStatus === "completed"
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-red-100 text-red-800"
+                                  }`}
+                          >
+                            {appointment.paymentStatus}
+                          </span>
                         </div>
                       </div>
 
-                      {/* Amount */}
                       <div className="md:col-span-1">
                         <span className="font-medium">₹{appointment.amount}</span>
                       </div>
-
-                      {/* Status */}
                       <div className="md:col-span-1 flex justify-center">
                         <span
                           className={`px-3 py-1.5 rounded-full text-xs font-medium ${
@@ -192,8 +196,6 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
                           {appointment.status}
                         </span>
                       </div>
-
-                      {/* Actions */}
                       <div className="md:col-span-1 flex justify-end md:justify-center">
                         <div className="flex items-center space-x-1">
                           <button
@@ -210,8 +212,6 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
                 ))}
               </div>
             )}
-
-            {/* Pagination */}
             {processedAppointments.length > 0 && (
               <div className="flex items-center justify-between mt-6">
                 <div className="text-sm text-gray-600">
@@ -244,7 +244,6 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
           </div>
         </div>
       </div>
-
       <AppointmentDetailsDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -256,5 +255,5 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
     </div>
   );
 };
-
+//TODO retry payment.
 export default AppointmentPage;
