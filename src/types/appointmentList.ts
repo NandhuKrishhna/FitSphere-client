@@ -19,4 +19,5 @@ export interface Appointment {
   orderId: string;
   paymentMethod: string;
   paymentThrough: string;
+  paymentStatus?: "pending" | "completed" | "failed";
 }
