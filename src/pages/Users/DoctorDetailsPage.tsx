@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import ConsultationModal from "../../components/App/Confirmation";
 import { type MenuItem, menuItems } from "@/utils/UserDoctorDetails";

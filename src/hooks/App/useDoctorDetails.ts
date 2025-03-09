@@ -3,6 +3,7 @@ import {
   useBookSlotsMutation,
   useDoctorDetailsQuery,
   useGetAllSlotDetailsQuery,
+  useHandleFailedPaymentMutation,
   useVerifyPaymentMutation,
 } from "../../redux/api/appApi";
 import { useSelector } from "react-redux";
@@ -25,7 +26,7 @@ export const useDoctorDetails = () => {
   const { data } = useDoctorDetailsQuery({ doctorId });
   const { data: slots } = useGetAllSlotDetailsQuery({ doctorId });
   const [verifyPayment] = useVerifyPaymentMutation();
-
+  const [handleFailedPayment] = useHandleFailedPaymentMutation();
   const doctorDetails = data?.doctorDetails;
   const selectedDoctorForChat = {
     doctorDetails: {
@@ -34,7 +35,22 @@ export const useDoctorDetails = () => {
       _id: doctorDetails?._id || "",
     },
   };
+  const handlePaymentFailure = async (orderId: string) => {
+    if (!orderId) {
+      console.log("Order ID is missing. Cannot record payment failure.");
+      return;
+    }
 
+    try {
+      await handleFailedPayment({ orderId: orderId }).unwrap();
+      console.log("Payment failure recorded successfully");
+    } catch (error) {
+      console.error("Failed to record payment failure:", error);
+      const err = error as ErrorResponse;
+      if (err.data.message) return toast.error(err.data.message);
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  };
   const handleSlotClick = (slot: Slot) => {
     setSelectedSlot(slot);
   };
@@ -64,6 +80,7 @@ export const useDoctorDetails = () => {
         } catch (error) {
           console.log(error);
           toast.error("Payment verification failed");
+          await handlePaymentFailure(order.id);
         }
       },
       prefill: {
@@ -72,12 +89,27 @@ export const useDoctorDetails = () => {
         contact: `${user?.email}`,
       },
       theme: { color: "#3399cc" },
+      modal: {
+        ondismiss: async () => {
+          console.log("User canceled the payment. Order ID:", order.id);
+          toast.error("Payment was canceled.");
+          await handlePaymentFailure(order.id);
+          navigate("/appointments");
+        },
+      },
     };
 
     try {
       const rzp = new (window as any).Razorpay(options);
-      rzp.on("payment.failed", (response: RazorpayErrorResponse) => {
-        toast.error(`Payment failed: ${response.error.description}`);
+      rzp.on("payment.failed", async (response: RazorpayErrorResponse) => {
+        console.log("Payment failed event triggered", response);
+        toast.error(`Payment failed: ${response.error.description || "Please try again later"}`);
+
+        if (rzp) {
+          rzp.close();
+        }
+        await handlePaymentFailure(order.id);
+        navigate("/appointments");
       });
 
       rzp.open();
