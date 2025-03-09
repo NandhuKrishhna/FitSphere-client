@@ -22,7 +22,12 @@ interface DropdownProps {
   handleNavigate?: () => void;
 }
 
-export default function Header() {
+type Props = {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export default function Header({ value, onChange }: Props) {
   const navigate = useNavigate();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -60,6 +65,8 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <input
           type="text"
+          value={value}
+          onChange={onChange}
           placeholder="Search"
           className="w-full sm:w-48 sm:pl-4 left-2 py-1 pl-1 text-sm rounded-md bg-[#2a2a40] text-white border border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 "
         />
