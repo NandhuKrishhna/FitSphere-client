@@ -8,6 +8,7 @@ interface AppointmentDetailsDialogProps {
   onClose: () => void;
   appointment: Appointment | null;
   onCancel: (appointmentId: string) => void;
+  onRetryPayment?: (appointmentId: string) => void; // Function to handle payment retry
   formatDate: (dateString: string) => string;
   formatToIndianTime: (dateString: string) => string;
 }
@@ -17,6 +18,7 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
   onClose,
   appointment,
   onCancel,
+  // onRetryPayment,
   formatDate,
   formatToIndianTime,
 }) => {
@@ -40,13 +42,14 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
             <div>
               <h3 className="font-semibold text-xl">{appointment.doctor.name}</h3>
               <span
-                className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-medium ${
-                  appointment.status === "scheduled"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : appointment.status === "cancelled"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-green-100 text-green-800"
-                }`}
+                className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-medium w-24 text-center
+                  ${
+                    appointment.status === "scheduled"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : appointment.status === "cancelled"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-green-100 text-green-800"
+                  }`}
               >
                 {appointment.status}
               </span>
@@ -76,6 +79,23 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
             </p>
           </div>
 
+          {/* Payment Status Badge */}
+          <div className="py-2 border-t">
+            <p className="text-sm text-gray-500 mb-1">Payment Status</p>
+            <span
+              className={`inline-block px-3 py-1 rounded-full text-xs font-medium w-24 text-center
+                ${
+                  appointment.paymentStatus === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : appointment.paymentStatus === "completed"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+            >
+              {appointment.paymentStatus}
+            </span>
+          </div>
+
           {/* Payment Details */}
           <div className="py-2 border-t">
             <p className="text-sm text-gray-500 mb-1">Payment Details</p>
@@ -98,16 +118,10 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Appointment ID */}
-          <div className="py-2 border-t">
-            <p className="text-sm text-gray-500 mb-1">Appointment ID</p>
-            <p className="font-medium text-xs">{appointment._id}</p>
-          </div>
-
-          {/* Cancel Button */}
-          {appointment.status === "scheduled" && (
-            <div className="pt-4 border-t flex justify-end ">
+          {/* Buttons */}
+          <div className="pt-4 border-t flex justify-between">
+            {/* Cancel Button */}
+            {appointment.status === "scheduled" && appointment.paymentStatus !== "failed" && (
               <Button
                 className="bg-red-300"
                 variant="destructive"
@@ -119,8 +133,20 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
               >
                 Cancel Appointment
               </Button>
-            </div>
-          )}
+            )}
+            {appointment.paymentStatus === "failed" && (
+              <Button
+                className="bg-green-500 hover:bg-green-600 text-white"
+                size="sm"
+                // onClick={() => {
+                //   onRetryPayment(appointment._id);
+                //   onClose();
+                // }}
+              >
+                Pay Again
+              </Button>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
