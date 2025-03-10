@@ -54,7 +54,6 @@ const DoctorDetailsPage = () => {
       <Header />
       <Navigation />
       <div className="container mx-auto px-4 sm:px-6 mt-11 pb-10">
-        {/* Doctor Profile Section */}
         <div className="flex flex-col md:flex-row md:items-start gap-6 mb-8">
           <div className="relative mx-auto md:mx-0">
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden bg-gradient-to-br from-purple-900/30 to-indigo-900/30">
@@ -78,7 +77,6 @@ const DoctorDetailsPage = () => {
               <span>{doctorDetails?.details?.experience}+ Years Experience</span>
             </div>
 
-            {/* Mobile Contact Info */}
             <div className="md:hidden mt-4 space-y-2">
               <div className="flex items-center justify-center space-x-2 text-gray-300">
                 <Phone size={16} className="text-purple-400" />
@@ -91,7 +89,6 @@ const DoctorDetailsPage = () => {
             </div>
           </div>
 
-          {/* Consultation Booking - Desktop */}
           <div className="hidden md:block md:w-[440px] shrink-0">
             <ConsultationModal
               slots={slots || []}
@@ -108,8 +105,6 @@ const DoctorDetailsPage = () => {
             </button>
           </div>
         </div>
-
-        {/* Communication Options */}
         <div className="flex justify-center md:justify-start gap-4 mb-8">
           {["Chat", "Video", "Audio"].map((option) => (
             <button
@@ -122,7 +117,6 @@ const DoctorDetailsPage = () => {
           ))}
         </div>
 
-        {/* Mobile Booking Button */}
         <div className="md:hidden mb-8">
           <ConsultationModal
             slots={slots || []}
@@ -139,7 +133,6 @@ const DoctorDetailsPage = () => {
           </button>
         </div>
 
-        {/* Mobile Menu Toggle */}
         <div className="md:hidden mb-4">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -169,9 +162,7 @@ const DoctorDetailsPage = () => {
           )}
         </div>
 
-        {/* Content Section */}
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Desktop Menu */}
           <div className="hidden md:block w-64 space-y-2">
             {menuItems.map((item: MenuItem) => (
               <button
@@ -186,10 +177,8 @@ const DoctorDetailsPage = () => {
             ))}
           </div>
 
-          {/* Main Content */}
           <div className="flex-1 bg-gray-800/50 rounded-lg p-6">{getContent()}</div>
 
-          {/* Desktop Contact Info */}
           <div className="hidden md:block w-64">
             <div className="bg-gray-800/30 rounded-lg p-6">
               <h2 className="text-white text-lg font-medium mb-4">Contact Information</h2>
