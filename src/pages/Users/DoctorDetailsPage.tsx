@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ConsultationModal from "../../components/App/Confirmation";
-
 import { type MenuItem, menuItems } from "@/utils/UserDoctorDetails";
 import { handleOptionClick } from "@/utils/DoctorDetailsPageUtils";
 import { useNavigate } from "react-router-dom";
@@ -8,9 +7,25 @@ import { useDoctorDetails } from "@/hooks/App/useDoctorDetails";
 import { useDispatch } from "react-redux";
 import Header from "@/components/App/Header";
 import Navigation from "@/components/App/Navigation";
-import { BadgeCheck, Calendar, Mail, Phone, ChevronDown } from "lucide-react";
+import { BadgeCheck, Calendar, Mail, Phone, ChevronDown, Star } from "lucide-react";
 import PaymentOptionsModal from "@/components/App/PaymentOptions";
 import WalletPaymentSuccessModal from "@/components/App/WalletPaymentSuccessModal";
+import { useGetReviewsQuery } from "@/redux/api/appApi";
+
+// Add Reviews type
+type Review = {
+  _id: string;
+  userId: string;
+  doctorId: string;
+  rating: number;
+  reviewText: string;
+  createdAt: string;
+  userDetails?: {
+    _id: string;
+    name: string;
+    profilePicture: string;
+  };
+};
 
 const DoctorDetailsPage: React.FC = () => {
   const {
@@ -31,6 +46,12 @@ const DoctorDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+  const { data: reviewsData } = useGetReviewsQuery({ doctorId: doctorDetails?._id });
+
+  // Extract review data - add safe fallbacks
+  const reviews = reviewsData?.response?.reviews || [];
+  const averageRating = reviewsData?.response?.averageRating || 0;
+  const totalReviews = reviewsData?.response?.totalReviews || 0;
 
   const handleBookSlot = (): void => {
     setIsPaymentModalOpen(true);
@@ -44,6 +65,27 @@ const DoctorDetailsPage: React.FC = () => {
   const handleRazorpayPayment = (): void => {
     setIsPaymentModalOpen(false);
     originalHandleBookSlot();
+  };
+
+  // Render stars based on rating
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            size={16}
+            className={
+              star <= Math.floor(rating)
+                ? "fill-yellow-400 text-yellow-400"
+                : star === Math.ceil(rating) && rating % 1 >= 0.5
+                ? "fill-yellow-400 text-yellow-400"
+                : "fill-gray-600 text-gray-600"
+            }
+          />
+        ))}
+      </div>
+    );
   };
 
   if (!doctorDetails)
@@ -67,6 +109,38 @@ const DoctorDetailsPage: React.FC = () => {
             <p>Consultation Fee: ${consultationFee}</p>
             <p>Languages: {doctorDetails?.details?.consultationLanguages}</p>
           </>
+        );
+      case "reviews":
+        return (
+          <div className="space-y-6">
+            {reviews.length > 0 ? (
+              reviews.map((review: Review) => (
+                <div key={review._id} className="bg-gray-800/50 rounded-lg p-4">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-700">
+                      <img
+                        src={review.userDetails?.profilePicture || "/placeholder.svg"}
+                        alt={review.userDetails?.name || "User"}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium">{review.userDetails?.name || "Anonymous User"}</p>
+                      <div className="flex items-center">
+                        {renderStars(review.rating || 0)}
+                        <span className="text-xs text-gray-400 ml-2">
+                          {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "Unknown date"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-300">{review.reviewText || "No review text provided."}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400">No reviews available.</p>
+            )}
+          </div>
         );
       default:
         return <p>Content for {activeSection} section</p>;
@@ -99,6 +173,14 @@ const DoctorDetailsPage: React.FC = () => {
             <div className="flex items-center justify-center md:justify-start space-x-2 mt-2 text-gray-400">
               <Calendar size={16} className="text-purple-400" />
               <span>{doctorDetails?.details?.experience}+ Years Experience</span>
+            </div>
+
+            {/* Add average rating display */}
+            <div className="flex items-center justify-center md:justify-start mt-2 space-x-2">
+              {renderStars(averageRating)}
+              <span className="text-gray-300 text-sm">
+                {averageRating.toFixed(1)} ({totalReviews} {totalReviews === 1 ? "review" : "reviews"})
+              </span>
             </div>
 
             <div className="md:hidden mt-4 space-y-2">
