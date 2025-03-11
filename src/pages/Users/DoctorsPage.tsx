@@ -53,7 +53,6 @@ const DoctorsPage = () => {
       )}
 
       <div className="container mx-auto px-4 py-8 mt-14">
-        {/* Mobile Filter Button */}
         <div className="md:hidden flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Doctors</h1>
           <Button
@@ -67,7 +66,6 @@ const DoctorsPage = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Desktop Filter Sidebar */}
           <div className="hidden md:block md:w-64 shrink-0">
             <div className="sticky top-24 bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-800">
               <h2 className="text-xl font-bold mb-4">Filters</h2>
@@ -75,7 +73,6 @@ const DoctorsPage = () => {
             </div>
           </div>
 
-          {/* Main Content */}
           <div className="flex-1">
             {isLoading && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
