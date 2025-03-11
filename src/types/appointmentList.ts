@@ -14,10 +14,11 @@ export interface Appointment {
   date: string;
   doctor: Doctor;
   status: "scheduled" | "completed" | "cancelled";
-  slots: Slots;
+  slot: Slots;
   amount: number;
   orderId: string;
   paymentMethod: string;
   paymentThrough: string;
   paymentStatus?: "pending" | "completed" | "failed";
+  meetingId?: string;
 }
