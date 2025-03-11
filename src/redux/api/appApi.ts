@@ -96,6 +96,14 @@ export const appApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["appointments", "slots"],
     }),
+    walletPayment: builder.mutation({
+      query: (data) => ({
+        url: "/app/wallet-payment",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["appointments", "wallet"],
+    }),
   }),
 });
 
@@ -110,4 +118,5 @@ export const {
   useCancelAppointmentMutation,
   useGetWalletQuery,
   useHandleFailedPaymentMutation,
+  useWalletPaymentMutation,
 } = appApi;
