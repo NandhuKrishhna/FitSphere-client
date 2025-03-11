@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import ConsultationModal from "../../components/App/Confirmation";
+
 import { type MenuItem, menuItems } from "@/utils/UserDoctorDetails";
 import { handleOptionClick } from "@/utils/DoctorDetailsPageUtils";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +9,10 @@ import { useDispatch } from "react-redux";
 import Header from "@/components/App/Header";
 import Navigation from "@/components/App/Navigation";
 import { BadgeCheck, Calendar, Mail, Phone, ChevronDown } from "lucide-react";
+import PaymentOptionsModal from "@/components/App/PaymentOptions";
+import WalletPaymentSuccessModal from "@/components/App/WalletPaymentSuccessModal";
 
-const DoctorDetailsPage = () => {
+const DoctorDetailsPage: React.FC = () => {
   const {
     doctorDetails,
     slots,
@@ -17,12 +20,31 @@ const DoctorDetailsPage = () => {
     activeSection,
     setActiveSection,
     handleSlotClick,
-    handleBookSlot,
+    handleBookSlot: originalHandleBookSlot,
     isBookLoading,
+    handleWalletPayment: originalHandleWalletPayment,
+    isWalletLoading,
+    isWalletSuccessModalOpen,
+    handleSuccessModalClose,
   } = useDoctorDetails();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+
+  const handleBookSlot = (): void => {
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleWalletPayment = (): void => {
+    console.log("Payment with wallet selected");
+    originalHandleWalletPayment();
+    setIsPaymentModalOpen(false);
+  };
+  const handleRazorpayPayment = (): void => {
+    setIsPaymentModalOpen(false);
+    originalHandleBookSlot();
+  };
 
   if (!doctorDetails)
     return (
@@ -31,7 +53,9 @@ const DoctorDetailsPage = () => {
       </div>
     );
 
-  const getContent = () => {
+  const consultationFee = doctorDetails?.details?.consultationFees || 0;
+
+  const getContent = (): React.ReactNode => {
     switch (activeSection) {
       case "about":
         return <p>{doctorDetails?.details?.bio || "No bio available."}</p>;
@@ -40,7 +64,7 @@ const DoctorDetailsPage = () => {
       case "consultation":
         return (
           <>
-            <p>Consultation Fee: ${doctorDetails?.details?.consultationFees}</p>
+            <p>Consultation Fee: ${consultationFee}</p>
             <p>Languages: {doctorDetails?.details?.consultationLanguages}</p>
           </>
         );
@@ -101,7 +125,11 @@ const DoctorDetailsPage = () => {
               disabled={isBookLoading}
               className="w-full mt-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-colors disabled:opacity-70"
             >
-              {isBookLoading ? <span className="loading loading-spinner loading-sm"></span> : "Book Appointment"}
+              {isBookLoading || isWalletLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                "Book Appointment"
+              )}
             </button>
           </div>
         </div>
@@ -204,6 +232,20 @@ const DoctorDetailsPage = () => {
           </div>
         </div>
       </div>
+
+      <PaymentOptionsModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onSelectWallet={handleWalletPayment}
+        onSelectRazorpay={handleRazorpayPayment}
+        amount={consultationFee}
+      />
+      <WalletPaymentSuccessModal
+        isOpen={isWalletSuccessModalOpen}
+        onClose={handleSuccessModalClose}
+        doctorName={doctorDetails?.name || ""}
+        amount={doctorDetails?.details?.consultationFees || 0}
+      />
     </div>
   );
 };
