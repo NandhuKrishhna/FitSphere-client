@@ -157,8 +157,8 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
                           </div>
                           <div className="flex items-center text-gray-600 text-sm">
                             <Clock className="w-4 h-4 mr-2 text-blue-500" />
-                            {formatToIndianTime(appointment?.slots.startTime)} -{" "}
-                            {formatToIndianTime(appointment?.slots.endTime)}
+                            {formatToIndianTime(appointment?.slot?.startTime)} -{" "}
+                            {formatToIndianTime(appointment?.slot?.endTime)}
                           </div>
                         </div>
                       </div>
