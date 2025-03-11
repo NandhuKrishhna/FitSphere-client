@@ -2,17 +2,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Video } from "lucide-react";
 import { Appointment } from "@/types/appointmentList";
+import useHandleJoinMeeting from "@/hooks/App/useJoinMeeting";
 
 interface AppointmentDetailsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   appointment: Appointment | null;
   onCancel: (appointmentId: string) => void;
-  onRetryPayment?: (appointmentId: string) => void; // Function to handle payment retry
+  onRetryPayment?: (appointmentId: string) => void;
   formatDate: (dateString: string) => string;
   formatToIndianTime: (dateString: string) => string;
 }
-
 const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
   isOpen,
   onClose,
@@ -22,6 +22,7 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
   formatDate,
   formatToIndianTime,
 }) => {
+  const { isJoiningMeeting, handleJoinMeet } = useHandleJoinMeeting();
   if (!appointment) return null;
 
   return (
@@ -31,8 +32,21 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
           <DialogTitle>Appointment Details</DialogTitle>
         </DialogHeader>
 
+        {appointment.status === "scheduled" && (
+          <div className="absolute top-12 right-4">
+            <Button
+              size="sm"
+              className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-1"
+              onClick={() => handleJoinMeet(appointment.meetingId!)}
+              disabled={isJoiningMeeting}
+            >
+              <Video className="w-4 h-4" />
+              Join Meeting
+            </Button>
+          </div>
+        )}
+
         <div className="space-y-4">
-          {/* Doctor Info */}
           <div className="flex items-center gap-4 pb-4 border-b">
             <img
               src={appointment.doctor.profilePicture || "/placeholder.svg"}
@@ -56,7 +70,6 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
             </div>
           </div>
 
-          {/* Date & Time */}
           <div className="grid grid-cols-2 gap-4 py-2">
             <div>
               <p className="text-sm text-gray-500">Date</p>
@@ -65,12 +78,11 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
             <div>
               <p className="text-sm text-gray-500">Time</p>
               <p className="font-medium">
-                {formatToIndianTime(appointment.slots.startTime)} - {formatToIndianTime(appointment.slots.endTime)}
+                {formatToIndianTime(appointment.slot.startTime)} - {formatToIndianTime(appointment.slot.endTime)}
               </p>
             </div>
           </div>
 
-          {/* Consultation Type */}
           <div className="py-2 border-t">
             <p className="text-sm text-gray-500 mb-1">Consultation Type</p>
             <p className="font-medium flex items-center">
@@ -79,7 +91,6 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
             </p>
           </div>
 
-          {/* Payment Status Badge */}
           <div className="py-2 border-t">
             <p className="text-sm text-gray-500 mb-1">Payment Status</p>
             <span
@@ -96,7 +107,6 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
             </span>
           </div>
 
-          {/* Payment Details */}
           <div className="py-2 border-t">
             <p className="text-sm text-gray-500 mb-1">Payment Details</p>
             <div className="grid grid-cols-2 gap-4">
@@ -118,9 +128,8 @@ const AppointmentDetailsDialog: React.FC<AppointmentDetailsDialogProps> = ({
               </div>
             </div>
           </div>
-          {/* Buttons */}
+
           <div className="pt-4 border-t flex justify-between">
-            {/* Cancel Button */}
             {appointment.status === "scheduled" && appointment.paymentStatus !== "failed" && (
               <Button
                 className="bg-red-300"
