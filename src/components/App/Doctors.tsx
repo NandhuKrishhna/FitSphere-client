@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { setSelectedDoctorId } from "../../redux/slice/appFeatSlice";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useGetAllRatingsQuery } from "@/redux/api/appApi";
 
 type DoctorCardProps = {
   name: string;
@@ -12,9 +13,22 @@ type DoctorCardProps = {
   id: string;
 };
 
+type Rating = {
+  doctorId: string;
+  averageRating: number;
+  totalReviews: number;
+};
+
 const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorCardProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { data: ratingsData } = useGetAllRatingsQuery({});
+
+  // Find rating for this specific doctor
+  const doctorRating = ratingsData?.response?.find((rating: Rating) => rating.doctorId === id);
+
+  // Extract average rating or default to 0 if not found
+  const averageRating = doctorRating?.averageRating || 0;
 
   const handleCardClick = () => {
     dispatch(setSelectedDoctorId(id));
@@ -52,9 +66,29 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
           </div>
 
           <div className="flex items-center justify-center space-x-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} size={14} className="fill-yellow-400 text-yellow-400" />
-            ))}
+            {[1, 2, 3, 4, 5].map((star) => {
+              const filled = star <= Math.floor(averageRating);
+              const halfFilled = !filled && star === Math.ceil(averageRating) && averageRating % 1 >= 0.5;
+
+              return (
+                <Star
+                  key={star}
+                  size={14}
+                  className={`
+                    ${
+                      filled
+                        ? "fill-yellow-400 text-yellow-400"
+                        : halfFilled
+                        ? "fill-yellow-400 text-yellow-400 fill-half"
+                        : "fill-gray-600 text-gray-600"
+                    }
+                  `}
+                />
+              );
+            })}
+            {doctorRating?.totalReviews > 0 && (
+              <span className="text-xs text-gray-400 ml-1">({doctorRating.totalReviews})</span>
+            )}
           </div>
 
           <div className="bg-purple-500/20 rounded-full px-3 py-1 inline-block">
