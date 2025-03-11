@@ -31,3 +31,21 @@ export type DoctorDetails = {
     consultationLanguages?: string;
   };
 };
+export type Slot = {
+  _id: string;
+  doctorId: string;
+  patientId?: string;
+  consultationType: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SlotsResponse = {
+  slots: Slot[];
+  success: boolean;
+  message: string;
+};
