@@ -1,11 +1,13 @@
 import React from "react";
 import ConsultationModal from "../App/Confirmation";
+import { SlotsResponse } from "@/types/DoctorDetail";
+import { Slot } from "./SlotCalender";
 
 type AppointmentSectionProps = {
-  slots: Array<any>;
+  slots: SlotsResponse;
   doctorName: string;
   specialty?: string;
-  handleSlotClick: (slot: any) => void;
+  handleSlotClick: (slot: Slot) => void;
   handleBookSlot: () => void;
   isLoading: boolean;
 };
@@ -18,9 +20,10 @@ const AppointmentSection: React.FC<AppointmentSectionProps> = ({
   handleBookSlot,
   isLoading,
 }) => {
+  console.log("Slots Data", slots);
   return (
     <>
-      <ConsultationModal slots={slots} onSlotClick={handleSlotClick} name={doctorName} dept={specialty} />
+      <ConsultationModal slots={slots || []} onSlotClick={handleSlotClick} name={doctorName} dept={specialty} />
       <button
         onClick={handleBookSlot}
         disabled={isLoading}
