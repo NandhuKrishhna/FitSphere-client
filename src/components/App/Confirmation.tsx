@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CalendarProps {
   name?: string;
-  dept: string;
+  dept?: string;
   slots?: {
     success: boolean;
     message: string;
