@@ -67,6 +67,7 @@ export const apiSlice = createApi({
     "chats",
     "foodlogs",
     "reviews",
+    "ratings",
   ],
   endpoints: () => ({}),
 });
