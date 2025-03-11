@@ -2,10 +2,14 @@ import { apiSlice } from "./EntryApiSlice";
 
 export const webrtcApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getMeetingDetails: builder.query({
-      query: (meetingId) => `/meeting/${meetingId}`,
+    joinMeeting: builder.mutation({
+      query: (data) => ({
+        url: "/meeting",
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });
 
-export const { useGetMeetingDetailsQuery } = webrtcApi;
+export const { useJoinMeetingMutation } = webrtcApi;
