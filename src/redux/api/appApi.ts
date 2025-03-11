@@ -110,7 +110,7 @@ export const appApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["reviews"],
+      invalidatesTags: ["reviews", "ratings"],
     }),
     getReviews: builder.query({
       query: (data) => ({
@@ -119,6 +119,13 @@ export const appApi = apiSlice.injectEndpoints({
         body: data,
       }),
       providesTags: ["reviews"],
+    }),
+    getAllRatings: builder.query({
+      query: () => ({
+        url: "/app/get-all-ratings",
+        method: "GET",
+      }),
+      providesTags: ["ratings"],
     }),
   }),
 });
@@ -137,4 +144,5 @@ export const {
   useWalletPaymentMutation,
   useAddReviwsMutation,
   useGetReviewsQuery,
+  useGetAllRatingsQuery,
 } = appApi;
