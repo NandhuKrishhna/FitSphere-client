@@ -21,34 +21,21 @@ const SubscriptionPage = () => {
             <SubscriptionCard
               title="Basic"
               description="Great for starters"
-              price="$9"
-              features={["Access to basic features", "1 user account", "5GB storage", "Email support"]}
+              price="₹199"
+              features={["Access to basic features", "10 messages per doctor"]}
             />
             <SubscriptionCard
               title="Premium"
               description="Most popular choice"
-              price="$29"
-              features={[
-                "All Basic features",
-                "5 user accounts",
-                "50GB storage",
-                "Priority support",
-                "Advanced analytics",
-              ]}
+              price="₹499"
+              features={["50 messages per doctor", "Priority support", "Basic analytics"]}
               highlight
             />
             <SubscriptionCard
               title="Enterprise"
-              description="For large teams"
-              price="$99"
-              features={[
-                "All Premium features",
-                "Unlimited users",
-                "500GB storage",
-                "24/7 dedicated support",
-                "Custom integrations",
-                "White-label solutions",
-              ]}
+              description="Advanced features for pros"
+              price="₹999"
+              features={["Unlimited messages per doctor", "Priority support", "Advanced analytics"]}
             />
           </div>
         </div>
@@ -58,3 +45,13 @@ const SubscriptionPage = () => {
 };
 
 export default SubscriptionPage;
+//TODO admin adding Plans and features do it on 13-03-2025;
+{
+  /*
+   - payment integration
+   - chat message limit
+    - transactions 
+    - notification
+    
+  */
+}
