@@ -5,6 +5,7 @@ import {
   useGetAllSlotDetailsQuery,
   useHandleFailedPaymentMutation,
   useVerifyPaymentMutation,
+  useWalletPaymentMutation,
 } from "../../redux/api/appApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -19,7 +20,7 @@ export const useDoctorDetails = () => {
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);
   const user = useSelector(selectCurrentUser);
   const navigate = useNavigate();
-
+  const [walletPayment, { isLoading: isWalletLoading }] = useWalletPaymentMutation();
   const [activeSection, setActiveSection] = useState("about");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [bookSlots, { isLoading: isBookLoading }] = useBookSlotsMutation();
@@ -27,6 +28,7 @@ export const useDoctorDetails = () => {
   const { data: slots } = useGetAllSlotDetailsQuery({ doctorId });
   const [verifyPayment] = useVerifyPaymentMutation();
   const [handleFailedPayment] = useHandleFailedPaymentMutation();
+  const [isWalletSuccessModalOpen, setIsWalletSuccessModalOpen] = useState(false);
   const doctorDetails = data?.doctorDetails;
   const selectedDoctorForChat = {
     doctorDetails: {
@@ -146,6 +148,32 @@ export const useDoctorDetails = () => {
     }
   };
 
+  const handleWalletPayment = async () => {
+    if (!selectedSlot) return toast.error("Please select a slot to book a consultation.");
+    try {
+      const response = await walletPayment({
+        usecase: "slot_booking",
+        doctorId,
+        patientId: user?._id,
+        slotId: selectedSlot?._id,
+        amount: doctorDetails?.details.consultationFees,
+      });
+      toast.success(response.data.message);
+      setIsWalletSuccessModalOpen(true);
+      setTimeout(() => {
+        setIsWalletSuccessModalOpen(false);
+        navigate("/appointments");
+      }, 5000);
+    } catch (error) {
+      const err = error as ErrorResponse;
+      if (err.data.message) return toast.error(err.data.message);
+      toast.error("Failed to book slot. Please try again.");
+    }
+  };
+  const handleSuccessModalClose = () => {
+    setIsWalletSuccessModalOpen(false);
+    navigate("/appointments");
+  };
   return {
     doctorDetails,
     slots,
@@ -156,5 +184,9 @@ export const useDoctorDetails = () => {
     handleSlotClick,
     handleBookSlot,
     isBookLoading,
+    handleWalletPayment,
+    isWalletLoading,
+    isWalletSuccessModalOpen,
+    handleSuccessModalClose,
   };
 };
