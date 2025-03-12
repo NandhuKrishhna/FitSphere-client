@@ -39,37 +39,48 @@ const SlotItem = ({ slot }: SlotItemProps) => {
     timeZone: "Asia/Kolkata",
   });
 
+  // Get status class based on slot status
+  const getStatusClass = (status: string) => {
+    switch (status) {
+      case "booked":
+        return "bg-red-900/30 text-red-400";
+      case "available":
+        return "bg-green-900/30 text-green-400";
+      case "cancelled":
+        return "bg-gray-800/50 text-gray-400";
+      case "completed":
+        return "bg-blue-900/30 text-blue-400";
+      case "expired":
+        return "bg-yellow-900/30 text-yellow-400";
+      default:
+        return "bg-gray-800/50 text-gray-400";
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between bg-indigo-200  text-black rounded-md p-3 mb-2">
+    <div className="flex items-center justify-between bg-gray-800/80 rounded-lg p-3 mb-2 border border-gray-700/50">
       <div className="flex-col space-y-2">
-        <p className="text-sm font-semibold">📅 Date: {formattedDate}</p>
-        <p className="text-sm">
-          ⏳ Slot: <span className="text-purple-700">{formattedStartTime} </span>-{" "}
-          <span className="text-purple-700">{formattedEndTime}</span>
+        <p className="text-sm font-semibold text-gray-300">📅 Date: {formattedDate}</p>
+        <p className="text-sm text-gray-300">
+          ⏳ Slot: <span className="text-purple-400">{formattedStartTime} </span>-{" "}
+          <span className="text-purple-400">{formattedEndTime}</span>
         </p>
-        <span
-          className={`text-xs px-2 py-1 rounded-full font-semibold
-    ${slot.status === "booked" ? "bg-red-100 text-red-600" : ""} 
-    ${slot.status === "available" ? "bg-green-100 text-green-600" : ""} 
-    ${slot.status === "cancelled" ? "bg-gray-100 text-gray-600" : ""} 
-    ${slot.status === "completed" ? "bg-blue-100 text-blue-600" : ""} 
-    ${slot.status === "expired" ? "bg-yellow-100 text-yellow-600" : ""}`}
-        >
+        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${getStatusClass(slot.status)}`}>
           {slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}
         </span>
       </div>
       {slot.status === "available" && cancelSlot && (
         <ConfirmDialog
           message="Are you sure you want to cancel this slot?"
-          description={`Canceling this slot will make it available for others to book. This action cannot be undone.`}
+          description="Canceling this slot will make it unavailable for booking. This action cannot be undone."
           confirmText="Yes, Cancel"
           cancelText="No, Keep Slot"
           onConfirm={() => cancelSlot({ slotId: slot._id })}
           isCancelLoading={isCancelLoading}
-          color="bg-red-400"
+          color="bg-red-600"
           trigger={
-            <button className="text-red-400 hover:text-red-600 transition" disabled={isCancelLoading}>
-              <Delete size={24} />
+            <button className="text-red-400 hover:text-red-300 transition" disabled={isCancelLoading}>
+              <Delete size={20} />
             </button>
           }
         />
