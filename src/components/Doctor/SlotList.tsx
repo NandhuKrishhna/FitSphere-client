@@ -48,8 +48,8 @@ const SlotList = ({ slots, isLoading }: SlotListProps) => {
   const totalPages = Math.ceil(filteredSlots.length / slotsPerPage);
 
   return (
-    <div className="bg-white rounded-lg p-4 backdrop-blur-sm lg:h-[78vh] sm:h-[60vh] md:h-[70vh] flex flex-col">
-      <h2 className="text-black text-lg  font-semibold mb-4">Scheduled Slots</h2>
+    <div className="bg-gray-800/50 rounded-lg p-4 backdrop-blur-sm lg:h-[78vh] sm:h-[60vh] md:h-[70vh] flex flex-col">
+      <h2 className="text-white text-lg font-semibold mb-4">Scheduled Slots</h2>
 
       <div className="flex space-x-1 mb-4">
         <Dropdown
@@ -79,7 +79,7 @@ const SlotList = ({ slots, isLoading }: SlotListProps) => {
 
       {isLoading ? (
         <div className="flex-1 flex items-center justify-center">
-          <span className="loading loading-ring loading-md"></span>
+          <span className="loading loading-ring loading-md text-purple-400"></span>
         </div>
       ) : currentSlots.length === 0 ? (
         <div className="flex-1 flex items-center justify-center">
@@ -96,19 +96,19 @@ const SlotList = ({ slots, isLoading }: SlotListProps) => {
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="cursor-pointer"
+              className="bg-gray-700 hover:bg-gray-600 text-white"
             >
-              <ChevronLeft />
+              <ChevronLeft size={16} />
             </Button>
-            <span className="text-white">
+            <span className="text-gray-300">
               Page {currentPage} of {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="cursor-pointer"
+              className="bg-gray-700 hover:bg-gray-600 text-white"
             >
-              <ChevronRight />
+              <ChevronRight size={16} />
             </Button>
           </div>
         </>
