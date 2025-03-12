@@ -1,70 +1,84 @@
 import { useSelector } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/api/doctorApi";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
-import { useState } from "react";
-import { X, ChevronLeft, ChevronRight, Info } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, ChevronLeft, ChevronRight, Info, Search, Filter, ArrowUpDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Define interfaces for type safety
-interface PatientDetails {
-  _id: string;
+interface Patient {
   name: string;
   email: string;
-  profilePicture: string | null;
-  createdAt: string;
-  isActive: boolean;
-  isPremium: boolean;
-  isVerfied: boolean;
-  role: string;
-  status: string;
-  updatedAt: string;
+  profilePicture: string;
 }
 
-interface SlotDetails {
-  _id: string;
-  consultationType: string;
-  createdAt: string;
-  date: string;
-  doctorId: string;
-  patientId: string;
+interface Slot {
   startTime: string;
   endTime: string;
-  status: string;
-  updatedAt: string;
 }
 
 interface Appointment {
   _id: string;
-  amount: number;
-  bank?: string;
   consultationType: string;
-  createdAt: string;
   date: string;
-  description: string;
-  doctorId: string;
-  orderId: string;
-  patientDetails: PatientDetails;
-  patientId: string;
-  paymentId: string;
-  paymentMethod: string;
   paymentStatus: string;
-  paymentThrough: string;
-  slotDetails: SlotDetails;
-  slotId: string;
+  amount: number;
   status: string;
-  updatedAt: string;
+  paymentMethod: string;
+  paymentThrough: string;
+  meetingId: string;
+  slot: Slot;
+  patient: Patient;
 }
 
+interface Meta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 const AppointmentTable = () => {
   const doctor = useSelector(selectCurrentUser);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(5);
+
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(5);
+  const [search, setSearch] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [sortField, setSortField] = useState<string>("date");
+  const [sortOrder, setSortOrder] = useState<string>("desc");
+  const [searchInput, setSearchInput] = useState<string>("");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const { data, isLoading, isError } = useGetAllAppointmentsQuery({
     userId: doctor?._id,
+    page,
+    limit,
+    search,
+    status,
+    sortField,
+    sortOrder,
   });
-  console.log("Slot Data : ", data);
+
+  const appointments: Appointment[] = data?.data || [];
+  const meta: Meta = data?.meta || { total: 0, page: 1, limit: 10, totalPages: 1 };
+
   const handleOpenDetails = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setShowModal(true);
@@ -74,19 +88,21 @@ const AppointmentTable = () => {
     setShowModal(false);
   };
 
-  if (isLoading) {
-    return <div className="text-center text-white">Loading...</div>;
-  }
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      // Toggle sort order if clicking the same field
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // Set new field and default to ascending
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
 
-  if (isError || !data?.response) {
-    return <div className="text-center text-red-500">Failed to fetch data</div>;
-  }
-
-  const appointments = data.response.appointments || [];
-
-  if (appointments.length === 0) {
-    return <div className="text-center text-gray-400">No appointments found</div>;
-  }
+  const handleStatusFilter = (value: string) => {
+    setStatus(value);
+    setPage(1); // Reset to first page on filter change
+  };
 
   // Format date for better display
   const formatDate = (dateString: string): string => {
@@ -106,21 +122,119 @@ const AppointmentTable = () => {
     });
   };
 
-  // Pagination calculations
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentAppointments = appointments.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(appointments.length / itemsPerPage);
-
-  // Change page
-  const paginate = (pageNumber: number) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
+  if (isError) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-red-900/20 text-red-400 p-4 rounded-lg">
+          Failed to fetch appointment data. Please try again later.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
+      {/* Search and Filter Controls */}
+      <div className="mb-6 flex flex-col md:flex-row gap-4 justify-between">
+        <div className="relative w-full md:w-64">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Input
+            placeholder="Search patient name..."
+            className="pl-10 bg-gray-800 border-gray-700"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="bg-gray-800 border-gray-700">
+                <Filter className="mr-2" size={16} />
+                Status
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white border-gray-700">
+              <DropdownMenuItem onClick={() => handleStatusFilter("")}>All</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusFilter("scheduled")}>Scheduled</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusFilter("completed")}>Completed</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusFilter("cancelled")}>Cancelled</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="bg-gray-800 border-gray-700">
+                {limit} per page
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white border-gray-700">
+              <DropdownMenuItem
+                onClick={() => {
+                  setLimit(5);
+                  setPage(1);
+                }}
+              >
+                5 per page
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setLimit(10);
+                  setPage(1);
+                }}
+              >
+                10 per page
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setLimit(20);
+                  setPage(1);
+                }}
+              >
+                20 per page
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setLimit(50);
+                  setPage(1);
+                }}
+              >
+                50 per page
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* Active filters display */}
+      {(status || search) && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {status && (
+            <Badge variant="outline" className="bg-gray-800 text-white">
+              Status: {status}
+              <button className="ml-2 text-gray-400 hover:text-white" onClick={() => setStatus("")}>
+                <X size={14} />
+              </button>
+            </Badge>
+          )}
+          {search && (
+            <Badge variant="outline" className="bg-gray-800 text-white">
+              Search: {search}
+              <button
+                className="ml-2 text-gray-400 hover:text-white"
+                onClick={() => {
+                  setSearch("");
+                  setSearchInput("");
+                }}
+              >
+                <X size={14} />
+              </button>
+            </Badge>
+          )}
+        </div>
+      )}
+
+      {/* Table */}
       <div className="overflow-hidden rounded-lg shadow-lg">
         <table className="min-w-full divide-y divide-gray-700 bg-gray-800">
           <thead className="bg-gray-700">
@@ -129,126 +243,260 @@ const AppointmentTable = () => {
                 Patient
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                Consultation Type
+                <button
+                  className="flex items-center space-x-1 focus:outline-none"
+                  onClick={() => handleSort("consultationType")}
+                >
+                  <span>Type</span>
+                  <ArrowUpDown
+                    size={14}
+                    className={sortField === "consultationType" ? "text-purple-400" : "text-gray-500"}
+                  />
+                </button>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                Date & Time
+                <button className="flex items-center space-x-1 focus:outline-none" onClick={() => handleSort("date")}>
+                  <span>Date & Time</span>
+                  <ArrowUpDown size={14} className={sortField === "date" ? "text-purple-400" : "text-gray-500"} />
+                </button>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                Payment
+                <button className="flex items-center space-x-1 focus:outline-none" onClick={() => handleSort("amount")}>
+                  <span>Payment</span>
+                  <ArrowUpDown size={14} className={sortField === "amount" ? "text-purple-400" : "text-gray-500"} />
+                </button>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <button className="flex items-center space-x-1 focus:outline-none" onClick={() => handleSort("status")}>
+                  <span>Status</span>
+                  <ArrowUpDown size={14} className={sortField === "status" ? "text-purple-400" : "text-gray-500"} />
+                </button>
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">
-            {currentAppointments.map((appointment: Appointment) => (
-              <tr key={appointment._id}>
-                <td className="px-6 py-4 whitespace-nowrap flex items-center">
-                  <img
-                    src={appointment.patientDetails?.profilePicture || "/default-avatar.png"}
-                    alt={appointment.patientDetails?.name || "Patient"}
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-white">{appointment.patientDetails?.name}</p>
-                  </div>
-                </td>
-
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="text-sm text-gray-300">{appointment.consultationType}</span>
-                </td>
-
-                {/* Date & Time */}
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="text-sm text-gray-300">
-                    {new Date(appointment.date).toLocaleDateString()}{" "}
-                    {appointment.slotDetails?.startTime
-                      ? `${new Date(appointment.slotDetails.startTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })} - ${new Date(appointment.slotDetails.endTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}`
-                      : ""}
-                  </span>
-                </td>
-
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`text-sm font-medium ${
-                      appointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    {appointment.paymentStatus} ({appointment.amount})
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      appointment.status === "cancelled" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {appointment.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => handleOpenDetails(appointment)}
-                    className="text-purple-400 hover:text-purple-700"
-                  >
-                    <Info />
-                  </button>
+            {isLoading ? (
+              // Loading skeleton
+              Array(limit)
+                .fill(0)
+                .map((_, index) => (
+                  <tr key={`skeleton-${index}`}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Skeleton className="w-10 h-10 rounded-full mr-3" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Skeleton className="h-4 w-16" />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Skeleton className="h-4 w-32" />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Skeleton className="h-4 w-20" />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Skeleton className="h-6 w-16 rounded-full" />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Skeleton className="h-6 w-6 rounded-full" />
+                    </td>
+                  </tr>
+                ))
+            ) : appointments.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-10 text-center text-gray-400">
+                  No appointments found
+                  {(search || status) && (
+                    <div className="mt-2">
+                      <Button
+                        variant="outline"
+                        className="text-sm"
+                        onClick={() => {
+                          setSearch("");
+                          setSearchInput("");
+                          setStatus("");
+                        }}
+                      >
+                        Clear filters
+                      </Button>
+                    </div>
+                  )}
                 </td>
               </tr>
-            ))}
+            ) : (
+              appointments.map((appointment) => (
+                <tr key={appointment._id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <img
+                        src={appointment.patient?.profilePicture || "/placeholder.svg?height=40&width=40"}
+                        alt={appointment.patient?.name || "Patient"}
+                        className="w-10 h-10 rounded-full mr-3 object-cover"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-white">{appointment.patient?.name}</p>
+                        <p className="text-xs text-gray-400">{appointment.patient?.email}</p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm text-gray-300 capitalize">{appointment.consultationType}</span>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <p className="text-sm text-white">{new Date(appointment.date).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-400">
+                        {appointment.slot?.startTime && (
+                          <>
+                            {new Date(appointment.slot.startTime).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}{" "}
+                            -{" "}
+                            {new Date(appointment.slot.endTime).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </>
+                        )}
+                      </p>
+                    </div>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`text-sm font-medium ${
+                        appointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
+                      }`}
+                    >
+                      {appointment.paymentStatus} (₹{appointment.amount})
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        appointment.status === "cancelled"
+                          ? "bg-red-900/30 text-red-400"
+                          : appointment.status === "completed"
+                          ? "bg-green-900/30 text-green-400"
+                          : "bg-yellow-900/30 text-yellow-400"
+                      }`}
+                    >
+                      {appointment.status}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleOpenDetails(appointment)}
+                      className="text-purple-400 hover:text-purple-300 transition-colors"
+                      aria-label="View details"
+                    >
+                      <Info size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 px-2">
-        <div className="text-sm text-gray-400">
-          Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, appointments.length)} of {appointments.length}{" "}
-          appointments
+      {!isLoading && meta.totalPages > 0 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 px-2 gap-4">
+          <div className="text-sm text-gray-400">
+            Showing {meta.total === 0 ? 0 : (meta.page - 1) * meta.limit + 1}-
+            {Math.min(meta.page * meta.limit, meta.total)} of {meta.total} appointments
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="flex space-x-1">
+              <button
+                onClick={() => setPage(page - 1)}
+                className={`px-3 py-1 rounded-md ${
+                  page === 1
+                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-700 text-white hover:bg-gray-600"
+                }`}
+                disabled={page === 1}
+                aria-label="Previous page"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              {/* Show limited page numbers with ellipsis for large page counts */}
+              {Array.from({ length: Math.min(5, meta.totalPages) }, (_, i) => {
+                let pageNum;
+                if (meta.totalPages <= 5) {
+                  // Show all pages if 5 or fewer
+                  pageNum = i + 1;
+                } else if (page <= 3) {
+                  // Near the start
+                  pageNum = i + 1;
+                  if (i === 4) pageNum = meta.totalPages;
+                } else if (page >= meta.totalPages - 2) {
+                  // Near the end
+                  pageNum = i === 0 ? 1 : meta.totalPages - 4 + i;
+                } else {
+                  // In the middle
+                  pageNum = page - 2 + i;
+                }
+
+                return (
+                  <button
+                    key={`page-${pageNum}`}
+                    onClick={() => setPage(pageNum)}
+                    className={`px-3 py-1 rounded-md ${
+                      page === pageNum ? "bg-purple-600 text-white" : "bg-gray-700 text-white hover:bg-gray-600"
+                    }`}
+                    aria-label={`Page ${pageNum}`}
+                    aria-current={page === pageNum ? "page" : undefined}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => setPage(page + 1)}
+                className={`px-3 py-1 rounded-md ${
+                  page === meta.totalPages
+                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-700 text-white hover:bg-gray-600"
+                }`}
+                disabled={page === meta.totalPages}
+                aria-label="Next page"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+
+            {/* Page selection dropdown */}
+            {meta.totalPages > 5 && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-400">Go to:</span>
+                <select
+                  value={page}
+                  onChange={(e) => setPage(Number(e.target.value))}
+                  className="bg-gray-800 border border-gray-700 text-white rounded-md px-2 py-1 text-sm focus:ring-purple-500 focus:border-purple-500"
+                >
+                  {Array.from({ length: meta.totalPages }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      Page {i + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex space-x-1">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            className={`px-3 py-1 rounded-md ${
-              currentPage === 1
-                ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}
-            disabled={currentPage === 1}
-          >
-            <ChevronLeft size={16} />
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => paginate(i + 1)}
-              className={`px-3 py-1 rounded-md ${
-                currentPage === i + 1 ? "bg-purple-600 text-white" : "bg-gray-700 text-white hover:bg-gray-600"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            className={`px-3 py-1 rounded-md ${
-              currentPage === totalPages
-                ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}
-            disabled={currentPage === totalPages}
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Details Modal */}
       {showModal && selectedAppointment && (
@@ -257,7 +505,7 @@ const AppointmentTable = () => {
             {/* Modal Header */}
             <div className="bg-purple-600 p-4 flex justify-between items-center">
               <h2 className="text-white text-xl font-bold">Appointment Details</h2>
-              <button onClick={handleCloseModal} className="text-white hover:text-gray-200">
+              <button onClick={handleCloseModal} className="text-white hover:text-gray-200" aria-label="Close modal">
                 <X size={24} />
               </button>
             </div>
@@ -268,20 +516,22 @@ const AppointmentTable = () => {
               <div className="mb-6 flex items-start">
                 <div className="mr-4">
                   <img
-                    src={selectedAppointment.patientDetails?.profilePicture || "/default-avatar.png"}
+                    src={selectedAppointment.patient?.profilePicture || "/placeholder.svg?height=80&width=80"}
                     alt="Patient"
                     className="w-20 h-20 rounded-full object-cover border-4 border-purple-500"
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-1">{selectedAppointment.patientDetails?.name}</h3>
-                  <p className="text-gray-400">{selectedAppointment.patientDetails?.email}</p>
+                  <h3 className="text-xl font-bold text-white mb-1">{selectedAppointment.patient?.name}</h3>
+                  <p className="text-gray-400">{selectedAppointment.patient?.email}</p>
                   <div className="mt-2">
                     <span
                       className={`px-3 py-1 text-sm rounded-full ${
                         selectedAppointment.status === "cancelled"
-                          ? "bg-red-900 text-red-300"
-                          : "bg-green-900 text-green-300"
+                          ? "bg-red-900/30 text-red-300"
+                          : selectedAppointment.status === "completed"
+                          ? "bg-green-900/30 text-green-300"
+                          : "bg-yellow-900/30 text-yellow-300"
                       }`}
                     >
                       {selectedAppointment.status}
@@ -301,9 +551,9 @@ const AppointmentTable = () => {
                   <div>
                     <p className="text-gray-400 text-sm">Time</p>
                     <p className="text-white">
-                      {selectedAppointment.slotDetails?.startTime
-                        ? `${formatTime(selectedAppointment.slotDetails.startTime)} - ${formatTime(
-                            selectedAppointment.slotDetails.endTime
+                      {selectedAppointment.slot?.startTime
+                        ? `${formatTime(selectedAppointment.slot.startTime)} - ${formatTime(
+                            selectedAppointment.slot.endTime
                           )}`
                         : "Not specified"}
                     </p>
@@ -313,8 +563,8 @@ const AppointmentTable = () => {
                     <p className="text-white capitalize">{selectedAppointment.consultationType}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Slot ID</p>
-                    <p className="text-white text-sm">{selectedAppointment.slotId}</p>
+                    <p className="text-gray-400 text-sm">Meeting ID</p>
+                    <p className="text-white text-sm">{selectedAppointment.meetingId}</p>
                   </div>
                 </div>
               </div>
@@ -344,16 +594,6 @@ const AppointmentTable = () => {
                   <div>
                     <p className="text-gray-400 text-sm">Payment Through</p>
                     <p className="text-white">{selectedAppointment.paymentThrough || "Not specified"}</p>
-                  </div>
-                  {selectedAppointment.bank && (
-                    <div>
-                      <p className="text-gray-400 text-sm">Bank</p>
-                      <p className="text-white">{selectedAppointment.bank}</p>
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-gray-400 text-sm">Order ID</p>
-                    <p className="text-white text-sm">{selectedAppointment.orderId}</p>
                   </div>
                 </div>
               </div>
