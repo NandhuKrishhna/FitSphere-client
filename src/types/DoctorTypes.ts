@@ -45,7 +45,7 @@ export type DoctorWithDetails = {
     professionalTitle: string;
     createdAt: string;
     updatedAt: string;
-    __v: number;
+    education?: string;
   };
 };
 
