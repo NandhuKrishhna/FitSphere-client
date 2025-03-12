@@ -56,7 +56,7 @@ export default function Header({ value, onChange }: Props) {
     if (user?.role === Roles.USER) {
       navigate("/profile");
     } else {
-      navigate("/doctor-profile");
+      navigate("/doctor/profile");
     }
   };
   return (

@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/api/doctorApi";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight, Info, Search, Filter, ArrowUpDown } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Info, Search, Filter, ArrowUpDown, Loader } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,44 +13,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Appointment, Meta } from "@/types/doctorAppoitment.types";
+import useHandleJoinMeeting from "@/hooks/App/useJoinMeeting";
 
-// Define interfaces for type safety
-interface Patient {
-  name: string;
-  email: string;
-  profilePicture: string;
-}
-
-interface Slot {
-  startTime: string;
-  endTime: string;
-}
-
-interface Appointment {
-  _id: string;
-  consultationType: string;
-  date: string;
-  paymentStatus: string;
-  amount: number;
-  status: string;
-  paymentMethod: string;
-  paymentThrough: string;
-  meetingId: string;
-  slot: Slot;
-  patient: Patient;
-}
-
-interface Meta {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
 const AppointmentTable = () => {
+  const { isJoiningMeeting, handleJoinMeet } = useHandleJoinMeeting();
+
   const doctor = useSelector(selectCurrentUser);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-
+  console.log(selectedAppointment);
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(5);
   const [search, setSearch] = useState<string>("");
@@ -90,10 +62,8 @@ const AppointmentTable = () => {
 
   const handleSort = (field: string) => {
     if (sortField === field) {
-      // Toggle sort order if clicking the same field
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
-      // Set new field and default to ascending
       setSortField(field);
       setSortOrder("asc");
     }
@@ -101,10 +71,9 @@ const AppointmentTable = () => {
 
   const handleStatusFilter = (value: string) => {
     setStatus(value);
-    setPage(1); // Reset to first page on filter change
+    setPage(1);
   };
 
-  // Format date for better display
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -113,8 +82,6 @@ const AppointmentTable = () => {
       day: "numeric",
     });
   };
-
-  // Format time for better display
   const formatTime = (timeString: string): string => {
     return new Date(timeString).toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -134,7 +101,6 @@ const AppointmentTable = () => {
 
   return (
     <div className="p-6">
-      {/* Search and Filter Controls */}
       <div className="mb-6 flex flex-col md:flex-row gap-4 justify-between">
         <div className="relative w-full md:w-64">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
@@ -206,7 +172,6 @@ const AppointmentTable = () => {
         </div>
       </div>
 
-      {/* Active filters display */}
       {(status || search) && (
         <div className="mb-4 flex flex-wrap gap-2">
           {status && (
@@ -234,7 +199,6 @@ const AppointmentTable = () => {
         </div>
       )}
 
-      {/* Table */}
       <div className="overflow-hidden rounded-lg shadow-lg">
         <table className="min-w-full divide-y divide-gray-700 bg-gray-800">
           <thead className="bg-gray-700">
@@ -277,7 +241,6 @@ const AppointmentTable = () => {
           </thead>
           <tbody className="divide-y divide-gray-700">
             {isLoading ? (
-              // Loading skeleton
               Array(limit)
                 .fill(0)
                 .map((_, index) => (
@@ -408,7 +371,6 @@ const AppointmentTable = () => {
         </table>
       </div>
 
-      {/* Pagination */}
       {!isLoading && meta.totalPages > 0 && (
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 px-2 gap-4">
           <div className="text-sm text-gray-400">
@@ -430,21 +392,16 @@ const AppointmentTable = () => {
                 <ChevronLeft size={16} />
               </button>
 
-              {/* Show limited page numbers with ellipsis for large page counts */}
               {Array.from({ length: Math.min(5, meta.totalPages) }, (_, i) => {
                 let pageNum;
                 if (meta.totalPages <= 5) {
-                  // Show all pages if 5 or fewer
                   pageNum = i + 1;
                 } else if (page <= 3) {
-                  // Near the start
                   pageNum = i + 1;
                   if (i === 4) pageNum = meta.totalPages;
                 } else if (page >= meta.totalPages - 2) {
-                  // Near the end
                   pageNum = i === 0 ? 1 : meta.totalPages - 4 + i;
                 } else {
-                  // In the middle
                   pageNum = page - 2 + i;
                 }
 
@@ -477,7 +434,6 @@ const AppointmentTable = () => {
               </button>
             </div>
 
-            {/* Page selection dropdown */}
             {meta.totalPages > 5 && (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-400">Go to:</span>
@@ -498,11 +454,9 @@ const AppointmentTable = () => {
         </div>
       )}
 
-      {/* Details Modal */}
       {showModal && selectedAppointment && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 overflow-hidden">
-            {/* Modal Header */}
             <div className="bg-purple-600 p-4 flex justify-between items-center">
               <h2 className="text-white text-xl font-bold">Appointment Details</h2>
               <button onClick={handleCloseModal} className="text-white hover:text-gray-200" aria-label="Close modal">
@@ -510,10 +464,8 @@ const AppointmentTable = () => {
               </button>
             </div>
 
-            {/* Modal Content */}
             <div className="p-6">
-              {/* Patient Information */}
-              <div className="mb-6 flex items-start">
+              <div className="mb-6 flex items-start relative">
                 <div className="mr-4">
                   <img
                     src={selectedAppointment.patient?.profilePicture || "/placeholder.svg?height=80&width=80"}
@@ -538,9 +490,20 @@ const AppointmentTable = () => {
                     </span>
                   </div>
                 </div>
+                <div className="absolute right-0 ">
+                  <Badge
+                    onClick={() => {
+                      handleJoinMeet(selectedAppointment.meetingId);
+                    }}
+                    className="px-2 py-1.5 bg-green-400 hover:bg-green-500 cursor-pointer"
+                  >
+                    {isJoiningMeeting ? <Loader className=" animate-spin mx-auto" size={15} /> : "Join Now"}
+                  </Badge>
+                  <p className="text-sm italic text-purple-300 mt-2">
+                    Join the meet on {formatTime(selectedAppointment.slot.startTime)}{" "}
+                  </p>
+                </div>
               </div>
-
-              {/* Appointment Details */}
               <div className="bg-gray-700 rounded-lg p-4 mb-6">
                 <h4 className="text-purple-400 font-semibold mb-3 uppercase text-sm">Appointment Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -569,7 +532,6 @@ const AppointmentTable = () => {
                 </div>
               </div>
 
-              {/* Payment Information */}
               <div className="bg-gray-700 rounded-lg p-4">
                 <h4 className="text-purple-400 font-semibold mb-3 uppercase text-sm">Payment Details</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

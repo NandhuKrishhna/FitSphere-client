@@ -1,22 +1,19 @@
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { Phone, Mail, MessageSquare } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function DoctorProfile() {
+  const user = useSelector(selectCurrentUser);
   return (
     <div className="flex flex-col h-full">
-      {/* Doctor image */}
-      <div className="bg-white p-4 rounded-t-xl">
-        <img
-          src="/placeholder.svg?height=300&width=300"
-          alt="Doctor profile"
-          className="w-full h-auto object-cover rounded"
-        />
+      <div className="bg-black p-4 rounded-t-xl flex justify-center">
+        <img src={user?.profilePicture} alt={user?.name} className="w-50 h-50 object-cover rounded" />
       </div>
 
-      {/* Doctor info */}
       <div className="flex-grow bg-black text-white p-4">
         <div className="space-y-3">
           <div>
-            <h1 className="text-2xl font-bold">Sarah Johnson</h1>
+            <h1 className="text-2xl font-bold">{user?.name}</h1>
             <p className="text-gray-300">Cardiologist</p>
           </div>
 
