@@ -109,6 +109,19 @@ export const doctorApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    doctorDetails: builder.query({
+      query: (data) => ({
+        url: "/doctor/profile",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    allDoctorDetails: builder.query({
+      query: () => ({
+        url: "/doctor/patients-appointments",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -126,4 +139,6 @@ export const {
   useVerifyResetPasswordCodeMutation,
   useSetNewPasswordForDoctorMutation,
   useGetAllReviewsAndRatingsQuery,
+  useDoctorDetailsQuery,
+  useAllDoctorDetailsQuery,
 } = doctorApi;
