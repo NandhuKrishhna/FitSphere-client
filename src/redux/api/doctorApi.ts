@@ -1,3 +1,4 @@
+import { AppointmentQueryParams } from "@/types/doctorAppoitment.types";
 import { apiSlice } from "./EntryApiSlice";
 
 export const doctorApi = apiSlice.injectEndpoints({
@@ -64,12 +65,20 @@ export const doctorApi = apiSlice.injectEndpoints({
     }),
 
     getAllAppointments: builder.query({
-      query: (data) => ({
-        url: "/doctor/get/all-appointments",
-        method: "POST",
-        body: data,
-      }),
-      providesTags: ["wallet"],
+      query: (params: AppointmentQueryParams) => {
+        const { userId, ...queryParams } = params;
+        const queryString = Object.entries(queryParams)
+          .filter(([value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
+
+        return {
+          url: `/doctor/get/all-appointments${queryString ? `?${queryString}` : ""}`,
+          method: "POST",
+          body: { userId },
+        };
+      },
+      providesTags: ["appointments"],
     }),
 
     forgotPassword: builder.mutation({
