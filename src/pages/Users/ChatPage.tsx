@@ -83,7 +83,9 @@ export default function DoctorChatPage() {
               </div>
             </div>
           ) : (
-            <NoUserSelectedPlaceholder />
+            <div className="flex-1 flex items-center justify-center h-full">
+              <NoUserSelectedPlaceholder />
+            </div>
           )}
         </div>
       </div>
