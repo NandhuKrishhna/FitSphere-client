@@ -26,6 +26,7 @@ import WeekSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
 import HeightSelector from "@/pages/Users/HeightSelector";
 import HomePage from "@/pages/Users/HomePage";
 import SubscriptionPage from "@/pages/Users/PremiumPricingPage";
+import ReviewModal from "@/components/App/ReviewModal";
 
 const UserRoutes = () => {
   return (
@@ -49,6 +50,7 @@ const UserRoutes = () => {
         <Route path="/select-week" element={<WeekSelectionPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/subscription" element={<SubscriptionPage />} />
+        <Route path="/review" element={<ReviewModal isOpen={true} />} />
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
           <Route path="/doctors/all" element={<DoctorsPage />} />
