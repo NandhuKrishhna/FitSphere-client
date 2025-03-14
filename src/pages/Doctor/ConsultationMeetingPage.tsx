@@ -48,8 +48,13 @@ export default function MeetingPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#121212] text-white">
-      <Header />
-      <Navigation />
+      {user?.role === "user" && (
+  <>
+    <Header />
+    <Navigation />
+  </>
+)}
+
       <div className="flex justify-center items-center min-h-[60vh]">
         <div className="bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-lg">
           <h2 className="text-xl font-medium text-gray-300 mb-3 text-center">Join a meeting</h2>
