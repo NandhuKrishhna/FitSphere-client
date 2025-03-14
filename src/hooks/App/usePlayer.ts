@@ -33,7 +33,7 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
     }, {} as PlayerState);
 
   const toggleAudio = () => {
-    if (!player[myId]) return; // Ensure myId exists in the player state
+    if (!player[myId]) return; 
 
     setPlayer((prev) => {
       const copy = cloneDeep(prev);
@@ -45,7 +45,7 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
   };
 
   const toggleVideo = () => {
-    if (!player[myId]) return; // Ensure myId exists in the player state
+    if (!player[myId]) return; 
 
     setPlayer((prev) => {
       const copy = cloneDeep(prev);
@@ -60,9 +60,7 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
     socket?.emit("user-leave", myId, roomId);
     console.log(`User ${myId} left room ${roomId}`);
     peer?.disconnect();
-
-    // Redirect based on user role
-    const navigateTo = user?.role === Roles.DOCTOR ? "/doctor/appointment-history" : "/appointment-history";
+    const navigateTo = user?.role === Roles.DOCTOR ? "/doctor/appointments" : "/review";
     navigate(navigateTo);
   };
 
