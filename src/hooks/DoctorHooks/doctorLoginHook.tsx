@@ -7,6 +7,7 @@ import { useDoctorLoginMutation } from "../../redux/api/doctorApi";
 import { loginSchema } from "../../types/Validations/registerAsDoctorForm";
 import { setCredentials } from "../../redux/slice/Auth_Slice";
 import { AuthFormInputs } from "@/components/App/AuthLayout";
+import { connectSocket } from "@/lib/socketManager";
 
 export const ERRORS = {
   EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email.",
@@ -35,6 +36,7 @@ const useDoctorLoginHook = () => {
       // console.log(res.doctor)
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
+      connectSocket(res.response._id, dispatch);
       localStorage.setItem("accessToken", res.response.accessToken);
       navigate("/doctor/dashboard");
     } catch (err) {
