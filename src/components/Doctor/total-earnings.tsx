@@ -1,4 +1,7 @@
+import { useGetWalletQuery } from "@/redux/api/appApi";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useSelector } from "react-redux";
 
 interface TotalEarningsProps {
   selectedView: string;
@@ -6,23 +9,11 @@ interface TotalEarningsProps {
 }
 
 export default function TotalEarnings({ selectedView }: TotalEarningsProps) {
-  const items = [
-    {
-      id: 1,
-      text: "Lorem ipsum dolor sit amet, veniam, quis nostrud...",
-      color: "bg-purple-600",
-    },
-    {
-      id: 2,
-      text: "Lorem ipsum dolor sit amet, veniam, quis nostrud...",
-      color: "bg-pink-600",
-    },
-    {
-      id: 3,
-      text: "Lorem ipsum dolor sit amet, veniam, quis nostrud...",
-      color: "bg-yellow-300",
-    },
-  ];
+  const user = useSelector(selectCurrentUser);
+  const { data: walletData } = useGetWalletQuery({ userId: user?._id });
+
+  const balance = walletData?.response?.[0]?.balance || 0;
+  const transactions = walletData?.response?.[0]?.transactions || [];
 
   return (
     <div>
@@ -34,40 +25,52 @@ export default function TotalEarnings({ selectedView }: TotalEarningsProps) {
         </div>
       </div>
 
+
       <div className="flex justify-center mb-6">
         <div className="relative w-40 h-40">
-          {/* Circular progress background */}
+
           <div className="w-full h-full rounded-full border-[15px] border-gray-200"></div>
 
-          {/* Circular progress */}
           <div
             className="absolute top-0 left-0 w-full h-full rounded-full border-[15px] border-transparent border-t-yellow-300 border-r-yellow-300 border-b-yellow-300"
             style={{ transform: "rotate(45deg)" }}
           ></div>
 
-          {/* Content in center */}
+
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold">34,600</span>
-            <span className="text-xs text-gray-500">monthly</span>
+            <span className="text-2xl text-green-600 font-bold">{balance.toLocaleString()} INR</span>
+            <span className="text-xs text-gray-500">Current Balance</span>
           </div>
         </div>
       </div>
 
+
       <div className="space-y-4">
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center gap-3">
-            <div className={`w-2 h-2 rounded-full ${item.color}`}></div>
-            <p className="text-sm flex-grow">{item.text}</p>
-          </div>
-        ))}
+        {transactions.length > 0 ? (
+          transactions.map((transaction) => (
+            <div key={transaction._id} className="flex items-center gap-3">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  transaction.type === "credit" ? "bg-green-600" : "bg-red-600"
+                }`}
+              ></div>
+              <p className="text-sm text-black flex-grow">
+                {transaction.description} - {transaction.amount} {transaction.currency}
+              </p>
+              <span
+                className={`text-xs font-semibold ${
+                  transaction.type === "credit" ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {transaction.type === "credit" ? "+" : "-"} {transaction.amount}
+              </span>
+            </div>
+          ))
+        ) : (
+          <p className="text-sm text-gray-500">No transactions found.</p>
+        )}
       </div>
 
-      <div className="flex justify-end mt-6">
-        <button className="flex items-center text-sm font-medium">
-          <span>See All</span>
-          <ChevronRight size={16} />
-        </button>
-      </div>
     </div>
   );
 }
