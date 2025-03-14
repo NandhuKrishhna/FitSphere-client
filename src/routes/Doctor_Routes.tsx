@@ -16,6 +16,7 @@ import SetNewPasswordPage from "@/pages/Doctor/SetNewPassword";
 import DoctorProflePage from "@/pages/Doctor/DoctorProflePage";
 import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
 import ConsultationPage from "@/pages/Doctor/ConsultationPage";
+import NotificationPage from "@/pages/Users/NotificationsPage";
 
 const Doctor_Routes = () => {
   return (
@@ -28,15 +29,16 @@ const Doctor_Routes = () => {
         <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
         <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
         <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
-        <Route path="/profile" element={<DoctorProflePage />} />
         {/*Protected Routes*/}
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
           <Route element={<DoctorMainLayout />}>
             <Route path="/dashboard" element={<DoctorDashboardPage />} />
             <Route path="/appointments" element={<AppointmentTable />} />
-            <Route path="/chat" element={<DoctorChatPage />} />
             <Route path="/create-meet" element={<MeetingPage />} />
+            <Route path="/notifications" element={<NotificationPage />} />
+            <Route path="/chat" element={<DoctorChatPage />} />
             <Route path="/consultation/:meetId" element={<ConsultationPage />} />
+        <Route path="/profile" element={<DoctorProflePage />} />
           </Route>
         </Route>
       </Route>
