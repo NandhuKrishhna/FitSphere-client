@@ -27,6 +27,8 @@ import HeightSelector from "@/pages/Users/HeightSelector";
 import HomePage from "@/pages/Users/HomePage";
 import SubscriptionPage from "@/pages/Users/PremiumPricingPage";
 import ReviewModal from "@/components/App/ReviewModal";
+import NotificationPage from "@/pages/Users/NotificationsPage";
+import TransactionPage from "@/pages/Users/TransactionPage";
 
 const UserRoutes = () => {
   return (
@@ -48,20 +50,23 @@ const UserRoutes = () => {
         <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
         <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
         <Route path="/select-week" element={<WeekSelectionPage />} />
-        <Route path="/home" element={<HomePage />} />
         <Route path="/subscription" element={<SubscriptionPage />} />
-        <Route path="/review" element={<ReviewModal isOpen={true} />} />
+        <Route path="/notifications" element={<NotificationPage />} />
+        <Route path="/review" element={<ReviewModal doctorId="67a8be401520a9d7983ef076" doctorName="Liam" />} />
+
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
+        <Route path="/home" element={<HomePage />} />
           <Route path="/doctors/all" element={<DoctorsPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
-          <Route path="/doctors/profile" element={<DoctorDetailsPage />} />
+          <Route path="/doctors/details" element={<DoctorDetailsPage />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/appointments" element={<AppointmentPage />} />
           <Route path="/recipes" element={<RecipesGeneratorPage />} />
           <Route path="/create-meet" element={<MeetingPage />} />
           <Route path="/consultation/:meetId" element={<ConsultationPage />} />
+          <Route path="/transactions" element={<TransactionPage />} />
         </Route>
       </Route>
     </Routes>
