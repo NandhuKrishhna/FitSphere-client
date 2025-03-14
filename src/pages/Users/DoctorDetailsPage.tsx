@@ -32,6 +32,7 @@ const DoctorDetailsPage: React.FC = () => {
   } = useDoctorDetails();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log(doctorDetails)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
   const { data: reviewsData } = useGetReviewsQuery({ doctorId: doctorDetails?._id });
 
