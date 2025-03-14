@@ -40,6 +40,7 @@ export type MessagesData = {
   createdAt: string;
   isRead: boolean;
   message: string;
+  image?: string;
   receivedId: string;
   senderId: string;
   _id: string;
