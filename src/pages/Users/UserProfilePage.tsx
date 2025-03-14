@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import Header from "../../components/Header";
 import { Camera } from "lucide-react";
 import { useUploadProfilePicMutation } from "../../redux/api/appApi";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { selectCurrentUser, setProfilePicture } from "../../redux/slice/Auth_Slice";
+import Header from "@/components/App/Header";
+import Navigation from "@/components/App/Navigation";
 
 const UserProfilePage = () => {
   const auth = useSelector(selectCurrentUser);
@@ -37,7 +38,8 @@ const UserProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#8784F1_0%,_#000_100%)]">
-      <Header />
+      <Header/>
+      <Navigation/>
       <div className="flex flex-col items-center mt-9 pb-9">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
