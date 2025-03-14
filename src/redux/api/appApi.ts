@@ -127,6 +127,28 @@ export const appApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["ratings"],
     }),
+    getAllNotification : builder.query({
+      query: (data) => ({
+        url: "/app/get-all-notification",
+        method: "POST",
+        body:data
+      }),
+      providesTags:["notification"]
+    }),
+     markAsRead : builder.mutation({
+      query: (data) => ({
+        url: "/app/mark-as-read",
+        method: "POST",
+        body:data
+      }),
+      invalidatesTags:["notification"]
+     }),
+     getAllTransactions : builder.query({
+      query: () => ({
+        url: "/app/get-all-transactions",
+        method: "GET",
+      }),
+     })
   }),
 });
 
@@ -145,4 +167,7 @@ export const {
   useAddReviwsMutation,
   useGetReviewsQuery,
   useGetAllRatingsQuery,
+  useGetAllNotificationQuery,
+  useMarkAsReadMutation,
+  useGetAllTransactionsQuery
 } = appApi;
