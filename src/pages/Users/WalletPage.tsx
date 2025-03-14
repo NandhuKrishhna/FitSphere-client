@@ -18,6 +18,8 @@ export default function WalletPage() {
   const user = useSelector(selectCurrentUser);
   const { data: walletData, error, isLoading } = useGetWalletQuery({ userId: user?._id });
 
+  console.log(walletData);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   if (isLoading) return <WalletSkeleton />;
@@ -32,8 +34,10 @@ export default function WalletPage() {
     );
   }
 
-  const balance = walletData?.response.balance || 0;
-  const transactions = walletData?.response.transactions || [];
+  const wallet = walletData?.response?.[0]; 
+  const balance = wallet?.balance || 0;
+  const transactions = wallet?.transactions || [];
+  const currency = wallet?.currency || "INR"; 
   const pageCount = Math.ceil(transactions.length / ITEMS_PER_PAGE);
   const paginatedTransactions = transactions.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
@@ -46,7 +50,7 @@ export default function WalletPage() {
           <div className="px-4 py-5 sm:p-6 bg-purple-600 text-white">
             <h3 className="text-lg leading-6 font-medium">Your Wallet</h3>
             <div className="mt-2 text-3xl font-bold">
-              {walletData?.response.currency} {balance.toFixed(2)}
+              {currency} {balance.toFixed(2)}
             </div>
           </div>
           <div className="px-4 py-5 sm:p-6">
@@ -63,7 +67,7 @@ export default function WalletPage() {
                       className={`text-sm font-semibold ${transaction.amount >= 0 ? "text-green-400" : "text-red-400"}`}
                     >
                       {transaction.amount >= 0 ? "+" : "-"}
-                      {walletData?.response.currency} {Math.abs(transaction.amount).toFixed(2)}
+                      {currency} {Math.abs(transaction.amount).toFixed(2)}
                     </div>
                   </div>
                 ))
@@ -98,3 +102,4 @@ export default function WalletPage() {
     </div>
   );
 }
+
