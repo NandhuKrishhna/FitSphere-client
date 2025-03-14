@@ -1,9 +1,7 @@
-"use client";
-
 import ChatHeader from "@/components/App/ChatHeader";
 import ChatSideBar from "@/components/App/ChatSideBar";
 import ChatContainer from "@/components/App/ChatContainer";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { selectMessages, selectSelectedUser } from "@/redux/slice/socket.ioSlice";
 import useSendMessage from "@/hooks/App/SendMessageHook";
 import { NoUserSelectedPlaceholder } from "@/framer-motion/NoUserSelectedPlaceHolder";
@@ -13,6 +11,7 @@ import Header from "@/components/App/Header";
 import Navigation from "@/components/App/Navigation";
 import { useState, useEffect } from "react";
 
+
 export default function DoctorChatPage() {
   const selectedUser = useSelector(selectSelectedUser);
   const { isLoading, setMessage, handleSendMessage, message } = useSendMessage(selectedUser?.doctorDetails._id);
@@ -21,20 +20,18 @@ export default function DoctorChatPage() {
     { skip: !selectedUser?.doctorDetails._id }
   );
   const messages = useSelector(selectMessages);
-
-  // Track if we're in mobile view and if chat is open
   const [isMobileView, setIsMobileView] = useState(false);
 
-  // Check screen size on mount and when window resizes
+
+
+
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobileView(window.innerWidth < 640);
     };
 
-    // Initial check
     checkScreenSize();
 
-    // Add resize listener
     window.addEventListener("resize", checkScreenSize);
 
     // Cleanup
