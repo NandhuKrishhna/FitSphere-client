@@ -1,8 +1,12 @@
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { MoreVertical, X, ArrowLeft } from "lucide-react";
 import { Button } from "../ui/button";
-import { useDispatch, useSelector } from "react-redux";
-import { selectOnlineUsers, setSelectedUser } from "@/redux/slice/socket.ioSlice";
+import { useSelector } from "react-redux";
+import { selectOnlineUsers } from "@/redux/slice/socket.ioSlice";
+import { getSocket } from "@/lib/socketManager";
+
+
 
 const ChatHeader = ({
   name,
@@ -16,11 +20,34 @@ const ChatHeader = ({
   isMobileView?: boolean;
 }) => {
   const onlineUsers = useSelector(selectOnlineUsers);
-  const dispatch = useDispatch();
+  const [typingUser, setTypingUser] = useState<string | null>(null);
 
-  const handleBack = () => {
-    dispatch(setSelectedUser(null));
-  };
+
+  useEffect(() => {
+    const socket = getSocket();
+  
+    if (!socket) {
+      console.error("Socket not available in chat header.");
+      return;
+    }
+  
+    socket.on("typing", ({ senderId }) => {
+      console.log(`User ${senderId} is typing...`);
+      setTypingUser(senderId);
+    });
+  
+    socket.on("stop_typing", ({ senderId }) => {
+      console.log(`User ${senderId} stopped typing.`);
+      setTypingUser(null);
+    });
+  
+    return () => {
+      socket.off("typing");
+      socket.off("stop_typing");
+    };
+  }, []);
+  
+  
 
   return (
     <div className="flex items-center justify-between p-4 border-b border-zinc-800">
@@ -30,7 +57,7 @@ const ChatHeader = ({
             variant="ghost"
             size="icon"
             className="text-zinc-400 hover:text-zinc-100 mr-2 sm:hidden"
-            onClick={handleBack}
+            onClick={() => setTypingUser(null)}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -41,19 +68,16 @@ const ChatHeader = ({
         </Avatar>
         <div>
           <h2 className="text-zinc-100 font-medium">{name}</h2>
-          <p className="text-white text-sm">{onlineUsers.includes(id) ? "Online" : "Offline"}</p>
+          <p className="text-white text-sm">
+            {typingUser ? "Typing..." : onlineUsers.includes(id) ? "Online" : "Offline"}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
           <MoreVertical className="h-5 w-5" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-zinc-400 hover:text-zinc-100 hidden sm:flex"
-          onClick={handleBack}
-        >
+        <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100 hidden sm:flex">
           <X className="h-5 w-5" />
         </Button>
       </div>
