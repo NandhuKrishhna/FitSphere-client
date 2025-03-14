@@ -12,6 +12,7 @@ persistor.subscribe(() => {
   if (persistor.getState().bootstrapped) {
     const state: RootState = store.getState();
     const { auth } = state;
+    console.log(auth)
 
     if (auth?.currentUser?._id) {
       connectSocket(auth.currentUser._id, store.dispatch);
