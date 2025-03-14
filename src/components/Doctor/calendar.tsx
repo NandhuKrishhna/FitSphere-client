@@ -36,7 +36,6 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
   ];
 
   useEffect(() => {
-    // Update the month when the component mounts
     onMonthChange(format(new Date(), "MMMM"));
   }, [onMonthChange]);
 
@@ -50,14 +49,12 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
     setWeekStart(newWeekStart);
   };
 
-  // Generate the days for the current week
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = addDays(weekStart, i);
     const dayNumber = date.getDate();
     const dayName = format(date, "EEE");
     const isToday = isSameDay(date, new Date());
 
-    // Count slots for this day
     const slotsForDay = slots.filter((slot) => {
       const slotDate = parseISO(slot.date);
       return isSameDay(slotDate, date);
@@ -74,7 +71,7 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 text-black">
         <h2 className="text-md font-semibold">Upcoming Meetings</h2>
         <div className="relative">
           <div
@@ -86,7 +83,7 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
           </div>
 
           {isMonthDropdownOpen && (
-            <div className="absolute right-0 mt-1 bg-white shadow-lg rounded-md py-1 z-10 w-32">
+            <div className="absolute right-0 mt-1 bg-white text-zinc-950 shadow-lg rounded-md py-1 z-10 w-32">
               {months.map((month) => (
                 <div
                   key={month}
@@ -104,7 +101,7 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 text-black">
         <button onClick={goToPreviousWeek} className="p-1 rounded-full hover:bg-gray-200">
           <ChevronLeft size={20} />
         </button>
@@ -122,7 +119,7 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
         {days.map((day, index) => (
           <div
             key={index}
-            className={`flex flex-col items-center justify-center rounded-full w-12 h-12 relative ${
+            className={`flex flex-col items-center justify-center text-black rounded-full w-12 h-12 relative ${
               day.isSelected ? "bg-yellow-300" : "bg-white"
             }`}
           >
