@@ -35,7 +35,7 @@ const useLoginHook = () => {
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
       connectSocket(res.response._id, dispatch);
-      navigate("/doctors/all");
+      navigate("/home");
     } catch (err) {
       console.log(err);
       const error = err as ErrorResponse;
