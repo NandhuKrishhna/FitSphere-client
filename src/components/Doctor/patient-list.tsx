@@ -62,11 +62,11 @@ export default function PatientList({ selectedTimeFrame, onTimeFrameChange, appo
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 text-black">
         <h2 className="text-lg font-semibold">Patients</h2>
         <div className="flex gap-2">
           <div
-            className="bg-gray-300 rounded-md px-3 py-1 flex items-center gap-2 cursor-pointer relative"
+            className="bg-gray-300 rounded-md px-3 py-1 flex text-black items-center gap-2 cursor-pointer relative"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <span className="text-sm">{selectedTimeFrame}</span>
@@ -108,11 +108,11 @@ export default function PatientList({ selectedTimeFrame, onTimeFrameChange, appo
                 alt={appointment.patientName}
                 className="w-10 h-10 rounded-full object-cover"
               />
-              <div className="flex-grow">
+              <div className="flex-grow text-black">
                 <h3 className="text-sm font-medium">{appointment.patientName}</h3>
-                <p className="text-xs text-gray-600">{format(parseISO(appointment.date), "MMMM d, yyyy")}</p>
+                <p className="text-xs text-zinc-600">{format(parseISO(appointment.date), "MMMM d, yyyy")}</p>
               </div>
-              <div className="bg-green-200 px-2 py-1 rounded-md text-xs">{formatAppointmentTime(appointment)}</div>
+              <div className="bg-green-200 text-black px-2 py-1 rounded-md text-xs">{formatAppointmentTime(appointment)}</div>
             </div>
           ))}
         </div>
