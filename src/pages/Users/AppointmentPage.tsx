@@ -187,10 +187,13 @@ const AppointmentPage: React.FC<AppointmentListProps> = () => {
                         <span
                           className={`px-3 py-1.5 rounded-full text-xs font-medium ${
                             appointment.status === "scheduled"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : appointment.status === "cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-green-100 text-green-800"
+  ? "bg-yellow-100 text-yellow-800"
+  : appointment.status === "failed"
+  ? "bg-red-500 text-white"
+  : appointment.status === "cancelled"
+  ? "bg-red-100 text-red-800" 
+  : "bg-green-100 text-green-800"
+
                           }`}
                         >
                           {appointment.status}
