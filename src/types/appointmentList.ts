@@ -13,7 +13,7 @@ export interface Appointment {
   consultationType: "video" | "in-person";
   date: string;
   doctor: Doctor;
-  status: "scheduled" | "completed" | "cancelled";
+  status: "scheduled" | "completed" | "cancelled" |"failed";
   slot: Slots;
   amount: number;
   orderId: string;
