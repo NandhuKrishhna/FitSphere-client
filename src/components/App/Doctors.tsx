@@ -32,7 +32,7 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
 
   const handleCardClick = () => {
     dispatch(setSelectedDoctorId(id));
-    navigate("/doctors/profile");
+    navigate("/doctors/details");
   };
 
   return (
