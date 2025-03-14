@@ -16,8 +16,7 @@ const ChatContainer = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isScrolledUp, setIsScrolledUp] = useState(false);
-
-  // Scroll to latest message when new message arrives
+  // console.log(messages)
   useEffect(() => {
     if (scrollAreaRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
@@ -63,12 +62,23 @@ const ChatContainer = ({
                       message.senderId === selectedUser ? "bg-violet-400 text-white" : "bg-[#6A67C1] text-purple-100"
                     }`}
                   >
-                    <div className="flex gap-6">
-                      <p className="text-md">{message.message}</p>
-                      <span className="text-xs opacity-70 mt-1 block text-indigo-100 text-right">
-                        {toIndianTime(message.createdAt)}
-                      </span>
-                    </div>
+                    {message.image && (
+                      <img
+                        src={message.image}
+                        alt="Attachment"
+                        className="max-w-[200px] rounded-md mb-2"
+                      />
+                    )}
+
+                    {message.message && (
+                      <div className="flex gap-6">
+                        <p className="text-md">{message.message}</p>
+                      </div>
+                    )}
+
+                    <span className="text-xs opacity-70 mt-1 block text-indigo-100 text-right">
+                      {toIndianTime(message.createdAt)}
+                    </span>
                   </div>
                 </div>
               ))}
