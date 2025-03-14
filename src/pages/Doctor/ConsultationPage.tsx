@@ -9,6 +9,7 @@ import { cloneDeep } from "lodash";
 import type Peer from "peerjs";
 import { Mic, MicOff, Video, VideoOff, PhoneOff } from "lucide-react";
 
+
 interface PlayerObject {
   [key: string]: {
     url: string | MediaStream;
@@ -208,8 +209,11 @@ const ConsultationPage: React.FC = () => {
           </button>
         </div>
       </div>
+
     </div>
+    
   );
+  
 };
 
 export default ConsultationPage;
