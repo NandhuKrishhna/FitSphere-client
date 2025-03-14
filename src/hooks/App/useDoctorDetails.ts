@@ -76,7 +76,7 @@ export const useDoctorDetails = () => {
       order_id: order.id,
       handler: async (response: RazorpayResponse) => {
         try {
-          await verifyPayment({ razorpay_order_id: response.razorpay_order_id });
+          await verifyPayment({ razorpay_order_id: response.razorpay_order_id ,doctorId: doctorId});
           toast.success("Payment successful!");
           navigate("/appointments");
         } catch (error) {
@@ -104,12 +104,9 @@ export const useDoctorDetails = () => {
     try {
       const rzp = new (window as any).Razorpay(options);
       rzp.on("payment.failed", async (response: RazorpayErrorResponse) => {
-        console.log("Payment failed event triggered", response);
-        toast.error(`Payment failed: ${response.error.description || "Please try again later"}`);
-
-        // **Automatically close the modal**
         rzp.close();
         setTimeout(async () => {
+          console.log(response)
           await handlePaymentFailure(order.id);
           navigate("/appointments");
         }, 500);
