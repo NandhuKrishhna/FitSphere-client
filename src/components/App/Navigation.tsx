@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarClock, House, MessageCircle, Video } from "lucide-react";
+import { BriefcaseMedical, CalendarClock, CookingPot, House, MessageCircle, NotebookPen, Video, Wallet } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 
@@ -50,12 +50,12 @@ export default function Navigation() {
           </Link>
 
           <Link to="/doctors/all" className={`flex flex-col items-center p-2 ${getLinkClass("/doctors/all")}`}>
-            <MessageCircle className="w-5 h-5" />
+            <BriefcaseMedical  className="w-5 h-5" />
             <span className="text-xs mt-1">Doctors</span>
           </Link>
 
           <Link to="/recipes" className={`flex flex-col items-center p-2 ${getLinkClass("/recipes")}`}>
-            <MessageCircle className="w-5 h-5" />
+            <CookingPot  className="w-5 h-5" />
             <span className="text-xs mt-1">Recipes</span>
           </Link>
 
@@ -65,13 +65,17 @@ export default function Navigation() {
           </Link>
 
           <Link to="/wallet" className={`flex flex-col items-center p-2 ${getLinkClass("/wallet")}`}>
-            <MessageCircle className="w-5 h-5" />
+            <Wallet  className="w-5 h-5" />
             <span className="text-xs mt-1">Wallet</span>
           </Link>
 
           <Link to="/create-meet" className={`flex flex-col items-center p-2 ${getLinkClass("/create-meet")}`}>
             <Video className="w-5 h-5" />
             <span className="text-xs mt-1">Meet</span>
+          </Link>
+          <Link to="/transactions" className={`flex flex-col items-center p-2 ${getLinkClass("/transactions")}`}>
+            <NotebookPen  className="w-5 h-5" />
+            <span className="text-xs mt-1">Transaction</span>
           </Link>
         </>
       )}
