@@ -1,14 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
+
 import ChatHeader from "@/components/App/ChatHeader";
 import ChatSideBar from "@/components/App/ChatSideBar";
-import { Paperclip, Send, Smile } from "lucide-react";
 import ChatContainer from "@/components/App/ChatContainer";
 import { useSelector } from "react-redux";
-import { selectMessages, selectOnlineUsers, selectSelectedUser } from "@/redux/slice/socket.ioSlice";
+import { selectMessages, selectSelectedUser } from "@/redux/slice/socket.ioSlice";
 import useSendMessage from "@/hooks/App/SendMessageHook";
 import { NoUserSelectedPlaceholder } from "@/framer-motion/NoUserSelectedPlaceHolder";
 import { useGetMessagesQuery } from "@/redux/api/chatApi";
+import ChatInput from "@/components/App/ChatInput";
+import { useState, useEffect } from "react";
 
 export default function DoctorChatPage() {
   const selectedUser = useSelector(selectSelectedUser);
@@ -17,61 +18,62 @@ export default function DoctorChatPage() {
     { receiverId: selectedUser?.doctorDetails._id },
     { skip: !selectedUser?.doctorDetails._id }
   );
-  const onlineUsers = useSelector(selectOnlineUsers);
   const messages = useSelector(selectMessages);
-  console.log("Messages", messages);
-  console.log(onlineUsers);
+  const [isMobileView, setIsMobileView] = useState(false);
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 640);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   return (
-    <div className="flex flex-1 bg-zinc-900">
-      <ChatSideBar />
-      <div className="flex-1 flex flex-col">
-        {selectedUser ? (
-          <>
-            <ChatHeader
-              name={selectedUser.doctorDetails.name}
-              profilePic={selectedUser.doctorDetails.profilePicture}
-              id={selectedUser.doctorDetails._id}
-            />
-            <div className="flex-1 overflow-auto">
-              <ChatContainer
-                messages={messages}
-                selectedUser={selectedUser.doctorDetails._id}
-                isMessageLoading={isMessageLoading}
+    <div className="min-h-screen flex flex-col bg-[#121212] text-white">
+      <div className="flex flex-1 bg-zinc-900 h-[calc(100vh-8rem)] overflow-hidden">
+        <div
+          className={`${isMobileView && selectedUser ? "hidden" : "block"} sm:block ${
+            selectedUser ? "sm:w-80" : "w-full"
+          } h-full`}
+        >
+          <ChatSideBar />
+        </div>
+        <div
+          className={`flex-1 flex flex-col h-full ${isMobileView && !selectedUser ? "hidden" : "block"} ${
+            !selectedUser ? "sm:flex hidden" : "flex"
+          }`}
+        >
+          {selectedUser ? (
+            <div className="flex flex-col h-full">
+              <ChatHeader
+                name={selectedUser.doctorDetails.name}
+                profilePic={selectedUser.doctorDetails.profilePicture}
+                id={selectedUser.doctorDetails._id}
+                isMobileView={isMobileView}
               />
-            </div>
-            <div className="p-4 border-t border-zinc-800">
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
-                  <Smile className="h-5 w-5" />
-                </Button>
-                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-100">
-                  <Paperclip className="h-5 w-5" />
-                </Button>
-                <Input
-                  placeholder="Type a message"
-                  className="bg-zinc-800 border-none text-zinc-100"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+              <div className="flex-1 overflow-hidden">
+                <ChatContainer
+                  messages={messages}
+                  selectedUser={selectedUser.doctorDetails._id}
+                  isMessageLoading={isMessageLoading}
                 />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-zinc-400 hover:text-zinc-100"
-                  disabled={!message.trim() || isLoading}
-                  onClick={handleSendMessage}
-                >
-                  {isLoading ? (
-                    <span className="loading loading-spinner loading-xs"></span>
-                  ) : (
-                    <Send className="h-5 w-5" />
-                  )}
-                </Button>
+              </div>
+              <div className="mt-auto">
+                <ChatInput
+                  message={message}
+                  setMessage={setMessage}
+                  handleSendMessage={handleSendMessage}
+                  isLoading={isLoading}
+                />
               </div>
             </div>
-          </>
-        ) : (
-          <NoUserSelectedPlaceholder />
-        )}
+          ) : (
+            <div className="flex-1 flex items-center justify-center h-full">
+              <NoUserSelectedPlaceholder />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
