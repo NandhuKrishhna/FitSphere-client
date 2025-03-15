@@ -1,9 +1,10 @@
 export interface IFoodItem {
+  quantity:string
   name: string;
   calories: number;
   protein?: number;
   carbs?: number;
-  fats?: number;
+  fat?: number;
   _id?: string;
 }
 
