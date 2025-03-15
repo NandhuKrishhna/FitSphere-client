@@ -3,7 +3,9 @@ import toast from "react-hot-toast";
 import { ErrorResponse } from "../LoginHook";
 import { IFoodItem } from "@/types/food";
 
-const useAddFood = (mealType: string, selectedFood: IFoodItem | null, onClose: () => void) => {
+
+const useAddFood = (mealType: string, selectedFood: IFoodItem | null, onClose: () => void  ,
+) => {
   const [addFoodLog, { isLoading }] = useAddFoodLogMutation();
 
   const handleSaveFood = async () => {
@@ -17,11 +19,13 @@ const useAddFood = (mealType: string, selectedFood: IFoodItem | null, onClose: (
           calories: selectedFood.calories,
           protein: selectedFood.protein,
           carbs: selectedFood.carbs,
-          fats: selectedFood.fats,
+          fats: selectedFood.fat,
+          quantity: selectedFood.quantity,
         },
       }).unwrap();
 
       toast.success("Food added successfully!");
+
       onClose();
     } catch (error) {
       const err = error as ErrorResponse;
