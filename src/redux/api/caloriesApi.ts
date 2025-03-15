@@ -42,13 +42,13 @@ export const caloriesApi = apiSlice.injectEndpoints({
       providesTags: ["foodlogs"],
     }),
 
-    searchFood: builder.mutation({
-      query: (data) => ({
-        url: "/app/get-foods",
-        method: "POST",
-        body: data,
+    searchFood: builder.query({
+      query: ({ query, quantity }) => ({
+        url: `/app/get-foods?query=${encodeURIComponent(query)}&quantity=${quantity || ""}`,
+        method: "GET",
       }),
     }),
+    
     addFoodLog: builder.mutation({
       query: (data) => ({
         url: "/app/add-foodlog",
@@ -74,7 +74,7 @@ export const {
   useUserHealthDetailMutation,
   useGetUserHealthDetailsQuery,
   useGetUserFoodLogsDetailsQuery,
-  useSearchFoodMutation,
   useAddFoodLogMutation,
   useDeleteFoodLogMutation,
+  useSearchFoodQuery
 } = caloriesApi;
