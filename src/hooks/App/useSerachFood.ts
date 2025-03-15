@@ -1,40 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { ErrorResponse } from "../LoginHook";
-import { useSearchFoodMutation } from "@/redux/api/caloriesApi";
-
-interface FoodItem {
-  name: string;
-  quantity: string;
-  protein: number;
-  fat: number;
-  carbs: number;
-  calories: number;
-}
-
-interface FoodSearchResponse {
-  foodDetails: FoodItem[];
-}
+import { useSearchFoodQuery } from "@/redux/api/caloriesApi";
 
 const useSearchFood = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
-  const [searchFood, { isLoading }] = useSearchFoodMutation();
+  const [quantity, setQuantity] = useState(50); 
+  const { data, isFetching, error } = useSearchFoodQuery(
+    { query: searchQuery, quantity },
+    { skip: searchQuery.length < 2 }
+  );
 
-  const onSearchFood = async () => {
-    if (searchQuery.trim() === "") return;
-
-    try {
-      const response: FoodSearchResponse = await searchFood({ query: searchQuery }).unwrap();
-      setSearchResults(response.foodDetails);
-    } catch (error) {
-      const err = error as ErrorResponse;
-      if (err?.data?.message) return toast.error(err.data.message);
+  useEffect(() => {
+    if (error) {
       toast.error("Failed to fetch food data. Please try again.");
     }
+  }, [error]);
+
+  return {
+    searchQuery,
+    setSearchQuery,
+    quantity,
+    setQuantity,
+    searchResults: data?.foodDetails || [],
+    isLoading: isFetching,
   };
-
-  return { searchQuery, setSearchQuery, searchResults, isLoading, onSearchFood };
 };
-
 export default useSearchFood;
