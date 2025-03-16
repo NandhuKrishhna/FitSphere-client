@@ -113,13 +113,13 @@ export const appApi = apiSlice.injectEndpoints({
       invalidatesTags: ["reviews", "ratings"],
     }),
     getReviews: builder.query({
-      query: (data) => ({
-        url: "/app/get-reviews",
-        method: "POST",
-        body: data,
+      query: (doctorId) => ({
+        url: `/app/get-reviews/${doctorId}`,  
+        method: "GET",
       }),
       providesTags: ["reviews"],
     }),
+    
     getAllRatings: builder.query({
       query: () => ({
         url: "/app/get-all-ratings",
