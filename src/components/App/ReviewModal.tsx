@@ -1,52 +1,64 @@
-import { useAddReviwsMutation } from "@/redux/api/appApi";
+import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Review } from "@/types/DoctorDetail";
 
 type ReviewModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  existingReview: Review | null;
   doctorName: string;
-  doctorId: string;
+  isLoading: boolean;
+  onSubmit: (rating: number, reviewText: string) => void;
 };
 
-const ReviewModal: React.FC<ReviewModalProps> = ({ doctorName, doctorId }) => {
-  const [rating, setRating] = useState<number>(0);
-  const [hoveredRating, setHoveredRating] = useState<number>(0);
-  const [reviewText, setReviewText] = useState<string>("");
-  const [addReview, { isLoading, isError }] = useAddReviwsMutation();
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!doctorId) return;
+const ReviewModal: React.FC<ReviewModalProps> = ({
+  isOpen,
+  onClose,
+  existingReview,
+  doctorName,
+  isLoading,
+  onSubmit
+}) => {
+  const [rating, setRating] = useState(0);
+  const [hoveredRating, setHoveredRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
   
-    try {
-      const response = await addReview({ doctorId, rating, reviewText }).unwrap();
-      console.log("Review submitted:", response); // Debugging
-      toast.success(response.message || "Review submitted successfully!");
-  
-      setTimeout(() => {
-        console.log("Navigating to /appointments");
-        navigate("/appointments");
-      }, 500);
-    } catch (error) {
-      console.error("Error submitting review:", error);
-      toast.error("Failed to submit review. Try again.");
+  useEffect(() => {
+    if (existingReview) {
+      setRating(existingReview.rating || 0);
+      setReviewText(existingReview.reviewText || "");
+    } else {
+      setRating(0);
+      setReviewText("");
     }
+  }, [existingReview, isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(rating, reviewText);
   };
-  
+
+  if (!isOpen) return null;
 
   return (
-    <div className="flex items-center justify-center h-screen p-4 bg-black backdrop-blur-sm">
+    <div className="flex items-center justify-center fixed inset-0 z-50 p-4 bg-black bg-opacity-70 backdrop-blur-sm">
       <div className="bg-gray-900 w-full max-w-md rounded-xl shadow-xl overflow-hidden animate-fadeIn">
-        <div className="px-6 py-4 border-b border-gray-800 flex justify-center">
-          <h3 className="text-xl font-medium text-white">Rate Your Experience</h3>
+        <div className="px-6 py-4 border-b border-gray-800 flex justify-between">
+          <h3 className="text-xl font-medium text-white">
+            {existingReview ? "Edit Your Review" : "Rate Your Experience"}
+          </h3>
+          <button onClick={onClose} className="text-gray-400">X</button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="text-center mb-6">
-            <p className="text-gray-300 mb-4">How was your video consultation with Dr. {doctorName}?</p>
-            <div className="flex justify-center space-x-2" onMouseLeave={() => setHoveredRating(0)}>
+            <p className="text-gray-300 mb-4">
+              How was your video consultation with Dr. {doctorName}?
+            </p>
+            <div
+              className="flex justify-center space-x-2"
+              onMouseLeave={() => setHoveredRating(0)}
+            >
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
@@ -58,16 +70,14 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ doctorName, doctorId }) => {
                   <Star
                     size={32}
                     className={`${
-                      star <= (hoveredRating || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-600"
+                      star <= (hoveredRating || rating)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-600"
                     } transition-colors`}
                   />
                 </button>
               ))}
             </div>
-            <p className="text-gray-400 mt-2 h-6">
-              {rating > 0 &&
-                (["Poor", "Fair", "Good", "Very Good", "Excellent"][rating - 1])}
-            </p>
           </div>
 
           <div className="mb-6">
@@ -77,7 +87,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ doctorName, doctorId }) => {
             <textarea
               id="review"
               rows={5}
-              className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg p-3 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none"
+              className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg p-3 focus:ring-1 focus:ring-purple-500"
               placeholder="Tell us about your consultation experience..."
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
@@ -90,11 +100,9 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ doctorName, doctorId }) => {
               disabled={rating === 0 || isLoading}
               className="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Submitting..." : "Submit Review"}
+              {isLoading ? "Submitting..." : existingReview ? "Update Review" : "Submit Review"}
             </button>
           </div>
-
-          {isError && <p className="text-red-500 text-sm mt-2">Failed to submit review. Try again.</p>}
         </form>
       </div>
     </div>
