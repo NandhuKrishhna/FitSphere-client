@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import DoctorCard from "../../components/App/Doctors";
 import FilterBar from "../../components/ui/FilterBar";
@@ -12,7 +10,6 @@ import Header from "@/components/App/Header";
 import { Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Replace the Sheet component usage with this custom modal
 const DoctorsPage = () => {
   const { data, error, isLoading, limit, search, handleSearchChange, handlePageChange, handleApplyFilters } =
     useDoctorsListing();
@@ -23,8 +20,6 @@ const DoctorsPage = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#121212] to-[#1a1a1a] text-white">
       <Header value={search} onChange={handleSearchChange} />
       <Navigation />
-
-      {/* Mobile Filter Modal */}
       {isFilterOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)}></div>
@@ -81,14 +76,12 @@ const DoctorsPage = () => {
                 ))}
               </div>
             )}
-
             {error && (
               <div className="flex flex-col items-center justify-center p-8 bg-gray-800/50 rounded-xl">
                 <p className="text-red-400 mb-4">Failed to load doctors</p>
                 <span className="loading loading-bars loading-md"></span>
               </div>
             )}
-
             {data && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -103,7 +96,6 @@ const DoctorsPage = () => {
                     />
                   ))}
                 </div>
-
                 <div className="flex justify-center mt-10">
                   <BasicPagination
                     count={data.pagination.totalPages}
