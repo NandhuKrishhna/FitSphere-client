@@ -32,10 +32,8 @@ const DoctorDetailsPage: React.FC = () => {
   } = useDoctorDetails();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(doctorDetails)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
-  const { data: reviewsData } = useGetReviewsQuery({ doctorId: doctorDetails?._id });
-
+  const { data: reviewsData } = useGetReviewsQuery(doctorDetails?._id);
   const reviews = reviewsData?.response?.reviews || [];
   const averageRating = reviewsData?.response?.averageRating || 0;
   const totalReviews = reviewsData?.response?.totalReviews || 0;
@@ -108,6 +106,7 @@ const DoctorDetailsPage: React.FC = () => {
             doctorDetails={doctorDetails}
             reviews={reviews}
             renderTabContent={true}
+            doctorName={doctorDetails.name}
           />
 
           <ContactInformation doctorDetails={doctorDetails} />
