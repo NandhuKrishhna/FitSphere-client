@@ -1,16 +1,27 @@
+"use client"
+
 import { useEffect, useMemo, useRef, useState } from "react"
 import { X, Search } from "lucide-react"
 import useSearchFood from "@/hooks/App/useSerachFood"
 import useAddFood from "@/hooks/App/useAddFood"
+import useEditFood from "@/hooks/App/useEditFood"
 import type { IFoodItem } from "@/types/food"
 
 interface FoodSearchModalProps {
   isOpen: boolean
   onClose: () => void
   mealType: string
+  editMode?: boolean
+  foodToEdit?: IFoodItem | null
 }
 
-export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalProps) => {
+export const FoodSearchModal = ({
+  isOpen,
+  onClose,
+  mealType,
+  editMode = false,
+  foodToEdit = null,
+}: FoodSearchModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const { searchQuery, setSearchQuery, quantity, setQuantity, searchResults, isLoading } = useSearchFood()
   const [selectedFood, setSelectedFood] = useState<IFoodItem | null>(null)
@@ -19,25 +30,41 @@ export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalPr
     selectedFood ? { ...selectedFood, quantity: `${quantity}g` } : null,
     onClose,
   )
+  const { handleEditFood, isLoading: editFoodLoading } = useEditFood(
+    mealType,
+    selectedFood ? { ...selectedFood, quantity: `${quantity}g` } : null,
+    onClose,
+  )
   const quantityOptions = [50, 100, 150, 200, 250, 300]
 
-  const resultsArray = useMemo(() => searchResults || [], [searchResults]);
-  
+  const resultsArray = useMemo(() => searchResults || [], [searchResults])
   useEffect(() => {
-    setSelectedFood(null)
-  }, [searchQuery])
-  
+    if (editMode && foodToEdit && isOpen) {
+      setSelectedFood(foodToEdit)
+      const quantityStr = foodToEdit.quantity || "100g"
+      const quantityNum = Number.parseInt(quantityStr.replace(/[^0-9]/g, ""))
+      setQuantity(quantityNum || 100)
+      setSearchQuery(foodToEdit.name)
+    }
+  }, [editMode, foodToEdit, isOpen, setQuantity, setSearchQuery])
 
   useEffect(() => {
-
-    if (selectedFood && resultsArray.length > 0) {
-      const updatedFood = resultsArray.find(food => food.name === selectedFood.name);
-      if (updatedFood) {
-        setSelectedFood(updatedFood);
+    if (!editMode || (editMode && searchQuery !== foodToEdit?.name)) {
+      if (searchQuery && searchQuery.length > 2) {
+        setSelectedFood(null)
       }
     }
-  }, [resultsArray, selectedFood]);
-  
+  }, [searchQuery, editMode, foodToEdit?.name])
+
+  useEffect(() => {
+    if (selectedFood && resultsArray.length > 0) {
+      const updatedFood = resultsArray.find((food: IFoodItem) => food.name === selectedFood.name)
+      if (updatedFood) {
+        setSelectedFood(updatedFood)
+      }
+    }
+  }, [resultsArray, selectedFood])
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -51,17 +78,30 @@ export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalPr
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isOpen, onClose])
-  
+
   useEffect(() => {
     if (!isOpen) {
-      setSearchQuery("")
-      setSelectedFood(null)
-      setQuantity(100)
+      if (!editMode) {
+        setSearchQuery("")
+        setSelectedFood(null)
+        setQuantity(100)
+      }
     }
-  }, [isOpen, setQuantity, setSearchQuery])
-  
+  }, [isOpen, setQuantity, setSearchQuery, editMode])
+
   if (!isOpen) return null
-  
+
+  const handleSave = () => {
+    if (editMode && foodToEdit?._id) {
+      handleEditFood(foodToEdit._id)
+    } else {
+      handleSaveFood()
+    }
+  }
+
+  const isActionLoading = editMode ? editFoodLoading : addFoodLoading
+  const actionText = editMode ? `Update ${quantity}g in ${mealType}` : `Add ${quantity}g to ${mealType}`
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
       <div
@@ -69,7 +109,9 @@ export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalPr
         className="bg-gradient-to-br from-[#1e1e30] to-[#2a2a40] rounded-xl w-full max-w-md overflow-hidden shadow-2xl"
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-800">
-          <h3 className="text-lg font-bold text-white">Add Food to {mealType}</h3>
+          <h3 className="text-lg font-bold text-white">
+            {editMode ? `Edit Food in ${mealType}` : `Add Food to ${mealType}`}
+          </h3>
           <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-700">
             <X className="w-5 h-5 text-gray-400" />
           </button>
@@ -102,7 +144,7 @@ export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalPr
                 }`}
                 onClick={() => {
                   setSelectedFood(food)
-                  setQuantity(100) 
+                  setQuantity(editMode && food.name === selectedFood?.name ? quantity : 100)
                 }}
               >
                 <div className="flex justify-between items-center">
@@ -168,19 +210,15 @@ export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalPr
                 <div className="text-xs text-gray-400">Carbs</div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-bold text-yellow-500">{selectedFood.fat}g</div>
+                <div className="text-lg font-bold text-yellow-500">{selectedFood.fats}g</div>
                 <div className="text-xs text-gray-400">Fat</div>
               </div>
             </div>
             <button
-              onClick={handleSaveFood}
+              onClick={handleSave}
               className="w-full bg-purple-500 text-white py-3 rounded-lg font-medium hover:bg-purple-600 transition-colors"
             >
-              {addFoodLoading ? (
-                <span className="loading loading-spinner loading-sm"></span>
-              ) : (
-                `Add ${quantity}g to ${mealType}`
-              )}
+              {isActionLoading ? <span className="loading loading-spinner loading-sm"></span> : actionText}
             </button>
           </div>
         )}
@@ -188,3 +226,4 @@ export const FoodSearchModal = ({ isOpen, onClose, mealType }: FoodSearchModalPr
     </div>
   )
 }
+
