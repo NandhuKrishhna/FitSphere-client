@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { FoodSearchModal } from "@/components/App/FoodSearchModal"
 import { useGetUserFoodLogsDetailsQuery } from "@/redux/api/caloriesApi"
@@ -11,6 +9,7 @@ import CaloriesCard from "@/components/App/CaloriesCard"
 import MacrosCard from "@/components/App/MacrosCard"
 import DaySelector from "@/components/App/DaySelector"
 import MealList from "@/components/App/MealsList"
+import CongratulationsAnimation from "@/components/App/CongratulationsAnimation"
 
 export default function HomePageTest() {
   const [selectedDay, setSelectedDay] = useState<string>(new Date().toISOString().split("T")[0])
@@ -24,11 +23,26 @@ export default function HomePageTest() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [selectedMealType, setSelectedMealType] = useState("")
   const [selectedFoodItem, setSelectedFoodItem] = useState<IFoodItem | null>(null)
-  const { handleDeleteFood, isLoading: deleteFoodLoading } = useDeleteFood()
+  const [showCongrats, setShowCongrats] = useState(false)
+  const [previousCalories, setPreviousCalories] = useState(0)
+  const { handleDeleteFood,loadingItems } = useDeleteFood()
 
   useEffect(() => {
-    if (foodLog) setFoodLogs(foodLog)
-  }, [foodLog])
+    if (foodLog) {
+      setFoodLogs(foodLog)
+      const totalCalories = foodLog.response?.totalCalories || 0
+      const requiredCalories = foodLog.response?.requiredCalories || 3000
+      const isToday = selectedDay === new Date().toISOString().split("T")[0]
+      const justHitGoal = previousCalories < requiredCalories && totalCalories >= requiredCalories
+      const hasAddedCalories = totalCalories > previousCalories && previousCalories > 0
+
+      if (isToday && justHitGoal && hasAddedCalories) {
+        setShowCongrats(true)
+      }
+
+      setPreviousCalories(totalCalories)
+    }
+  }, [foodLog, selectedDay, previousCalories])
 
   const mealTypes = foodLogs?.response?.meals
     ? Object.keys(foodLogs.response.meals).map((type) => ({
@@ -111,7 +125,7 @@ export default function HomePageTest() {
           handleOpenAddFoodModal={handleOpenAddFoodModal}
           handleOpenEditFoodModal={handleOpenEditFoodModal}
           handleDeleteFood={handleDeleteFood}
-          deleteFoodLoading={deleteFoodLoading}
+          loadingItems={loadingItems}
         />
       </main>
 
@@ -122,6 +136,8 @@ export default function HomePageTest() {
         editMode={isEditMode}
         foodToEdit={selectedFoodItem}
       />
+
+      <CongratulationsAnimation isVisible={showCongrats} onClose={() => setShowCongrats(false)} />
     </div>
   )
 }
