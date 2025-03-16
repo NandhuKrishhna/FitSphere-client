@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 type SlotType = {
   startTime: string;
   endTime: string;
@@ -19,7 +20,7 @@ const appFeatSlice = createSlice({
   name: "appFeat",
   initialState: initialState,
   reducers: {
-    setSelectedDoctorId: (state, action) => {
+    setSelectedDoctorId: (state, action :PayloadAction<string>) => {
       state.selectedDoctorId = action.payload;
     },
     setSelectedSlot: (state, action) => {
@@ -31,3 +32,4 @@ const appFeatSlice = createSlice({
 
 export const { setSelectedDoctorId, setSelectedSlot, resetAppState } = appFeatSlice.actions;
 export default appFeatSlice.reducer;
+export const selectedDoctorId = (state:RootState) => state.appFeat.selectedDoctorId;
