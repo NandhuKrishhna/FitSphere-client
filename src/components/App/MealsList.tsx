@@ -1,31 +1,32 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Coffee, Plus, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
-import { IFoodItem } from "@/types/food";
+import { useState } from "react"
+import { Coffee, Plus, ChevronDown, ChevronUp, Trash2, Edit2 } from "lucide-react"
+import type { IFoodItem } from "@/types/food"
 
 interface MealType {
-  id: string;
-  type: string;
-  recommended: string;
-  itemCount: number;
-  totalCalories: number;
+  id: string
+  type: string
+  recommended: string
+  itemCount: number
+  totalCalories: number
 }
 
 interface MealData {
-  breakfast: IFoodItem[];
-  lunch: IFoodItem[];
-  dinner: IFoodItem[];
-  snacks: IFoodItem[];
+  breakfast: IFoodItem[]
+  lunch: IFoodItem[]
+  dinner: IFoodItem[]
+  snacks: IFoodItem[]
 }
 
 interface MealListProps {
-  mealTypes: MealType[];
-  meals: MealData | undefined;
-  selectedDay: string;
-  handleOpenAddFoodModal: (mealId: string) => void;
-  handleDeleteFood: (foodId: string | undefined, date: string) => void;
-  deleteFoodLoading: boolean;
+  mealTypes: MealType[]
+  meals: MealData | undefined
+  selectedDay: string
+  handleOpenAddFoodModal: (mealId: string) => void
+  handleOpenEditFoodModal: (mealId: string, foodItem: IFoodItem) => void
+  handleDeleteFood: (foodId: string | undefined, date: string) => void
+  deleteFoodLoading: boolean
 }
 
 export default function MealList({
@@ -33,18 +34,19 @@ export default function MealList({
   meals,
   selectedDay,
   handleOpenAddFoodModal,
+  handleOpenEditFoodModal,
   handleDeleteFood,
   deleteFoodLoading,
 }: MealListProps) {
-  const [expandedMeal, setExpandedMeal] = useState<string | null>(null);
+  const [expandedMeal, setExpandedMeal] = useState<string | null>(null)
 
   const toggleExpandMeal = (mealId: string) => {
     if (expandedMeal === mealId) {
-      setExpandedMeal(null);
+      setExpandedMeal(null)
     } else {
-      setExpandedMeal(mealId);
+      setExpandedMeal(mealId)
     }
-  };
+  }
 
   return (
     <div className="space-y-4">
@@ -75,8 +77,8 @@ export default function MealList({
               <button
                 className="w-9 h-9 bg-white rounded-full flex items-center justify-center"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenAddFoodModal(meal.id);
+                  e.stopPropagation()
+                  handleOpenAddFoodModal(meal.id)
                 }}
               >
                 <Plus className="w-5 h-5 text-black" />
@@ -89,13 +91,13 @@ export default function MealList({
             </div>
           </div>
 
-          {/* Expanded meal details */}
           {expandedMeal === meal.id && (
             <div className="border-t border-gray-800 px-5 py-2">
               <FoodItemsList
                 mealType={meal.id}
                 items={meals?.[meal.id as keyof MealData] || []}
                 handleDeleteFood={handleDeleteFood}
+                handleEditFood={(foodItem) => handleOpenEditFoodModal(meal.id, foodItem)}
                 selectedDay={selectedDay}
                 deleteFoodLoading={deleteFoodLoading}
               />
@@ -104,20 +106,28 @@ export default function MealList({
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 interface FoodItemsListProps {
-  mealType: string;
-  items: IFoodItem[];
-  handleDeleteFood: (foodId: string | undefined, date: string) => void;
-  selectedDay: string;
-  deleteFoodLoading: boolean;
+  mealType: string
+  items: IFoodItem[]
+  handleDeleteFood: (foodId: string | undefined, date: string) => void
+  handleEditFood: (foodItem: IFoodItem) => void
+  selectedDay: string
+  deleteFoodLoading: boolean
 }
 
-function FoodItemsList({ mealType, items, handleDeleteFood, selectedDay, deleteFoodLoading }: FoodItemsListProps) {
+function FoodItemsList({
+  mealType,
+  items,
+  handleDeleteFood,
+  handleEditFood,
+  selectedDay,
+  deleteFoodLoading,
+}: FoodItemsListProps) {
   if (!items || items.length === 0) {
-    return <div className="py-3 text-center text-gray-400 text-sm">No items added to {mealType} yet</div>;
+    return <div className="py-3 text-center text-gray-400 text-sm">No items added to {mealType} yet</div>
   }
 
   return (
@@ -137,7 +147,13 @@ function FoodItemsList({ mealType, items, handleDeleteFood, selectedDay, deleteF
           <div className="col-span-1 text-center text-xs text-green-400">{item.protein?.toFixed(1) || 0}g</div>
           <div className="col-span-1 text-center text-xs text-purple-400">{item.carbs?.toFixed(1) || 0}g</div>
           <div className="col-span-1 text-center text-xs text-yellow-400">{item.fats?.toFixed(1) || 0}g</div>
-          <div className="col-span-2 flex justify-end">
+          <div className="col-span-2 flex justify-end space-x-2">
+            <button
+              className="p-1 hover:bg-blue-900 rounded-full transition-colors"
+              onClick={() => handleEditFood(item)}
+            >
+              <Edit2 className="w-4 h-4 text-blue-500" />
+            </button>
             <button
               className="p-1 hover:bg-red-900 rounded-full transition-colors"
               onClick={() => handleDeleteFood(item?._id, selectedDay)}
@@ -152,5 +168,6 @@ function FoodItemsList({ mealType, items, handleDeleteFood, selectedDay, deleteF
         </div>
       ))}
     </div>
-  );
+  )
 }
+
