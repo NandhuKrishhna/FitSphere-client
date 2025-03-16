@@ -4,7 +4,7 @@ export interface IFoodItem {
   calories: number;
   protein?: number;
   carbs?: number;
-  fat?: number;
+  fats?: number;
   _id?: string;
 }
 
