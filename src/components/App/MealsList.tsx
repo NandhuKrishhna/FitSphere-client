@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Coffee, Plus, ChevronDown, ChevronUp, Trash2, Edit2 } from "lucide-react"
+import { Coffee, Plus, ChevronDown, ChevronUp, Trash2, Edit2, Loader } from "lucide-react"
 import type { IFoodItem } from "@/types/food"
 
 interface MealType {
@@ -26,7 +26,7 @@ interface MealListProps {
   handleOpenAddFoodModal: (mealId: string) => void
   handleOpenEditFoodModal: (mealId: string, foodItem: IFoodItem) => void
   handleDeleteFood: (foodId: string | undefined, date: string) => void
-  deleteFoodLoading: boolean
+  loadingItems: { [key: string]: boolean }
 }
 
 export default function MealList({
@@ -36,7 +36,7 @@ export default function MealList({
   handleOpenAddFoodModal,
   handleOpenEditFoodModal,
   handleDeleteFood,
-  deleteFoodLoading,
+  loadingItems,
 }: MealListProps) {
   const [expandedMeal, setExpandedMeal] = useState<string | null>(null)
 
@@ -99,7 +99,7 @@ export default function MealList({
                 handleDeleteFood={handleDeleteFood}
                 handleEditFood={(foodItem) => handleOpenEditFoodModal(meal.id, foodItem)}
                 selectedDay={selectedDay}
-                deleteFoodLoading={deleteFoodLoading}
+                loadingItems={loadingItems}
               />
             </div>
           )}
@@ -115,7 +115,7 @@ interface FoodItemsListProps {
   handleDeleteFood: (foodId: string | undefined, date: string) => void
   handleEditFood: (foodItem: IFoodItem) => void
   selectedDay: string
-  deleteFoodLoading: boolean
+  loadingItems: { [key: string]: boolean }
 }
 
 function FoodItemsList({
@@ -124,7 +124,7 @@ function FoodItemsList({
   handleDeleteFood,
   handleEditFood,
   selectedDay,
-  deleteFoodLoading,
+  loadingItems,
 }: FoodItemsListProps) {
   if (!items || items.length === 0) {
     return <div className="py-3 text-center text-gray-400 text-sm">No items added to {mealType} yet</div>
@@ -158,8 +158,8 @@ function FoodItemsList({
               className="p-1 hover:bg-red-900 rounded-full transition-colors"
               onClick={() => handleDeleteFood(item?._id, selectedDay)}
             >
-              {deleteFoodLoading ? (
-                <span className="loading loading-spinner loading-sm"></span>
+              {loadingItems[item._id!] ? (
+               <Loader className="animate-spin mx-auto"  size={15}/>
               ) : (
                 <Trash2 className="w-4 h-4 text-red-500" />
               )}
