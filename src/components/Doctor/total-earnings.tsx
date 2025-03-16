@@ -1,6 +1,6 @@
 import { useGetWalletQuery } from "@/redux/api/appApi";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, } from "lucide-react";
 import { useSelector } from "react-redux";
 
 interface TotalEarningsProps {
