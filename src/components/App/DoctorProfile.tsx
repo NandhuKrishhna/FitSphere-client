@@ -14,7 +14,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorDetails, averageRat
   return (
     <>
       <div className="relative mx-auto md:mx-0">
-        <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden bg-gradient-to-br from-purple-900/30 to-indigo-900/30">
+        <div className="w-full h-full md:w-40 md:h-40 rounded-xl overflow-hidden bg-gradient-to-br from-purple-900/30 to-indigo-900/30">
           <img
             src={doctorDetails.profilePicture || "/placeholder.svg"}
             alt="Doctor profile"
