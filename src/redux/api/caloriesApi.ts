@@ -65,6 +65,14 @@ export const caloriesApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["foodlogs"],
     }),
+    editFood : builder.mutation({
+      query: (data) => ({
+        url: "/app/edit-food",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["foodlogs"],
+    })
   }),
 });
 
@@ -76,5 +84,6 @@ export const {
   useGetUserFoodLogsDetailsQuery,
   useAddFoodLogMutation,
   useDeleteFoodLogMutation,
-  useSearchFoodQuery
+  useSearchFoodQuery,
+  useEditFoodMutation
 } = caloriesApi;
