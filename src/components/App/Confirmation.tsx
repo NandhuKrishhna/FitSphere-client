@@ -1,10 +1,7 @@
-"use client";
-
 import { useState, useMemo, useEffect } from "react";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import type { Slot } from "./SlotCalender";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -24,7 +21,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [visibleDatesStart, setVisibleDatesStart] = useState(0);
-
+  // console.log(slots)
   const { datesArray, groupedSlots } = useMemo(() => {
     const groups: { [key: string]: Slot[] } = {};
     const safeSlots = slots?.slots || [];
@@ -90,9 +87,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
       setVisibleDatesStart(visibleDatesStart + 1);
     }
   };
-
-  // Calculate how many dates to show based on screen size
-  const visibleDatesCount = 4; // Default for mobile
+  const visibleDatesCount = 4;
   const visibleDates = datesArray.slice(visibleDatesStart, visibleDatesStart + visibleDatesCount);
   const hasMoreDates = visibleDatesStart + visibleDatesCount < datesArray.length;
 
@@ -120,9 +115,9 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
     <Card className="w-full bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
       <CardHeader className="pb-2 md:pb-4">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-base md:text-lg font-medium">
+          <CardTitle className="text-md md:text-md font-medium">
             {"You're about to book a 30-minute consultation with"}
-            <div className="font-semibold mt-1 text-sm md:text-base">
+            <div className="font-semibold mt-1 text-sm md:text-">
               {name} ({dept})
             </div>
           </CardTitle>
@@ -180,19 +175,6 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
         </div>
 
         <div className="mt-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Select defaultValue="indian">
-                <SelectTrigger className="w-[120px] md:w-[140px] text-xs md:text-sm">
-                  <SelectValue placeholder="Indian Time" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="indian">Indian Time</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">30 min meeting</div>
-          </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-4">
             {filteredSlots.map((slot) => {
@@ -220,11 +202,11 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
             })}
           </div>
 
-          {filteredSlots.length === 0 && selectedDate && (
-            <div className="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">
-              No available slots for this date
-            </div>
-          )}
+          {filteredSlots.length === 0 && (
+  <div className="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">
+    No available slots 
+  </div>
+)}
         </div>
       </CardContent>
     </Card>
