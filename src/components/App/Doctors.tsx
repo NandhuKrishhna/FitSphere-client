@@ -4,6 +4,8 @@ import { setSelectedDoctorId } from "../../redux/slice/appFeatSlice";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useGetAllRatingsQuery } from "@/redux/api/appApi";
+import { Button } from "@/components/ui/button"
+import { Badge } from "@mui/material";
 
 type DoctorCardProps = {
   name: string;
@@ -23,11 +25,7 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { data: ratingsData } = useGetAllRatingsQuery({});
-
-  // Find rating for this specific doctor
   const doctorRating = ratingsData?.response?.find((rating: Rating) => rating.doctorId === id);
-
-  // Extract average rating or default to 0 if not found
   const averageRating = doctorRating?.averageRating || 0;
 
   const handleCardClick = () => {
@@ -49,7 +47,7 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
             <img
               src={profilePicture || "/placeholder.svg"}
               alt={name}
-              className="w-[70%] h-[70%] object-cover transition-transform duration-300 hover:scale-105"
+              className="w-[full] h-full object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
           <div className="absolute top-2 right-2 bg-green-500/20 backdrop-blur-sm p-1 rounded-full">
@@ -62,7 +60,7 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
 
           <div className="flex items-center justify-center space-x-2 text-gray-400">
             <Calendar size={16} className="text-purple-400" />
-            <span>{experience}+ Years Experience</span>
+            <span className="text-sm text-indigo-400">{experience}+ Years Experience</span>
           </div>
 
           <div className="flex items-center justify-center space-x-1">
@@ -91,17 +89,13 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
             )}
           </div>
 
-          <div className="bg-purple-500/20 rounded-full px-3 py-1 inline-block">
-            <p className="text-purple-300 text-sm font-medium">{specialty}</p>
+          <div className="bg-purple-500/20 rounded-full inline-block">
+            <Badge className="text-indigo-300 text-sm py-1 px-2">{specialty}</Badge>
           </div>
-
-          <button
-            onClick={handleCardClick}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2.5 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-purple-500/25 mt-2"
-          >
-            Book Appointment
-          </button>
+           
         </div>
+          <Button onClick={handleCardClick}
+          className="w-full mt-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-colors">Book</Button>
       </div>
     </motion.div>
   );
