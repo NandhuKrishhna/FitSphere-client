@@ -19,7 +19,7 @@ const useAddFood = (mealType: string, selectedFood: IFoodItem | null, onClose: (
           calories: selectedFood.calories,
           protein: selectedFood.protein,
           carbs: selectedFood.carbs,
-          fats: selectedFood.fat,
+          fats: selectedFood.fats,
           quantity: selectedFood.quantity,
         },
       }).unwrap();
