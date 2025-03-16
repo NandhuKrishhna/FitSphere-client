@@ -104,7 +104,7 @@ export const appApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["appointments", "wallet"],
     }),
-    addReviws: builder.mutation({
+    addReview: builder.mutation({
       query: (data) => ({
         url: "/app/add-reviews",
         method: "POST",
@@ -148,6 +148,22 @@ export const appApi = apiSlice.injectEndpoints({
         url: "/app/get-all-transactions",
         method: "GET",
       }),
+     }),
+     editReview : builder.mutation({
+      query: (data) => ({
+        url: "/app/edit-review",
+        method: "PATCH",
+        body:data
+      }),
+      invalidatesTags:["reviews"]
+     }),
+     deleteReviews : builder.mutation({
+      query: (data) => ({
+        url: "/app/delete-review",
+        method: "DELETE",
+        body:data
+      }),
+      invalidatesTags:["reviews"]
      })
   }),
 });
@@ -164,10 +180,12 @@ export const {
   useGetWalletQuery,
   useHandleFailedPaymentMutation,
   useWalletPaymentMutation,
-  useAddReviwsMutation,
+  useAddReviewMutation,
   useGetReviewsQuery,
   useGetAllRatingsQuery,
   useGetAllNotificationQuery,
   useMarkAsReadMutation,
-  useGetAllTransactionsQuery
+  useGetAllTransactionsQuery,
+  useEditReviewMutation,
+  useDeleteReviewsMutation
 } = appApi;
