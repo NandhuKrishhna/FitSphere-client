@@ -5,15 +5,16 @@ import {
   } from "../../components/ui/avatar"
   
  type Props ={
-    image : string,
+    image? : string,
     name? : string
  }
 
   export function AvatarDemo({image , name}:Props) {
+    // console.log(image)
     return (
       <Avatar>
         <AvatarImage src={image} alt={name} />
-        <AvatarFallback>CN</AvatarFallback>
+        <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
       </Avatar>
     )
   }
