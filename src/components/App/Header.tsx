@@ -127,7 +127,7 @@ function NotificationDropdown({
   notifications = [],
   role
 }: NotificationDropdownProps) {
-  console.log(role,"From NotificationDrop down")
+  // console.log(role,"From NotificationDrop down")
   const navigate = useNavigate();
   
   const unreadNotifications = notifications.filter(n => !n.read);
