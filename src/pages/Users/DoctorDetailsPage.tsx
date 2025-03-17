@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDoctorDetails } from "@/hooks/App/useDoctorDetails";
 import { useGetReviewsQuery } from "@/redux/api/appApi";
 import { handleOptionClick } from "@/utils/DoctorDetailsPageUtils";
-
 import Header from "@/components/App/Header";
 import Navigation from "@/components/App/Navigation";
 import PaymentOptionsModal from "@/components/App/PaymentOptions";
@@ -14,6 +13,8 @@ import AppointmentSection from "@/components/App/AppointmentSection";
 import CommunicationOptions from "@/components/App/CommunicationOptions";
 import InfoTabs from "@/components/App/InfoTabs";
 import ContactInformation from "@/components/App/ContactInformation";
+import useCreateConversation from "@/hooks/App/useCreateConversation";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 
 const DoctorDetailsPage: React.FC = () => {
   const {
@@ -37,7 +38,8 @@ const DoctorDetailsPage: React.FC = () => {
   const reviews = reviewsData?.response?.reviews || [];
   const averageRating = reviewsData?.response?.averageRating || 0;
   const totalReviews = reviewsData?.response?.totalReviews || 0;
-
+  const {createConversationHandler} = useCreateConversation();
+  const currentUserId = useSelector(selectCurrentUser)?._id
   const handleBookSlot = (): void => {
     setIsPaymentModalOpen(true);
   };
@@ -54,7 +56,7 @@ const DoctorDetailsPage: React.FC = () => {
   };
 
   const handleCommunicationOption = (option: string): void => {
-    handleOptionClick(option, navigate, dispatch, selectedDoctorForChat);
+    handleOptionClick(option, navigate, dispatch, selectedDoctorForChat, currentUserId , createConversationHandler);
   };
 
   if (!doctorDetails)
