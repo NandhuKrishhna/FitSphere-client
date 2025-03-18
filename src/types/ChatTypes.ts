@@ -24,6 +24,7 @@ export type SelectedUser = {
   };
   lastMessage?: string;
   _id?: string;
+  updatedAt?: string;
 };
 
 export type Users = {
