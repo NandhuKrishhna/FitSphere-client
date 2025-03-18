@@ -29,7 +29,7 @@ type Notification = {
 
 export default function NotificationPage() {
   const user = useSelector(selectCurrentUser)
-    const { isJoiningMeeting, handleJoinMeet } = useHandleJoinMeeting();
+    const {  handleJoinMeet ,loadingItems} = useHandleJoinMeeting();
   const { data: notificationsData, isLoading } = useGetAllNotificationQuery({})
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [markAsRead] = useMarkAsReadMutation()
@@ -39,7 +39,7 @@ export default function NotificationPage() {
     }
   }, [notificationsData])
 
- 
+  console.log(notificationsData)
 
   const handleMarkAsRead = async (notificationId: string) => {
     console.log(`Marking notification as read: ${notificationId}`)
@@ -135,7 +135,7 @@ export default function NotificationPage() {
                           onClick={() => handleJoinMeet(notification.metadata.meetingId)}
                           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center"
                         >
-                         {isJoiningMeeting ?<Loader className=' animate-spin mx-auto' size={18} /> : "Join Meeting"}
+                         {loadingItems[notification.metadata.meetingId] ?<Loader className=' animate-spin mx-auto' size={18} /> : "Join Meeting"}
                           
                         </button>
                       </div>
