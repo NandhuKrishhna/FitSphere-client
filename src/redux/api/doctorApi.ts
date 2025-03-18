@@ -66,7 +66,7 @@ export const doctorApi = apiSlice.injectEndpoints({
 
     getAllAppointments: builder.query({
       query: (params: AppointmentQueryParams) => {
-        const { userId, ...queryParams } = params;
+        const { ...queryParams } = params;
         const queryString = Object.entries(queryParams)
           .filter(([value]) => value !== undefined && value !== "")
           .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
@@ -74,8 +74,7 @@ export const doctorApi = apiSlice.injectEndpoints({
 
         return {
           url: `/doctor/get/all-appointments${queryString ? `?${queryString}` : ""}`,
-          method: "POST",
-          body: { userId },
+          method: "GET",
         };
       },
       providesTags: ["appointments"],

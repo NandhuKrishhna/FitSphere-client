@@ -1,4 +1,6 @@
+import { TransactionQueryParams } from "@/types/transaction";
 import { apiSlice } from "./EntryApiSlice";
+import { AppointmentQueryParams } from "@/types/appointmentList";
 export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     displayAllDoctors: builder.query({
@@ -65,13 +67,20 @@ export const appApi = apiSlice.injectEndpoints({
       invalidatesTags: ["appointments", "slots"],
     }),
     getAppointmentDetails: builder.query({
-      query: (data) => ({
-        url: "/app/get-appointments",
-        method: "POST",
-        body: data,
-      }),
+      query: (params: AppointmentQueryParams) => {
+        const { ...queryParams } = params;
+        const queryString = Object.entries(queryParams)
+          .filter(([value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
+
+        return {
+          url: `/app/get-appointments${queryString ? `?${queryString}` : ""}`,
+          method: "GET",
+        };
+      },
       providesTags: ["appointments"],
-    }),
+}),
     cancelAppointment: builder.mutation({
       query: (data) => ({
         url: "/app/cancel/appointments",
@@ -164,6 +173,21 @@ export const appApi = apiSlice.injectEndpoints({
         body:data
       }),
       invalidatesTags:["reviews"]
+     }),
+     getTransactions : builder.query({
+         query: (params: TransactionQueryParams) => {
+               const { ...queryParams } = params;
+               const queryString = Object.entries(queryParams)
+                 .filter(([value]) => value !== undefined && value !== "")
+                 .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+                 .join("&");
+       
+               return {
+                 url: `/app/get-transaction-history${queryString ? `?${queryString}` : ""}`,
+                 method: "GET",
+               };
+             },
+             providesTags: ["appointments"],
      })
   }),
 });
@@ -187,5 +211,7 @@ export const {
   useMarkAsReadMutation,
   useGetAllTransactionsQuery,
   useEditReviewMutation,
-  useDeleteReviewsMutation
-} = appApi;
+  useDeleteReviewsMutation,
+  useGetTransactionsQuery
+}
+ = appApi;

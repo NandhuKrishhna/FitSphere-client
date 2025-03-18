@@ -1,31 +1,22 @@
 import { AppURL, DoctorURL } from "@/utils/PathEnums";
-import { setMessages, setUsers } from "../slice/socket.ioSlice";
+import { setUsers } from "../slice/socket.ioSlice";
 import { apiSlice } from "./EntryApiSlice";
 import { getCurrentUserRole } from "@/utils/GetCurrentUser";
 export const chatApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMessages: builder.query({
-      query: (data) => {
+      query: ({ receiverId }) => {
         const role = getCurrentUserRole();
-        console.log("Role : ", role);
-        const url = role === "doctor" ? DoctorURL.GET_MESSAGES : AppURL.GET_MESSAGES;
+        const baseUrl = role === "doctor" ? DoctorURL.GET_MESSAGES : AppURL.GET_MESSAGES;
+        
         return {
-          url,
-          method: "POST",
-          body: data,
+          url: `${baseUrl}?receiverId=${receiverId}`, 
+          method: "GET",
         };
       },
-      providesTags: (result, error, arg) => ["chatsidebar", { type: "chats", id: arg.conversationId }],
-      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
-        try {
-          const { data } = await queryFulfilled;
-          console.log("GetMessage Query : ", data);
-          dispatch(setMessages(data.messages));
-        } catch (error) {
-          console.error("Error fetching messages:", error);
-        }
-      },
+      providesTags: ["chatsidebar", "chats"],
     }),
+    
 
     sendMessages: builder.mutation({
       query: (data) => {
@@ -37,7 +28,7 @@ export const chatApi = apiSlice.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: (result, error, arg) => ["chatsidebar", { type: "chats", id: arg.conversationId }],
+      invalidatesTags: ["chatsidebar", "chats"],
     }),
 
     getSidebarUsers: builder.query({
@@ -53,15 +44,26 @@ export const chatApi = apiSlice.injectEndpoints({
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const res = await queryFulfilled;
-          console.log(res);
           dispatch(setUsers(res.data.users));
-          console.log("Response from getSidebarUsers:", res);
         } catch (error) {
           console.error("Error fetching sidebar users:", error);
         }
       },
     }),
+    createConversation : builder.mutation({
+      query: (data) => ({
+        url: "/app/create-conversation",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
   }),
+  
 });
 
-export const { useGetMessagesQuery, useSendMessagesMutation, useGetSidebarUsersQuery } = chatApi;
+export const { useGetMessagesQuery, 
+  useSendMessagesMutation,
+   useGetSidebarUsersQuery,
+   useCreateConversationMutation
+   } = chatApi;
