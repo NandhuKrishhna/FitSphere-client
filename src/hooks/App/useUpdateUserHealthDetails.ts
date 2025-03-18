@@ -10,8 +10,9 @@ const useUserHealthDetails = () => {
   const goal = targetWeight > weight ? "gain" : targetWeight < weight ? "lose" : "maintain";
   const gender = getLocalStorageValue("gender").replace(/"/g, "");
   const activityLevel = getLocalStorageValue("activityLevel").replace(/"/g, "");
-  const weeks = getLocalStorageValue("weeksToGoal").replace(/"/g, "");
-  const weeksToGoal = Number(weeks);
+  const week = getLocalStorageValue("weeksToGoal");
+  const updatedWeek = Number(week);
+  console.log("Updated week", updatedWeek)
 
   const allDetails = {
     age: Number(getLocalStorageValue("age")),
@@ -21,26 +22,20 @@ const useUserHealthDetails = () => {
     activityLevel,
     goal,
     targetWeight,
-    weeksToGoal,
+    weeksToGoal: updatedWeek
   };
 
   const onSubmit = async () => {
     try {
+      console.log("Submitting data to backend:", allDetails); 
       const response = await userHealthDetail(allDetails).unwrap();
       toast.success(response.message);
-      localStorage.removeItem("age");
-      localStorage.removeItem("gender");
-      localStorage.removeItem("height");
-      localStorage.removeItem("weight");
-      localStorage.removeItem("activityLevel");
-      localStorage.removeItem("targetWeight");
-      localStorage.removeItem("weeksToGoal");
-      console.log("local storage cleared");
     } catch (error) {
       const err = error as ErrorResponse;
       if (err.data.message) return toast.error(err.data.message);
     }
   };
+  
 
   return {
     onSubmit,
