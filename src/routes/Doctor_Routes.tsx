@@ -7,7 +7,6 @@ import DoctorLoginPage from "../pages/Doctor/DoctorLoginPage";
 import DoctorDashboardPage from "../pages/Doctor/DoctorDashboardPage";
 import AppointmentTable from "../pages/Doctor/AppointmentManagmentPage";
 import RequireAuth from "../components/RequiredAuth";
-import DoctorChatPage from "@/pages/Doctor/DoctorChatPage";
 import { Roles } from "@/utils/Enums";
 import DoctorMainLayout from "@/components/Doctor/DoctorMainLayout";
 import DoctorForgotPasswordPage from "@/pages/Doctor/DoctorForgotPassword";
@@ -17,6 +16,7 @@ import DoctorProflePage from "@/pages/Doctor/DoctorProflePage";
 import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
 import ConsultationPage from "@/pages/Doctor/ConsultationPage";
 import NotificationPage from "@/pages/Users/NotificationsPage";
+import ChatPage from "@/pages/Test/ChatPage";
 
 const Doctor_Routes = () => {
   return (
@@ -36,7 +36,7 @@ const Doctor_Routes = () => {
             <Route path="/appointments" element={<AppointmentTable />} />
             <Route path="/create-meet" element={<MeetingPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
-            <Route path="/chat" element={<DoctorChatPage />} />
+            <Route path="/chat" element={<ChatPage />} />
             <Route path="/consultation/:meetId" element={<ConsultationPage />} />
         <Route path="/profile" element={<DoctorProflePage />} />
           </Route>
