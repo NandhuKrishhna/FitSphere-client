@@ -22,3 +22,13 @@ export interface Appointment {
   paymentStatus?: "pending" | "completed" | "failed";
   meetingId?: string;
 }
+export interface AppointmentQueryParams {
+  page?: number
+  limit?: number
+  search?: string
+  status?: string
+  paymentStatus?: string
+  consultationType?: string
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+}
