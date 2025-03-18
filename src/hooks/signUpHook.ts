@@ -5,14 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { userRegisterSchema } from "../types/Validations/registerAsDoctorForm";
 import { ErrorResponse } from "../types/userTypes";
 import { useSignUpMutation } from "../redux/api/apiSlice";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "../redux/slice/Auth_Slice";
 import { AuthFormInputs } from "@/components/App/AuthLayout";
 
 const useSignUp = () => {
   const navigate = useNavigate();
   const [signUp, { isLoading }] = useSignUpMutation();
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -24,10 +21,8 @@ const useSignUp = () => {
     try {
       const res = await signUp(data).unwrap();
       localStorage.setItem("userId", res.response._id);
+      localStorage.setItem("userData", JSON.stringify(res.response));
       toast.success(res.message || "Signup successful!");
-      if (res.response) {
-        dispatch(setCredentials({ ...res.response }));
-      }
       navigate("/verify-email");
     } catch (err) {
       console.error("Signup Error:", err);
