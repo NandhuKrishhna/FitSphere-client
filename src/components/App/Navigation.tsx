@@ -73,7 +73,7 @@ export default function Navigation() {
             <Video className="w-5 h-5" />
             <span className="text-xs mt-1">Meet</span>
           </Link>
-          <Link to="/appointments" className={`flex flex-col items-center p-2 ${getLinkClass("/create-meet")}`}>
+          <Link to="/appointments" className={`flex flex-col items-center p-2 ${getLinkClass("/appointments")}`}>
             <LayoutList className="w-5 h-5" />
             <span className="text-xs mt-1">Appointments</span>
           </Link>
