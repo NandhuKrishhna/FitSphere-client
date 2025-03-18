@@ -1,4 +1,5 @@
 import { useLogout } from "@/hooks/userLogoutHook";
+import { getSocket } from "@/lib/socketManager";
 import { useGetAllNotificationQuery } from "@/redux/api/appApi";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { Roles } from "@/utils/Enums";
@@ -6,6 +7,7 @@ import { Bell, LogOut, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { AvatarDemo } from "./Avatar";
 
 interface IUser {
   _id?: string;
@@ -44,7 +46,8 @@ type Props = {
 };
 
 export default function Header({ value, onChange }: Props) {
-  const { data: notificationsData } = useGetAllNotificationQuery({});
+  const socket = getSocket();
+  const { data: notificationsData , refetch } = useGetAllNotificationQuery({});
   const navigate = useNavigate();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -52,7 +55,15 @@ export default function Header({ value, onChange }: Props) {
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const { handleLogout, isLoading } = useLogout();
-
+ useEffect(() =>{
+   socket?.on("new-notification", (notificaiton) =>{
+    console.log(notificaiton);
+    refetch();
+   });
+   return () => {
+    socket?.off("new-notification")
+   }
+ },[socket , refetch])
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -127,9 +138,7 @@ function NotificationDropdown({
   notifications = [],
   role
 }: NotificationDropdownProps) {
-  // console.log(role,"From NotificationDrop down")
   const navigate = useNavigate();
-  
   const unreadNotifications = notifications.filter(n => !n.read);
   const unreadCount = unreadNotifications.length;
 
@@ -140,7 +149,6 @@ function NotificationDropdown({
     const diffInMins = Math.floor(diffInMs / (1000 * 60));
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-    
     if (diffInMins < 60) {
       return `${diffInMins} minutes ago`;
     } else if (diffInHours < 24) {
@@ -150,7 +158,6 @@ function NotificationDropdown({
     }
   };
   
-
   const handleNotificationClick = (notification: INotification) => {
     if (notification.type === "appointment" && notification.metadata?.appointMentId) {
       navigate(`/consultation/${notification.metadata.meetingId}`);
@@ -186,7 +193,7 @@ function NotificationDropdown({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full right-0 mt-2 w-72 bg-[#1e1e30] rounded-lg shadow-lg overflow-hidden z-10 border border-gray-700"
+          className="absolute top-full right-0 mt-2 w-72 bg-[#1e1e30] text-white rounded-lg shadow-lg overflow-hidden z-10 border border-gray-700"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-3 border-b border-gray-700 flex justify-between items-center">
@@ -263,14 +270,14 @@ function ProfileDropdown({
   return (
     <div className="relative text-white">
       <button
-        className="w-8 h-8 rounded-full  flex items-center justify-center"
+        className="flex items-center justify-center"
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen((prev) => !prev);
           if (setIsOtherDropdownOpen) setIsOtherDropdownOpen(false);
         }}
       >
-        <img src={user?.profilePicture} alt="" />
+        <AvatarDemo image={user?.profilePicture} name={user?.name}/>
       </button>
       {isOpen && (
         <div
