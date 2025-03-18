@@ -1,6 +1,4 @@
-import { useSelector } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/api/doctorApi";
-import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight, Info, Search, Filter, ArrowUpDown, Loader } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -18,8 +16,6 @@ import useHandleJoinMeeting from "@/hooks/App/useJoinMeeting";
 
 const AppointmentTable = () => {
   const { isJoiningMeeting, handleJoinMeet } = useHandleJoinMeeting();
-
-  const doctor = useSelector(selectCurrentUser);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   console.log(selectedAppointment);
@@ -39,7 +35,6 @@ const AppointmentTable = () => {
   }, [searchInput]);
 
   const { data, isLoading, isError } = useGetAllAppointmentsQuery({
-    userId: doctor?._id,
     page,
     limit,
     search,
