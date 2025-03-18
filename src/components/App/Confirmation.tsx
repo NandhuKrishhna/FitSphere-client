@@ -189,7 +189,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 <Button
                   key={slot._id}
                   variant="outline"
-                  className={`justify-start font-normal text-xs md:text-sm ${
+                  className={`justify-start font-normal lg:w-40  text-xs md:text-sm ${
                     selectedSlotId === slot._id
                       ? "bg-purple-500 text-white hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-800"
                       : "bg-purple-50/50 hover:bg-purple-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
