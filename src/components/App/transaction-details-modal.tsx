@@ -1,8 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Calendar, CreditCard, Mail, User, Wallet } from "lucide-react"
-import { TransactionTypeBadge } from "./transaction-status-badge"
-import { TransactionStatusBadge } from "./transaction-type-badge"
 import { Transaction } from "@/types/transaction"
 
 interface TransactionDetailsModalProps {
@@ -39,7 +37,6 @@ export function TransactionDetailsModal({ isOpen, onClose, transaction }: Transa
         </DialogHeader>
 
         <div className="grid gap-6 py-4">
-          {/* Transaction Summary */}
           <div className="bg-gray-800 p-4 rounded-lg">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
@@ -48,10 +45,6 @@ export function TransactionDetailsModal({ isOpen, onClose, transaction }: Transa
                   <Calendar className="h-4 w-4 mr-1" />
                   {formatDate(transaction.createdAt)}
                 </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <TransactionTypeBadge type={transaction.type} />
-                <TransactionStatusBadge status={transaction.status} />
               </div>
             </div>
 
@@ -81,17 +74,24 @@ export function TransactionDetailsModal({ isOpen, onClose, transaction }: Transa
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center text-gray-400">
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  <span className="text-sm">Amount</span>
-                </div>
-                <p
-                  className={`text-lg font-bold ${transaction.type === "credit" ? "text-indigo-400" : "text-red-400"}`}
-                >
-                  {transaction.type === "credit" ? "+" : "-"}
-                  {transaction.currency} {transaction.amount.toLocaleString()}
-                </p>
-              </div>
+  <div className="flex items-center text-gray-400">
+    <CreditCard className="h-4 w-4 mr-2" />
+    <span className="text-sm">Amount</span>
+  </div>
+  <p
+    className={`text-lg font-bold ${
+      transaction.type === "credit"
+        ? "text-indigo-400"
+        : transaction.type === "failed"
+        ? "text-gray-400 italic"
+        : "text-red-400"
+    }`}
+  >
+    {transaction.type !== "failed" && (transaction.type === "credit" ? "+" : "-")}
+    {transaction.currency} {transaction.amount.toLocaleString()}
+  </p>
+</div>
+
             </div>
           </div>
 

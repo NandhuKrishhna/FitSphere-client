@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 
 interface TransactionTypeBadgeProps {
-  type: "credit" | "debit"
+  type: "credit" | "debit" |"failed"
 }
 
 export function TransactionTypeBadge({ type }: TransactionTypeBadgeProps) {
@@ -10,7 +10,7 @@ export function TransactionTypeBadge({ type }: TransactionTypeBadgeProps) {
       variant={type === "credit" ? "default" : "secondary"}
       className={`${
         type === "credit"
-          ? "bg-indigo-100 text-indigo-800 hover:bg-indigo-100"
+          ? "bg-green-300 text-green-800 hover:bg-indigo-100"
           : "bg-red-400 text-black hover:bg-red-400 hover:bg-opacity-90"
       }`}
     >

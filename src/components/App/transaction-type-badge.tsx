@@ -9,7 +9,7 @@ export function TransactionStatusBadge({ status }: TransactionStatusBadgeProps) 
 
   switch (status) {
     case "success":
-      badgeStyles = "bg-indigo-100 text-indigo-800 hover:bg-indigo-100 border-indigo-200"
+      badgeStyles = "bg-green-400 text-green-800 hover:bg-indigo-100 border-indigo-200"
       break
     case "pending":
       badgeStyles = "bg-yellow-100 text-yellow-800 hover:bg-yellow-100 border-yellow-200"

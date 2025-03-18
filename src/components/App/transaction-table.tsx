@@ -54,7 +54,7 @@ export default function TransactionTable() {
   if (paymentTypeFilter !== "all") queryParams.paymentType = paymentTypeFilter;
 
   const { data, isLoading, isFetching, error } = useGetTransactionsQuery(queryParams);
-
+ console.log(data)
   const transactions = data?.transactions || []
   const totalPages = data?.totalPages || 1
   const totalItems = data?.total || 0
@@ -236,7 +236,7 @@ export default function TransactionTable() {
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">
                         <div className="flex items-center cursor-pointer" onClick={() => requestSort("status")}>
-                          Status
+                          Payment Status
                           {sortConfig.key === "status" &&
                             (sortConfig.direction === "asc" ? (
                               <ArrowUp className="ml-1 h-4 w-4" />
@@ -283,11 +283,20 @@ export default function TransactionTable() {
                             {transaction.paymentType.replace(/_/g, " ")}
                           </td>
                           <td className="px-4 py-3 text-sm font-medium">
-                            <span className={transaction.type === "credit" ? "text-indigo-600" : "text-red-600"}>
-                              {transaction.type === "credit" ? "+" : "-"}
-                              {transaction.currency} {transaction.amount.toLocaleString()}
-                            </span>
-                          </td>
+  <span
+    className={
+      transaction.type === "credit"
+        ? "text-indigo-600"
+        : transaction.type === "failed"
+        ? "text-gray-400 italic"
+        : "text-red-600"
+    }
+  >
+    {transaction.type !== "failed" && (transaction.type === "credit" ? "+" : "-")}
+    {transaction.currency} {transaction.amount.toLocaleString()}
+  </span>
+</td>
+
                           <td className="px-4 py-3">
                             <TransactionStatusBadge status={transaction.status} />
                           </td>
