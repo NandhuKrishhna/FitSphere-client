@@ -28,21 +28,25 @@ import SubscriptionPage from "@/pages/Users/PremiumPricingPage";
 import NotificationPage from "@/pages/Users/NotificationsPage";
 import TransactionPage from "@/pages/Users/TransactionPage";
 import ChatPage from "@/pages/Test/ChatPage";
+import PublicRoute from "./PublicRoute";
 
 
 const UserRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupForm />} />
-        <Route path="/verify-email" element={<OTPVerificationPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/verify-reset-otp" element={<ResetPasswordOtp />} />
-        <Route path="/reset/new-password" element={<ResetPasswordPage />} />
-        {/* 
-         // TODO : move these routes to protected;
-        */}
+      <Route element={<PublicRoute />}>
+  <Route path="/login" element={<LoginPage />} />
+  <Route path="/signup" element={<SignupForm />} />
+  <Route path="/verify-email" element={<OTPVerificationPage />} />
+  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+  <Route path="/verify-reset-otp" element={<ResetPasswordOtp />} />
+  <Route path="/reset/new-password" element={<ResetPasswordPage />} />
+</Route>
+
+
+
+        <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
         <Route path="/age" element={<AgeSelector />} />
         <Route path="/gender" element={<AgeGenderSelector />} />
         <Route path="/height" element={<HeightSelector />} />
@@ -53,8 +57,6 @@ const UserRoutes = () => {
         <Route path="/subscription" element={<SubscriptionPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
 
-
-        <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
         <Route path="/home" element={<HomePage />} />
           <Route path="/doctors/all" element={<DoctorsPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
@@ -66,6 +68,7 @@ const UserRoutes = () => {
           <Route path="/create-meet" element={<MeetingPage />} />
           <Route path="/consultation/:meetId" element={<ConsultationPage />} />
           <Route path="/transactions" element={<TransactionPage />} />
+
         </Route>
       </Route>
     </Routes>
