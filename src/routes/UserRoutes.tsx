@@ -11,7 +11,6 @@ import DoctorDetailsPage from "../pages/Users/DoctorDetailsPage";
 import WalletPage from "../pages/Users/WalletPage";
 import RequireAuth from "../components/RequiredAuth";
 import Layout from "../components/Layout";
-import ChatPage from "@/pages/Users/ChatPage";
 import { Roles } from "@/utils/Enums";
 import RecipesGeneratorPage from "@/pages/Users/RecipesPage";
 import AppointmentPage from "@/pages/Users/AppointmentPage";
@@ -26,9 +25,10 @@ import WeekSelectionPage from "@/pages/Users/WeeksToGoalSelectionPage";
 import HeightSelector from "@/pages/Users/HeightSelector";
 import HomePage from "@/pages/Users/HomePage";
 import SubscriptionPage from "@/pages/Users/PremiumPricingPage";
-import ReviewModal from "@/components/App/ReviewModal";
 import NotificationPage from "@/pages/Users/NotificationsPage";
 import TransactionPage from "@/pages/Users/TransactionPage";
+import ChatPage from "@/pages/Test/ChatPage";
+
 
 const UserRoutes = () => {
   return (
@@ -52,7 +52,6 @@ const UserRoutes = () => {
         <Route path="/select-week" element={<WeekSelectionPage />} />
         <Route path="/subscription" element={<SubscriptionPage />} />
         <Route path="/notifications" element={<NotificationPage />} />
-        <Route path="/review" element={<ReviewModal doctorId="67a8be401520a9d7983ef076" doctorName="Liam" />} />
 
 
         <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
