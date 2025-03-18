@@ -4,9 +4,11 @@ import { ErrorResponse } from "../LoginHook";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const useHandleJoinMeeting = () => {
   const [joinMeeting, { isLoading: isJoiningMeeting }] = useJoinMeetingMutation();
+  const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>({});
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
   const message =
@@ -15,6 +17,7 @@ const useHandleJoinMeeting = () => {
       : "Error in joining meet. Please have a conversation with the patient";
 
   const handleJoinMeet = async (meetingId: string) => {
+    setLoadingItems((prev) => ({ ...prev, [meetingId]: true }));
     try {
       const response = await joinMeeting({ meetingId: meetingId }).unwrap();
       if (response.success) {
@@ -26,10 +29,12 @@ const useHandleJoinMeeting = () => {
       console.log(error);
       if (err.data.message) return toast.error(err.data.message);
       toast.error(message);
+    }finally{
+      setLoadingItems((prev) => ({ ...prev, [meetingId]: false }));
     }
   };
 
-  return { handleJoinMeet, isJoiningMeeting };
+  return { handleJoinMeet, isJoiningMeeting ,loadingItems};
 };
 
 export default useHandleJoinMeeting;
