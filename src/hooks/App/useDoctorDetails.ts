@@ -25,7 +25,7 @@ export const useDoctorDetails = () => {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [bookSlots, { isLoading: isBookLoading }] = useBookSlotsMutation();
   const { data } = useDoctorDetailsQuery({ doctorId });
-  const { data: slots } = useGetAllSlotDetailsQuery({ doctorId });
+  const { data: slots , refetch } = useGetAllSlotDetailsQuery({ doctorId });
   const [verifyPayment] = useVerifyPaymentMutation();
   const [handleFailedPayment] = useHandleFailedPaymentMutation();
   const [isWalletSuccessModalOpen, setIsWalletSuccessModalOpen] = useState(false);
@@ -93,9 +93,6 @@ export const useDoctorDetails = () => {
       theme: { color: "#3399cc" },
       modal: {
         ondismiss: async () => {
-          console.log("User canceled the payment. Order ID:", order.id);
-          toast.error("Payment was canceled.");
-          await handlePaymentFailure(order.id);
           navigate("/appointments");
         },
       },
@@ -185,5 +182,6 @@ export const useDoctorDetails = () => {
     isWalletLoading,
     isWalletSuccessModalOpen,
     handleSuccessModalClose,
+    refetch
   };
 };
