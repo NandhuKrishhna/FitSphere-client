@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
+import { useSelector } from "react-redux"
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 
 // Define the transaction interface based on the provided data structure
 interface Transaction {
@@ -32,16 +34,12 @@ interface TransactionTableProps {
     message: string
     transactions: Transaction[]
   }
-  currentUser: {
-    id: string
-    // Add other user properties as needed
-  }
 }
 
-export default function TransactionTable({ data, currentUser }: TransactionTableProps) {
+export default function TransactionTable({ data }: TransactionTableProps) {
   // Default props for development/testing
   const transactions = data?.transactions || []
-  const userId = currentUser?.id || ""
+  const userId = useSelector(selectCurrentUser)?._id
 
   // State for search, filters, and sorting
   const [searchTerm, setSearchTerm] = useState("")
