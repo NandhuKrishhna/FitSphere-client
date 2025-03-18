@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useDoctorDetails } from "@/hooks/App/useDoctorDetails";
@@ -15,6 +15,7 @@ import InfoTabs from "@/components/App/InfoTabs";
 import ContactInformation from "@/components/App/ContactInformation";
 import useCreateConversation from "@/hooks/App/useCreateConversation";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
+import { selectedDoctorId } from "@/redux/slice/appFeatSlice";
 
 const DoctorDetailsPage: React.FC = () => {
   const {
@@ -30,11 +31,13 @@ const DoctorDetailsPage: React.FC = () => {
     isWalletLoading,
     isWalletSuccessModalOpen,
     handleSuccessModalClose,
+    refetch
   } = useDoctorDetails();
+  const doctorId = useSelector(selectedDoctorId)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
-  const { data: reviewsData } = useGetReviewsQuery(doctorDetails?._id);
+  const { data: reviewsData } = useGetReviewsQuery(doctorId);
   const reviews = reviewsData?.response?.reviews || [];
   const averageRating = reviewsData?.response?.averageRating || 0;
   const totalReviews = reviewsData?.response?.totalReviews || 0;
@@ -49,6 +52,16 @@ const DoctorDetailsPage: React.FC = () => {
     originalHandleWalletPayment();
     setIsPaymentModalOpen(false);
   };
+  // backend update the slot as expired in every 30 mintues so 
+  // we also want to update htis in the frontend...
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch(); 
+      console.log("Refetching slots...");
+    }, 30 * 60 * 1000); 
+
+    return () => clearInterval(interval); 
+  }, [refetch]);
 
   const handleRazorpayPayment = (): void => {
     setIsPaymentModalOpen(false);
