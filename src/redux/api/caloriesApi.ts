@@ -72,6 +72,12 @@ export const caloriesApi = apiSlice.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["foodlogs"],
+    }),
+    getWeightProgress : builder.query({
+      query : () => ({
+        url:"/app/get-weight-progress",
+        method :"GET"
+      })
     })
   }),
 });
@@ -85,5 +91,6 @@ export const {
   useAddFoodLogMutation,
   useDeleteFoodLogMutation,
   useSearchFoodQuery,
-  useEditFoodMutation
+  useEditFoodMutation,
+  useGetWeightProgressQuery
 } = caloriesApi;

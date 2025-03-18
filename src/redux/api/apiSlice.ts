@@ -23,6 +23,7 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags:["notification"]
     }),
     // user enter their email to reset the password
     resetPassword: builder.mutation({

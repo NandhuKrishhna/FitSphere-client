@@ -64,7 +64,7 @@ export const appApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["appointments", "slots"],
+      invalidatesTags: ["appointments", "slots","notification"],
     }),
     getAppointmentDetails: builder.query({
       query: (params: AppointmentQueryParams) => {

@@ -14,7 +14,7 @@ export const chatApi = apiSlice.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["chatsidebar", "chats"],
+      providesTags: ["chatsidebar", "chats",],
     }),
     
 
@@ -28,7 +28,7 @@ export const chatApi = apiSlice.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["chatsidebar", "chats"],
+      invalidatesTags: ["chatsidebar", "chats" , "notification"],
     }),
 
     getSidebarUsers: builder.query({
