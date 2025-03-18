@@ -11,18 +11,25 @@ const RequireAuth = ({ allowedRoles, redirectTo }: RequireAuthProps) => {
   const location = useLocation();
   const token = useSelector(selectCurrentToken);
   const authUser = useSelector(selectCurrentUser);
-  // console.log(token);
-  // console.log(authUser);
+  const signupInProgress = localStorage.getItem("signupInProgress");
 
-  return token ? (
-    allowedRoles.includes(authUser?.role ?? "") ? (
-      <Outlet />
-    ) : (
-      <Navigate to="/unauthorized" state={{ from: location }} replace />
-    )
-  ) : (
-    <Navigate to={redirectTo} state={{ from: location }} replace />
-  );
+  if (signupInProgress && location.pathname === "/age") {
+    return <Outlet />;
+  }
+
+  if (!token) {
+    console.log("Redirecting to:", redirectTo);
+    return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  }
+
+  if (!allowedRoles.includes(authUser?.role ?? "")) {
+    console.log("Redirecting to: /unauthorized");
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+  }
+
+  return <Outlet />;
 };
+
+
 
 export default RequireAuth;
