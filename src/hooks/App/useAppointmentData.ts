@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
+
 import { useGetAppointmentDetailsQuery } from "@/redux/api/appApi";
 import { Appointment } from "@/types/appointmentList";
 
 export const useAppointmentData = () => {
-  const auth = useSelector(selectCurrentUser);
-  const { data, isLoading } = useGetAppointmentDetailsQuery({ patientId: auth?._id });
-
+  const { data, isLoading } = useGetAppointmentDetailsQuery({});
+  console.log(data)
   // State management
   const [processedAppointments, setProcessedAppointments] = useState<Appointment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
