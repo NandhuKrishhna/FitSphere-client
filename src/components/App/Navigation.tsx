@@ -33,13 +33,20 @@ export default function Navigation() {
             <MessageCircle className="w-5 h-5" />
             <span className="text-xs mt-1">Chat</span>
           </Link>
-
+          <Link to="/doctor/wallet" className={`flex flex-col items-center p-2 ${getLinkClass("/doctor/wallet")}`}>
+            <Wallet   className="w-5 h-5" />
+            <span className="text-xs mt-1">Wallet</span>
+          </Link>
           <Link
             to="/doctor/create-meet"
             className={`flex flex-col items-center p-2 ${getLinkClass("/doctor/create-meet")}`}
           >
             <Video className="w-5 h-5" />
             <span className="text-xs mt-1">Meet</span>
+          </Link>
+          <Link to="/doctor/transactions" className={`flex flex-col items-center p-2 ${getLinkClass("/doctor/transactions")}`}>
+            <ClipboardList   className="w-5 h-5" />
+            <span className="text-xs mt-1">Transaction</span>
           </Link>
         </>
       ) : (
