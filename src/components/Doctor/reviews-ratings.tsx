@@ -1,7 +1,9 @@
-import { useGetAllReviewsAndRatingsQuery } from "@/redux/api/doctorApi";
+
 import { ArrowUpDown, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetReviewsQuery } from "@/redux/api/appApi";
+
 
 type Review = {
   _id: string;
@@ -18,7 +20,8 @@ type Review = {
 };
 
 export default function ReviewsRatings({ id }: { id: string | undefined }) {
-  const { data: reviewsAndRatings, isLoading } = useGetAllReviewsAndRatingsQuery({ doctorId: id });
+
+  const { data: reviewsAndRatings, isLoading } = useGetReviewsQuery(id);
 
   // Calculate rating distribution if data is available
   const calculateRatingDistribution = () => {
