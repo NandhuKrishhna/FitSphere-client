@@ -97,13 +97,19 @@ export default function AppointmentTable() {
     }).format(date)
   }
 
-  const formatTime = (timeString: string) => {
-    const date = new Date(timeString)
+  const formatTime = (timeString?: string) => {
+    if (!timeString) return "Invalid Time"; 
+  
+    const date = new Date(timeString);
+    if (isNaN(date.getTime())) return "Invalid Time"; 
+  
     return new Intl.DateTimeFormat("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date)
-  }
+      hour12: true,
+    }).format(date);
+  };
+  
 
   const handleViewDetails = (appointment: Appointment) => {
     setSelectedAppointment(appointment)
@@ -303,8 +309,10 @@ export default function AppointmentTable() {
                           </td>
                           <td className="px-4 py-3 text-sm capitalize text-gray-300">{appointment.consultationType}</td>
                           <td className="px-4 py-3 text-sm text-gray-300">
-                            {formatTime(appointment.slot.startTime)} - {formatTime(appointment.slot.endTime)}
-                          </td>
+  {appointment?.slot?.startTime && appointment?.slot?.endTime
+    ? `${formatTime(appointment.slot.startTime)} - ${formatTime(appointment.slot.endTime)}`
+    : "Time Not Available"}
+</td>
                           <td className="px-4 py-3 text-sm font-medium">
                             <span className="text-indigo-400">₹{appointment.amount.toLocaleString()}</span>
                           </td>
