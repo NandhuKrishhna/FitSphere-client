@@ -5,7 +5,6 @@ import DoctorOtpVerification from "../pages/Doctor/DoctorOtpVerification";
 import ProfessionalDetailsForm from "../pages/Doctor/RegisterAsADoctorPage";
 import DoctorLoginPage from "../pages/Doctor/DoctorLoginPage";
 import DoctorDashboardPage from "../pages/Doctor/DoctorDashboardPage";
-import AppointmentTable from "../pages/Doctor/AppointmentManagmentPage";
 import RequireAuth from "../components/RequiredAuth";
 import { Roles } from "@/utils/Enums";
 import DoctorMainLayout from "@/components/Doctor/DoctorMainLayout";
@@ -17,6 +16,9 @@ import MeetingPage from "@/pages/Doctor/ConsultationMeetingPage";
 import ConsultationPage from "@/pages/Doctor/ConsultationPage";
 import NotificationPage from "@/pages/Users/NotificationsPage";
 import ChatPage from "@/pages/Test/ChatPage";
+import AppointmentPage from "@/pages/Users/AppointmentPage";
+import TransactionsPage from "@/pages/Users/TransactionPage";
+import WalletPage from "@/pages/Users/WalletPage";
 
 const Doctor_Routes = () => {
   return (
@@ -33,11 +35,13 @@ const Doctor_Routes = () => {
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
           <Route element={<DoctorMainLayout />}>
             <Route path="/dashboard" element={<DoctorDashboardPage />} />
-            <Route path="/appointments" element={<AppointmentTable />} />
+            <Route path="/appointments" element={<AppointmentPage />} />
             <Route path="/create-meet" element={<MeetingPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
             <Route path="/chat" element={<ChatPage />} />
+             <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/consultation/:meetId" element={<ConsultationPage />} />
+            <Route path="/wallet" element={<WalletPage />} />
         <Route path="/profile" element={<DoctorProflePage />} />
           </Route>
         </Route>
