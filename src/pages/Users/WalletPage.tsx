@@ -1,28 +1,68 @@
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import { useGetWalletQuery } from "../../redux/api/appApi";
-import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
-import WalletSkeleton from "@/components/skeleton/WalletSkeleton";
-import Header from "@/components/App/Header";
-import Navigation from "@/components/App/Navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react"
+import { useSelector } from "react-redux"
+import { useState, useEffect } from "react"
+import { useGetWalletQuery } from "../../redux/api/appApi"
+import { selectCurrentUser } from "../../redux/slice/Auth_Slice"
+import WalletSkeleton from "@/components/skeleton/WalletSkeleton"
+import Header from "@/components/App/Header"
+import Navigation from "@/components/App/Navigation"
+import { WalletTransactionQuery } from "@/types/wallet.types"
+import TransactionFilters from "@/components/App/TransactionFilter"
+import { WalletHeader } from "@/components/App/WalletHeader"
+import TransactionList from "@/components/App/TransactionList"
+import Pagination from "@/components/App/TP"
+import { Roles } from "@/utils/Enums"
+
 interface Transaction {
-  _id: string;
-  description: string;
-  createdAt: Date;
-  amount: number;
+  _id: string
+  description: string
+  createdAt: string
+  amount: number
+  type: string
+  status: string
+  currency: string
 }
-const ITEMS_PER_PAGE = 5;
+
+const ITEMS_PER_PAGE = 2
 
 export default function WalletPage() {
-  const user = useSelector(selectCurrentUser);
-  const { data: walletData, error, isLoading } = useGetWalletQuery({ userId: user?._id });
+  const userId = useSelector(selectCurrentUser)?._id?.toString()
+  const role = useSelector(selectCurrentUser)?.role?.toString()
+  const [queryParams, setQueryParams] = useState<WalletTransactionQuery>({
+    page: 1,
+    limit: ITEMS_PER_PAGE,
+  })
 
-  console.log(walletData);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filterStatus, setFilterStatus] = useState<string | null>(null)
+  const [sortConfig, setSortConfig] = useState<{
+    key: string | null
+    direction: "asc" | "desc"
+  }>({
+    key: "createdAt",
+    direction: "desc",
+  })
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const { data, error, isLoading } = useGetWalletQuery({
+    userId,
+    role,
+    ...queryParams,
+  })
 
-  if (isLoading) return <WalletSkeleton />;
+  useEffect(() => {
+    setQueryParams((prev) => ({
+      ...prev,
+      search: searchQuery || undefined,
+      status: filterStatus || undefined,
+      sortBy: sortConfig.key || undefined,
+      sortOrder: sortConfig.direction || undefined,
+    }))
+  }, [searchQuery, filterStatus, sortConfig])
+  
+
+
+
+  if (isLoading) return <WalletSkeleton />
 
   if (error) {
     return (
@@ -31,75 +71,102 @@ export default function WalletPage() {
           <p>Failed to fetch wallet details.</p>
         </div>
       </div>
-    );
+    )
   }
 
-  const wallet = walletData?.response?.[0]; 
-  const balance = wallet?.balance || 0;
-  const transactions = wallet?.transactions || [];
-  const currency = wallet?.currency || "INR"; 
-  const pageCount = Math.ceil(transactions.length / ITEMS_PER_PAGE);
-  const paginatedTransactions = transactions.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const walletData = data?.response
+  const balance = walletData?.wallet?.balance || 0
+  const currency = walletData?.wallet?.currency || "INR"
+  const transactions: Transaction[] = walletData?.transactions || []
+
+  const totalTransactions = walletData?.total || transactions.length
+  const totalPages = walletData?.totalPages || Math.ceil(totalTransactions / ITEMS_PER_PAGE)
+  const currentPage = Number(queryParams.page || 1)
+
+  const handlePageChange = (newPage: number) => {
+    setQueryParams((prev) => ({
+      ...prev,
+      page: newPage,
+    }))
+  }
+
+  const handleSort = (key: string) => {
+    setSortConfig({
+      key,
+      direction: sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc",
+    })
+  }
+
+  const clearFilters = () => {
+    setSearchQuery("")
+    setFilterStatus(null)
+    setSortConfig({
+      key: "createdAt",
+      direction: "desc",
+    })
+    setQueryParams({
+      page: 1,
+      limit: ITEMS_PER_PAGE,
+    })
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+    setQueryParams((prev) => ({
+      ...prev,
+      page: 1,
+    }))
+  }
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white">
-      <Header />
+    <div className="min-h-screen pb-10 bg-[#121212] text-white">
+      {role === Roles.USER && (
+        <> 
+        <Header />
       <Navigation />
-      <div className="max-w-3xl mt-10 mx-auto">
+        </>
+      )}
+     
+      <div className="max-w-3xl mt-10 mx-auto px-4">
         <div className="bg-zinc-800 shadow-xl lg:rounded-lg overflow-hidden">
-          <div className="px-4 py-5 sm:p-6 bg-purple-600 text-white">
-            <h3 className="text-lg leading-6 font-medium">Your Wallet</h3>
-            <div className="mt-2 text-3xl font-bold">
-              {currency} {balance.toFixed(2)}
-            </div>
-          </div>
+          <WalletHeader balance={balance} currency={currency} />
+
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-white mb-4">Transaction History</h3>
-            <div className="space-y-4">
-              {paginatedTransactions.length > 0 ? (
-                paginatedTransactions.map((transaction: Transaction) => (
-                  <div key={transaction._id} className="flex items-center justify-between bg-zinc-700 p-4 rounded-lg">
-                    <div>
-                      <p className="text-sm font-medium text-white">{transaction.description}</p>
-                      <p className="text-xs text-gray-400">{new Date(transaction.createdAt).toLocaleDateString()}</p>
-                    </div>
-                    <div
-                      className={`text-sm font-semibold ${transaction.amount >= 0 ? "text-green-400" : "text-red-400"}`}
-                    >
-                      {transaction.amount >= 0 ? "+" : "-"}
-                      {currency} {Math.abs(transaction.amount).toFixed(2)}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-400">No transactions found.</p>
-              )}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <h3 className="text-lg leading-6 font-medium text-white">Transaction History</h3>
+
+              <TransactionFilters
+                searchQuery={searchQuery}
+                filterStatus={filterStatus}
+                sortConfig={sortConfig}
+                onSearchChange={handleSearchChange}
+                onFilterChange={setFilterStatus}
+                onSortChange={handleSort}
+                onClearFilters={clearFilters}
+                setQueryParams={setQueryParams}
+              />
             </div>
-            <div className="mt-6 flex justify-center">
-              <nav className="inline-flex rounded-md shadow">
-                <button
-                  onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-l-md border border-zinc-600 bg-zinc-700 text-sm font-medium text-white hover:bg-zinc-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft />
-                </button>
-                <span className="px-3 py-2 border-t border-b border-zinc-600 bg-zinc-700 text-sm font-medium text-white">
-                  Page {currentPage} of {pageCount}
-                </span>
-                <button
-                  onClick={() => setCurrentPage((page) => Math.min(page + 1, pageCount))}
-                  disabled={currentPage === pageCount}
-                  className="px-3 py-2 rounded-r-md border border-zinc-600 bg-zinc-700 text-sm font-medium text-white hover:bg-zinc-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronRight />
-                </button>
-              </nav>
-            </div>
+
+            <TransactionList
+              transactions={transactions}
+              searchQuery={searchQuery}
+              filterStatus={filterStatus}
+              currency={currency}
+              clearFilters={clearFilters}
+            />
+
+            {totalTransactions > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalTransactions}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
-
