@@ -1,6 +1,8 @@
 import { TransactionQueryParams } from "@/types/transaction";
 import { apiSlice } from "./EntryApiSlice";
 import { AppointmentQueryParams } from "@/types/appointmentList";
+import { WalletTransactionQuery } from "@/types/wallet.types";
+import { Roles } from "@/utils/Enums";
 export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     displayAllDoctors: builder.query({
@@ -90,13 +92,20 @@ export const appApi = apiSlice.injectEndpoints({
       invalidatesTags: ["appointments", "wallet"],
     }),
     getWallet: builder.query({
-      query: (data) => ({
-        url: "/app/wallet",
-        method: "POST",
-        body: data,
-      }),
+      query: ({ userId, role, ...queryParams }: { userId?: string; role?: string } & WalletTransactionQuery) => {
+        console.log("Role from api",role)
+        const queryString = Object.entries(queryParams)
+        .filter(([, value]) => value !== undefined && value !== "")
+        .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+        .join("&");
+        return {
+          url: `${role === Roles.USER ? `/app/wallet/${userId}` : `/doctor/wallet/${userId}`}${queryString ? `?${queryString}` : ""}`,
+          method: "GET",
+        };
+      },
       providesTags: ["wallet"],
     }),
+    
     handleFailedPayment: builder.mutation({
       query: (data) => ({
         url: "/app/payment-failure",
