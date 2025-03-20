@@ -63,6 +63,13 @@ export const authApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    googleAuthLogin : builder.query({
+      query :(code) => ({
+        url : `/auth/google?code=${code}`,
+        method : "GET"
+      })
+    }),
   }),
 });
 
@@ -75,4 +82,5 @@ export const {
   useResetNewPasswordMutation,
   useLazyLogoutQuery,
   useResendNewOtpMutation,
+  useLazyGoogleAuthLoginQuery
 } = authApi;
