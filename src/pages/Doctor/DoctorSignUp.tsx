@@ -3,7 +3,6 @@ import useDoctorSignUp from "@/hooks/DoctorHooks/doctorSignUpHook";
 
 const DoctorSignUp = () => {
   const { register, errors, watch, handleSubmit, isLoading } = useDoctorSignUp();
-
   return (
     <AuthLayout
       title="Create your doctor account"
