@@ -114,12 +114,22 @@ export const doctorApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      providesTags: ["doctorDetails"],
     }),
     allDoctorDetails: builder.query({
       query: () => ({
         url: "/doctor/patients-appointments",
         method: "GET",
       }),
+    }),
+
+    updateDoctorDetails: builder.mutation({
+      query :(data) => ({
+        url : "/doctor/update-details",
+        method : "PATCH",
+        body : data
+      }),
+      invalidatesTags: ["doctorDetails"],
     }),
   }),
 });
@@ -140,4 +150,5 @@ export const {
   useGetAllReviewsAndRatingsQuery,
   useDoctorDetailsQuery,
   useAllDoctorDetailsQuery,
+  useUpdateDoctorDetailsMutation,
 } = doctorApi;
