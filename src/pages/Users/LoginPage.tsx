@@ -1,8 +1,10 @@
 import AuthLayout from "@/components/App/AuthLayout";
 import useLoginHook from "@/hooks/LoginHook";
+import useGoogleLoginHook from "@/hooks/useGoogleLogin";
 
 export default function LoginPage() {
   const { register, isLoading, errors, handleSubmit } = useLoginHook();
+  const {googleLogin} = useGoogleLoginHook()
 
   return (
     <AuthLayout
@@ -18,6 +20,8 @@ export default function LoginPage() {
       footerLinkPath="/signup"
       submitButtonText="Login"
       forgotPasswordURL="/forgot-password"
+      googleLoginOption={true}
+      handleGoogleLogin={googleLogin}
     />
   );
 }
