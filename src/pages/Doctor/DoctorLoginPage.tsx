@@ -3,7 +3,6 @@ import AuthLayout from "@/components/App/AuthLayout";
 
 export default function DoctorLoginPage() {
   const { register, isLoading, errors, handleSubmit } = useDoctorLoginHook();
-
   return (
     <AuthLayout
       title="Login to your doctor account"
