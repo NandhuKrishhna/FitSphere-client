@@ -31,6 +31,7 @@ export const caloriesApi = apiSlice.injectEndpoints({
         url: "/app/get-userHealthDetails",
         method: "GET",
       }),
+      providesTags :["userHealthDetails"]
     }),
 
     getUserFoodLogsDetails: builder.query({
@@ -78,7 +79,15 @@ export const caloriesApi = apiSlice.injectEndpoints({
         url:"/app/get-weight-progress",
         method :"GET"
       })
-    })
+    }),
+    updateUserHealthDetails: builder.mutation({
+      query : (data) => ({
+        url :"/app/update-userdetails",
+        method :"PATCH",
+        body :data
+      }),
+      invalidatesTags :["userHealthDetails"]
+    }),
   }),
 });
 
@@ -92,5 +101,6 @@ export const {
   useDeleteFoodLogMutation,
   useSearchFoodQuery,
   useEditFoodMutation,
-  useGetWeightProgressQuery
+  useGetWeightProgressQuery,
+  useUpdateUserHealthDetailsMutation
 } = caloriesApi;
