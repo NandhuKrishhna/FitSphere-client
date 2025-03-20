@@ -197,8 +197,15 @@ export const appApi = apiSlice.injectEndpoints({
                };
              },
              providesTags: ["appointments"],
-     })
+     }),
+     updatePassword : builder.mutation({
+      query: (data) => ({
+        url: "/app/update-password",
+        method: "PATCH",
+        body:data
+      }),
   }),
+}),
 });
 
 export const {
@@ -221,6 +228,7 @@ export const {
   useGetAllTransactionsQuery,
   useEditReviewMutation,
   useDeleteReviewsMutation,
-  useGetTransactionsQuery
+  useGetTransactionsQuery,
+  useUpdatePasswordMutation
 }
  = appApi;
