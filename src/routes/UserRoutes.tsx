@@ -29,15 +29,18 @@ import NotificationPage from "@/pages/Users/NotificationsPage";
 import TransactionPage from "@/pages/Users/TransactionPage";
 import ChatPage from "@/pages/Test/ChatPage";
 import PublicRoute from "./PublicRoute";
+import GoogleOAuthWrapper from "./GoogleOAuthWrapper";
+
 
 
 const UserRoutes = () => {
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
       <Route element={<PublicRoute />}>
-  <Route path="/login" element={<LoginPage />} />
-  <Route path="/signup" element={<SignupForm />} />
+  <Route path="/login" element={ <GoogleOAuthWrapper><LoginPage /></GoogleOAuthWrapper>} />
+  <Route path="/signup" element={<GoogleOAuthWrapper><SignupForm /></GoogleOAuthWrapper>} />
   <Route path="/verify-email" element={<OTPVerificationPage />} />
   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
   <Route path="/verify-reset-otp" element={<ResetPasswordOtp />} />
