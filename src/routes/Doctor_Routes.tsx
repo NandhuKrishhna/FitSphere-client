@@ -19,15 +19,15 @@ import ChatPage from "@/pages/Test/ChatPage";
 import AppointmentPage from "@/pages/Users/AppointmentPage";
 import TransactionsPage from "@/pages/Users/TransactionPage";
 import WalletPage from "@/pages/Users/WalletPage";
-
+import GoogleOAuthWrapper from "./GoogleOAuthWrapper";
 const Doctor_Routes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route path="/signup" element={<DoctorSignUp />} />
+        <Route path="/signup" element={<GoogleOAuthWrapper><DoctorSignUp /></GoogleOAuthWrapper>} />
         <Route path="/verify/otp" element={<DoctorOtpVerification />} />
         <Route path="/registration" element={<ProfessionalDetailsForm />} />
-        <Route path="/login" element={<DoctorLoginPage />} />
+        <Route path="/login" element={<GoogleOAuthWrapper><DoctorLoginPage /></GoogleOAuthWrapper>} />
         <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
         <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
         <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
