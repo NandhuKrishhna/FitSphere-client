@@ -1,5 +1,3 @@
-"use client"
-
 import { useGetWalletQuery } from "@/redux/api/appApi"
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 import { useSelector } from "react-redux"
@@ -36,9 +34,8 @@ export default function TotalEarnings({ selectedView, onViewChange }) {
       }
       return acc
     }, [])
-    .slice(-7) // Show last 7 days
+    .slice(-7) 
 
-  // Calculate growth percentage
   const totalEarnings = transactions.reduce((sum, tx) => sum + (tx.amount > 0 ? tx.amount : 0), 0)
   const previousPeriodEarnings = totalEarnings * 0.8
   const growthPercentage =
