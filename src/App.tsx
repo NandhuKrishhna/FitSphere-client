@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/Users/LandingPage";
 import Layout from "./components/Layout";
-
 import Doctor_Routes from "./routes/Doctor_Routes";
 import Admin_Routes from "./routes/Admin_Routes";
 import UserRoutes from "./routes/UserRoutes";
