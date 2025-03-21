@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+
 type SlotType = {
   startTime: string;
   endTime: string;
@@ -9,11 +10,13 @@ type SlotType = {
 interface AppState {
   selectedDoctorId: string | null;
   selectedSlot: SlotType | null;
+  meetingId : string | null
 }
 
 const initialState: AppState = {
   selectedDoctorId: null,
   selectedSlot: null,
+  meetingId : null
 };
 
 const appFeatSlice = createSlice({
@@ -27,9 +30,12 @@ const appFeatSlice = createSlice({
       state.selectedSlot = action.payload;
     },
     resetAppState: () => initialState,
+    setMeetingId : (state , action : PayloadAction<string | null>) => {
+      state.meetingId = action.payload}
   },
 });
 
-export const { setSelectedDoctorId, setSelectedSlot, resetAppState } = appFeatSlice.actions;
+export const { setSelectedDoctorId, setSelectedSlot, resetAppState , setMeetingId } = appFeatSlice.actions;
 export default appFeatSlice.reducer;
 export const selectedDoctorId = (state:RootState) => state.appFeat.selectedDoctorId;
+export const selectedMeetingId = (state:RootState) => state.appFeat.meetingId
