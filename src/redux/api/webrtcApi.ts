@@ -9,7 +9,17 @@ export const webrtcApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    leaveMeeting: builder.mutation({
+      query:(data)=> ({
+        url:"/leave-meeting",
+        method:"POST",
+        body:data
+      })
+    })
   }),
 });
 
-export const { useJoinMeetingMutation } = webrtcApi;
+export const { 
+  useJoinMeetingMutation,
+  useLeaveMeetingMutation
+ } = webrtcApi;
