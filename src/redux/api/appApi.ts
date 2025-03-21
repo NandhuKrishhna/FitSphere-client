@@ -146,10 +146,9 @@ export const appApi = apiSlice.injectEndpoints({
       providesTags: ["ratings"],
     }),
     getAllNotification : builder.query({
-      query: (data) => ({
+      query: () => ({
         url: "/app/get-all-notification",
-        method: "POST",
-        body:data
+        method: "GET",
       }),
       providesTags:["notification"]
     }),
