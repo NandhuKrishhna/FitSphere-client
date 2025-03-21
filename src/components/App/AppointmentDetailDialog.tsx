@@ -127,7 +127,7 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
                   <span className="text-sm">Time Slot</span>
                 </div>
                 <p>
-                  {formatTime(appointment.slot.startTime)} - {formatTime(appointment.slot.endTime)}
+                  {formatTime(appointment?.slot?.startTime)} - {formatTime(appointment?.slot?.endTime)}
                 </p>
               </div>
 
