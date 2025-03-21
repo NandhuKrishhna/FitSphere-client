@@ -27,8 +27,8 @@ const ChatContainer = () => {
    const { data: messages,  isLoading: isMessageLoading , refetch } = useGetMessagesQuery({
     receiverId: selectedUser?.doctorDetails._id,
   });
-  // console.log(messages?.messages)
-  useEffect(() => {
+  
+ useEffect(() => {
     socket?.on("newMessage", (message) => {
       console.log("New message received:", message);
       refetch();
@@ -37,8 +37,8 @@ const ChatContainer = () => {
     return () => {
       socket?.off("newMessage");
     };
-  }, [socket ,refetch]);
-
+  }, [refetch]);
+  
   useEffect(() => {
     if (messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
