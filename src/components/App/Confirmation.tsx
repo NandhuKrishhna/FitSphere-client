@@ -176,7 +176,7 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
 
         <div className="mt-6">
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-4">
+          <div className="">
             {filteredSlots.map((slot) => {
               const startUtc = toZonedTime(new Date(slot.startTime), "UTC");
               const endUtc = toZonedTime(new Date(slot.endTime), "UTC");
