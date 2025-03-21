@@ -94,14 +94,21 @@ export default function Header({ value, onChange }: Props) {
     <header className="flex justify-between items-center p-4 bg-[#1e1e30] shadow-md">
       <h1 className="text-xl font-bold text-white">Fitsphere</h1>
       <div className="flex items-center gap-4">
-        <input
+        {user?.role === "user" && (
+          <input
           type="text"
           value={value}
           onChange={onChange}
           placeholder="Search"
-          className="w-full sm:w-48 sm:pl-4 left-2 py-1 pl-1 text-sm rounded-md bg-[#2a2a40] text-white border border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 "
+          className="w-full sm:w-48 sm:pl-4 left-2 py-1 pl-1 text-sm rounded-md
+           bg-[#2a2a40] text-white border border-gray-600 
+           focus:outline-none focus:ring-1 focus:ring-purple-500 "
         />
-
+        )}
+      
+        {user?.role !== "admin" && (
+          <>
+       
         <NotificationDropdown
           isOpen={isNotificationOpen}
           setIsOpen={setIsNotificationOpen}
@@ -109,7 +116,10 @@ export default function Header({ value, onChange }: Props) {
           setIsOtherDropdownOpen={setIsProfileOpen}
           notifications={notificationsData?.allNotifications || []}
           role={user?.role}
+          
         />
+           </>
+        )}
         <ProfileDropdown
           isOpen={isProfileOpen}
           setIsOpen={setIsProfileOpen}
@@ -120,6 +130,7 @@ export default function Header({ value, onChange }: Props) {
           isLoading={isLoading}
           handleNavigate={handleNavigate}
         />
+        
       </div>
     </header>
   );
@@ -288,7 +299,7 @@ function ProfileDropdown({
           <div className="p-3 border-b border-gray-700">
             <div className="flex items-center">
               <div className="w-9 h-9 rounded-full  flex items-center justify-center mr-3">
-                <img src={user?.profilePicture} alt="" />
+                <AvatarDemo image={user?.profilePicture} name={user?.name} />
               </div>
               <div>
                 <p className="font-medium">{user?.name}</p>
@@ -297,10 +308,13 @@ function ProfileDropdown({
             </div>
           </div>
           <div>
+            {user?.role !== Roles.ADMIN &&
+            <>
             <button className="w-full text-left p-3 hover:bg-[#2a2a40] flex items-center" onClick={handleNavigate}>
               <User className="w-4 h-4 mr-2" />
               <span>Profile</span>
             </button>
+            </>}
             <button
               className="w-full text-left p-3 hover:bg-[#2a2a40] flex items-center text-red-400"
               onClick={handleLogout}
