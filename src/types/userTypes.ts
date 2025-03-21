@@ -87,3 +87,29 @@ export interface RecipeResponse {
   message: string;
   resposse: Recipe;
 }
+
+
+export type UserQueryParams ={
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  search?: string;
+  isVerfied?: string;
+  isActive? :string;
+  isApproved? : string;
+  name?: string;
+  email?: string;
+};
+
+
+export type UserInfo = {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  profilePicture: string;
+  isPremium: boolean;
+  isVerfied: boolean;
+  status: string;
+}
