@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { Roles } from "@/utils/Enums";
+import useLeaveMeeting from "./useLeaveMeeting";
+import { selectedMeetingId } from "@/redux/slice/appFeatSlice";
 
 interface PlayerState {
   [key: string]: {
@@ -16,21 +18,25 @@ interface PlayerState {
 }
 
 const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
+  const meetingId = useSelector(selectedMeetingId)
+  const {handleLeaveMeeting} = useLeaveMeeting()
   const socket = getSocket();
   const user = useSelector(selectCurrentUser);
   const [player, setPlayer] = React.useState<PlayerState>({});
   const navigate = useNavigate();
 
-  // Get the currently highlighted player (my own video)
   const playerHighlight = player[myId] || null;
 
-  // Get all other players (excluding myself)
   const nonHighlighted = Object.keys(player)
     .filter((key) => key !== myId)
     .reduce((acc, key) => {
       acc[key] = player[key];
       return acc;
     }, {} as PlayerState);
+
+    const onLeaveMeeting = () => {
+      handleLeaveMeeting(meetingId!)
+    }
 
   const toggleAudio = () => {
     if (!player[myId]) return; 
@@ -56,13 +62,28 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
     socket?.emit("user-toggle-video", myId, roomId);
   };
 
-  const leaveRoom = () => {
+  const leaveRoom = async() => {
+    if (player[myId]?.url instanceof MediaStream) {
+      player[myId].url.getTracks().forEach(track => track.stop());
+    }
+    
     socket?.emit("user-leave", myId, roomId);
     console.log(`User ${myId} left room ${roomId}`);
-    peer?.disconnect();
-    const navigateTo = user?.role === Roles.DOCTOR ? "/doctor/appointments" : "/review";
+  
+    peer?.disconnect(); 
+  
+    setPlayer((prev) => {
+      const copy = cloneDeep(prev);
+      delete copy[myId]; 
+      return copy;
+    });
+    if (meetingId) {
+      await onLeaveMeeting(); 
+    }
+    const navigateTo = user?.role === Roles.DOCTOR ? "/doctor/appointments" : "/appointments";
     navigate(navigateTo);
   };
+  
 
   return { player, setPlayer, playerHighlight, nonHighlighted, toggleAudio, toggleVideo, leaveRoom };
 };
