@@ -50,7 +50,7 @@ interface DoctorDetailsTabProps {
 }
 
 const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorLoading }) => {
-  console.log(doctorData)
+  // console.log(doctorData)
   const { handleUpdateDoctorDetails, isUpdatingDetails } = useUpdateDoctorDetails();
   const [editingDoctor, setEditingDoctor] = useState(false);
   const [doctorForm, setDoctorForm] = useState<DoctorDetails>({
@@ -82,7 +82,7 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
       setDoctorForm(doctorData.doctorDetails);
     }
   }, [doctorData, doctorForm._id]);
-
+  
   const handleSave = () => {
     setDoctorForm((prev) => {
       console.log("Updated doctorForm before API call:", prev);
@@ -91,7 +91,8 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
     });
     setEditingDoctor(false);
   };
-
+  
+  
   return (
     <Card className="bg-zinc-900 border-zinc-800">
       <CardHeader className="flex flex-row items-center justify-between">
