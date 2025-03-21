@@ -10,8 +10,8 @@ import {
 } from "@/redux/api/caloriesApi";
 import ProfileHeader from "@/components/App/ProfileHeader";
 import OverviewTab from "@/components/App/ProfileOverviewTab";
-import HealthDetailsTab from "@/components/App/HealthDetailsTab";
 import SecurityTab from "@/components/App/SecurityTab";
+import UserHealthDetailsTab from "@/components/App/UserHealthTab";
 
 const UserProfilePage: React.FC = () => {
   const auth = useSelector(selectCurrentUser);
@@ -50,7 +50,7 @@ const UserProfilePage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="health">
-            <HealthDetailsTab 
+            <UserHealthDetailsTab 
               healthData={healthData}
               healthLoading={healthLoading}
             />
