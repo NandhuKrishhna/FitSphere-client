@@ -1,4 +1,6 @@
+import { UserQueryParams } from "@/types/userTypes";
 import { apiSlice } from "./EntryApiSlice";
+
 
 export const adminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,18 +11,34 @@ export const adminApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    getAllUsers: builder.query({
-      query: () => ({
-        url: "/admin/users",
-        method: "GET",
-      }),
-      providesTags: ["users"],
-    }),
+   getAllUsers : builder.query({
+           query: (params: UserQueryParams) => {
+                 const { ...queryParams } = params;
+                 const queryString = Object.entries(queryParams)
+                   .filter(([value]) => value !== undefined && value !== "")
+                   .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+                   .join("&");
+         
+                 return {
+                   url: `/admin/users${queryString ? `?${queryString}` : ""}`,
+                   method: "GET",
+                 };
+               },
+               providesTags: ["users"],
+       }),
     getAllDoctors: builder.query({
-      query: () => ({
-        url: "/admin/doctors",
-        method: "GET",
-      }),
+      query: (params: UserQueryParams) => {
+        const { ...queryParams } = params;
+        const queryString = Object.entries(queryParams)
+          .filter(([value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
+
+        return {
+          url: `/admin/doctors${queryString ? `?${queryString}` : ""}`,
+          method: "GET",
+        };
+      },
       providesTags: ["doctors"],
     }),
     adminLogout: builder.query({
@@ -64,7 +82,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ["users" , "doctors"],
     }),
     blockUsers: builder.mutation({
       query: (data) => ({
@@ -72,7 +90,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ["users" ,"doctors"],
     }),
   }),
   overrideExisting: false,
