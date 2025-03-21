@@ -1,12 +1,14 @@
 import { useJoinMeetingMutation } from "@/redux/api/webrtcApi";
 import toast from "react-hot-toast";
 import { ErrorResponse } from "../LoginHook";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { setMeetingId } from "@/redux/slice/appFeatSlice";
 
 const useHandleJoinMeeting = () => {
+  const dispatch= useDispatch();
   const [joinMeeting, { isLoading: isJoiningMeeting }] = useJoinMeetingMutation();
   const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>({});
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ const useHandleJoinMeeting = () => {
       if (response.success) {
         toast.success("Successfully joined the meeting");
         navigate(`/consultation/${meetingId}`);
+        dispatch(setMeetingId(meetingId));
       }
     } catch (error) {
       const err = error as ErrorResponse;
