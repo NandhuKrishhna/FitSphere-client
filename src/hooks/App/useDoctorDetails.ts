@@ -152,15 +152,16 @@ export const useDoctorDetails = () => {
         slotId: selectedSlot?._id,
         amount: doctorDetails?.details.consultationFees,
       });
-      toast.success(response.data.message);
+      console.log(response);
       setIsWalletSuccessModalOpen(true);
       setTimeout(() => {
         setIsWalletSuccessModalOpen(false);
         navigate("/appointments");
       }, 5000);
     } catch (error) {
+      console.log("---------",error)
       const err = error as ErrorResponse;
-      if (err.data.message) return toast.error(err.data.message);
+      if (err?.data?.message) return toast.error(err?.data?.message);
       toast.error("Failed to book slot. Please try again.");
     }
   };
