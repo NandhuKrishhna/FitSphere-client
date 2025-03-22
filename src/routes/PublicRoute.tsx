@@ -3,9 +3,17 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PublicRoute = () => {
-  const token = useSelector(selectCurrentUser)?.accessToken
+  const user = useSelector(selectCurrentUser);
+  const token = user?.accessToken;
+  const role = user?.role;
 
-  return token ? <Navigate to="/home" replace /> : <Outlet />;
+  if (token) {
+    if (role === "doctor") return <Navigate to="/doctor/dashboard" replace />;
+    if (role === "admin") return <Navigate to="/users-management" replace />;
+    return <Navigate to="/home" replace />;
+  }
+
+  return <Outlet />;
 };
 
 export default PublicRoute;

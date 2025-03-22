@@ -20,10 +20,12 @@ import AppointmentPage from "@/pages/Users/AppointmentPage";
 import TransactionsPage from "@/pages/Users/TransactionPage";
 import WalletPage from "@/pages/Users/WalletPage";
 import GoogleOAuthWrapper from "./GoogleOAuthWrapper";
+import PublicRoute from "./PublicRoute";
 const Doctor_Routes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+      <Route element={<PublicRoute />}>
         <Route path="/signup" element={<GoogleOAuthWrapper><DoctorSignUp /></GoogleOAuthWrapper>} />
         <Route path="/verify/otp" element={<DoctorOtpVerification />} />
         <Route path="/registration" element={<ProfessionalDetailsForm />} />
@@ -31,6 +33,7 @@ const Doctor_Routes = () => {
         <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
         <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
         <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
+      </Route>
         {/*Protected Routes*/}
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
           <Route element={<DoctorMainLayout />}>
