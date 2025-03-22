@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 export const useAppointmentActions = () => {
-  const [cancelAppointment] = useCancelAppointmentMutation();
+  const [cancelAppointment , {isLoading:isAppointmentCancelLoading}] = useCancelAppointmentMutation();
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -30,5 +30,6 @@ export const useAppointmentActions = () => {
     setIsDialogOpen,
     handleCancelAppointment,
     openDetailsDialog,
+    isAppointmentCancelLoading
   };
 };
