@@ -30,14 +30,16 @@ const ChatContainer = () => {
   
  useEffect(() => {
     socket?.on("newMessage", (message) => {
-      console.log("New message received:", message);
+      console.log("New message receivddedddd:", message);
       refetch();
-    });
-
+    })
     return () => {
       socket?.off("newMessage");
     };
   }, [refetch]);
+
+  
+
   
   useEffect(() => {
     if (messageEndRef.current && messages) {
