@@ -120,7 +120,7 @@ export const appApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["appointments", "wallet"],
+      invalidatesTags: ["appointments", "wallet","notification","slots"],
     }),
     addReview: builder.mutation({
       query: (data) => ({
