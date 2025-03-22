@@ -6,12 +6,15 @@ import DoctorManagement from "../pages/Admin/DoctorManagementPage";
 import NotificationPage from "../pages/Admin/NotificationPage";
 import Layout from "@/components/Layout";
 import { Roles } from "@/utils/Enums";
+import PublicRoute from "./PublicRoute";
 
 const Admin_Routes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+      <Route element={<PublicRoute />}>
         <Route path="login" element={<AdminLoginPage />} />
+      </Route>
         <Route element={<RequireAuth allowedRoles={[Roles.ADMIN]} redirectTo="/admin/login" />}>
           <Route path="/users-management" element={<UserManagementDashboard />} />
           <Route path="/doctors-management" element={<DoctorManagement />} />
