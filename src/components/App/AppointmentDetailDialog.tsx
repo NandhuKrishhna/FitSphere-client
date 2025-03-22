@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar, Clock, CreditCard, Loader, Mail, User, Video, Wallet } from "lucide-react"
 import { Roles } from "@/utils/Enums"
 import useHandleJoinMeeting from "@/hooks/App/useJoinMeeting"
+import { useAppointmentActions } from "@/hooks/App/useAppointmentActions"
 
 interface Appointment {
   _id: string
@@ -30,10 +31,11 @@ interface AppointmentDetailsModalProps {
   isOpen: boolean
   onClose: () => void
   appointment: Appointment
-  role: string
+  role?: string
 }
 
 export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }: AppointmentDetailsModalProps) {
+  const {handleCancelAppointment,isAppointmentCancelLoading} = useAppointmentActions()
   const {handleJoinMeet , isJoiningMeeting} =useHandleJoinMeeting()
   if (!appointment) return null
   // console.log(appointment)
@@ -190,6 +192,15 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
                   <p className="text-sm text-gray-300">{appointment.otherUser.email}</p>
                 </div>
               </div>
+              {role === Roles.USER && appointment.status === "scheduled" && (
+                <Button
+                className="bg-indigo-500 ml-auto"
+                  variant="outline"
+                  onClick={() => handleCancelAppointment(appointment._id)}
+                >
+                  {isAppointmentCancelLoading ? <Loader className="animate-spin" size={15}/> : "Cancel Appointment"}
+                </Button>
+              )}
             </div>
           </div>
         </div>
