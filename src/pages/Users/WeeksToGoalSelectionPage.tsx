@@ -42,8 +42,8 @@ export default function WeeksGoalSelector() {
     <PageLayout
       title="How quickly do you want results?"
       subtitle="Select the number of weeks to achieve your goals"
-      step={5}
-      totalSteps={6}
+      step={7}
+      totalSteps={7}
       backAction={() => navigate("/activity-level")}
       nextAction={handleSave}
       nextDisabled={!selectedWeeks || isLoading}

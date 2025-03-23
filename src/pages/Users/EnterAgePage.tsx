@@ -12,7 +12,7 @@ export default function AgeSelector() {
       title="What's your age?"
       subtitle="Scroll to select your age"
       step={1}
-      totalSteps={6}
+      totalSteps={7}
       nextAction={() => navigate("/gender")}
       nextDisabled={!selectedAge}
     >

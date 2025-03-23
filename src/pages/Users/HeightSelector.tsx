@@ -12,7 +12,7 @@ export default function HeightSelector() {
       title="what's your height?"
       subtitle="Scroll to select your height in cm"
       step={3}
-      totalSteps={6}
+      totalSteps={7}
       backAction={() => navigate("/gender")}
       nextAction={() => navigate("/current-weight")}
       nextDisabled={!selectedHeight}

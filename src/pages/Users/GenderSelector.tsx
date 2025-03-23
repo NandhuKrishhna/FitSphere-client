@@ -28,7 +28,7 @@ export default function GenderSelector() {
       title="what's your gender?"
       subtitle="Select your gender"
       step={2}
-      totalSteps={6}
+      totalSteps={7}
       backAction={() => navigate("/age")}
       nextAction={() => navigate("/height")}
       nextDisabled={!isSelected}

@@ -12,7 +12,7 @@ export default function WeightSelector() {
       title="What's your current weight?"
       subtitle="Scroll to select your weight (kg)"
       step={4}
-      totalSteps={6}
+      totalSteps={7}
       backAction={() => navigate("/height")}
       nextAction={() => navigate("/target-weight")}
       nextDisabled={!selectedWeight}

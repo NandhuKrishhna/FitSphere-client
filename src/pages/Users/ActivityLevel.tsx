@@ -40,8 +40,8 @@ export default function ActivityLevelSelector() {
     <PageLayout
       title="what's your activity level?"
       subtitle="Select how active you are on a weekly basis"
-      step={4}
-      totalSteps={6}
+      step={5}
+      totalSteps={7}
       backAction={() => navigate("/height")}
       nextAction={() => navigate("/select-week")}
       nextDisabled={!isSelected}

@@ -27,7 +27,7 @@ export default function TargetWeightSelector() {
       title="Set Your Target Weight"
       subtitle="Scroll to select your target weight (kg)"
       step={5}
-      totalSteps={6}
+      totalSteps={7}
       backAction={() => navigate("/current-weight")}
       nextAction={handleNextPage}
       nextDisabled={!targetWeight}
