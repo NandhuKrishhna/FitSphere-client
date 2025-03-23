@@ -5,17 +5,21 @@ import Doctor_Routes from "./routes/Doctor_Routes";
 import Admin_Routes from "./routes/Admin_Routes";
 import UserRoutes from "./routes/UserRoutes";
 import Unauthorized from "./pages/UnAuthorized";
+import GlobalSocketListener from "./components/App/GlobalSocketListener";
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<LandingPage />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/*" element={<UserRoutes />} />
-        <Route path="/doctor/*" element={<Doctor_Routes />} />
-        <Route path="/admin/*" element={<Admin_Routes />} />
-      </Route>
-    </Routes>
+    <>
+      <GlobalSocketListener />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<LandingPage />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/*" element={<UserRoutes />} />
+          <Route path="/doctor/*" element={<Doctor_Routes />} />
+          <Route path="/admin/*" element={<Admin_Routes />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
