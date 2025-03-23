@@ -177,30 +177,30 @@ const HealthSummaryCard: React.FC<HealthSummaryCardProps> = ({ healthData, healt
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-400">Current Weight:</p>
-              <p className="font-medium text-white">{healthData.userHealthDetails.weight} kg</p>
+              <p className="font-medium text-white">{healthData?.userHealthDetails?.weight} kg</p>
             </div>
             <div>
               <p className="text-gray-400">Target Weight:</p>
-              <p className="font-medium text-white">{healthData.userHealthDetails.targetWeight} kg</p>
+              <p className="font-medium text-white">{healthData?.userHealthDetails?.targetWeight} kg</p>
             </div>
             <div>
               <p className="text-gray-400">Height:</p>
-              <p className="font-medium text-white">{healthData.userHealthDetails.height} cm</p>
+              <p className="font-medium text-white">{healthData?.userHealthDetails?.height} cm</p>
             </div>
             <div>
               <p className="text-gray-400">Goal:</p>
-              <p className="font-medium text-white capitalize">{healthData.userHealthDetails.goal}</p>
+              <p className="font-medium text-white capitalize">{healthData?.userHealthDetails?.goal}</p>
             </div>
             <div>
               <p className="text-gray-400">Activity Level:</p>
               <p className="font-medium text-white capitalize">
-                {healthData.userHealthDetails.activityLevel}
+                {healthData?.userHealthDetails?.activityLevel}
               </p>
             </div>
             <div>
               <p className="text-gray-400">Daily Calories:</p>
               <p className="font-medium text-white">
-                {healthData.userHealthDetails.targetDailyCalories} kcal
+                {healthData?.userHealthDetails?.targetDailyCalories} kcal
               </p>
             </div>
           </div>
