@@ -4,7 +4,7 @@ export const caloriesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     userHealthDetail: builder.mutation({
       query: (data) => ({
-        url: "/app/update-userdetails",
+        url: "/app/add-userdetails",
         method: "POST",
         body: data,
       }),
