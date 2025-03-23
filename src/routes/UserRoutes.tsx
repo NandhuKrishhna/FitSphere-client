@@ -12,6 +12,7 @@ import OTPVerificationPage from "@/pages/Users/VerifyOtpPage";
 import ForgotPasswordPage from "@/pages/Users/ForgotPasswordPage";
 import ResetPasswordOtp from "@/pages/Users/ResetPasswordOtp";
 import ResetPasswordPage from "@/pages/Users/ResetPasswordPage";
+import UserHealthProtectedRoute from "./UserHealthProtectedRoutes";
 
 // Lazy-loaded components
 const DoctorsPage = lazy(() => import("../pages/Users/DoctorsPage"));
@@ -37,11 +38,11 @@ const ChatPage = lazy(() => import("@/pages/Test/ChatPage"));
 
 const UserRoutes = () => {
   return (
-      <Suspense fallback={
-        <div className="h-screen bg-black flex items-center justify-center">
-          <Loader className="animate-spin text-white w-10 h-10" />
-        </div>
-      }>
+    <Suspense fallback={
+      <div className="h-screen bg-black flex items-center justify-center">
+        <Loader className="animate-spin text-white w-10 h-10" />
+      </div>
+    }>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route element={<PublicRoute />}>
@@ -54,13 +55,15 @@ const UserRoutes = () => {
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[Roles.USER]} redirectTo="/login" />}>
-            <Route path="/age" element={<AgeSelector />} />
-            <Route path="/gender" element={<AgeGenderSelector />} />
-            <Route path="/height" element={<HeightSelector />} />
-            <Route path="/current-weight" element={<CurrentWeightSelection />} />
-            <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
-            <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
-            <Route path="/select-week" element={<WeekSelectionPage />} />
+            <Route element={<UserHealthProtectedRoute />}>
+              <Route path="/age" element={<AgeSelector />} />
+              <Route path="/gender" element={<AgeGenderSelector />} />
+              <Route path="/height" element={<HeightSelector />} />
+              <Route path="/current-weight" element={<CurrentWeightSelection />} />
+              <Route path="/target-weight" element={<TargetWeightSelectionPage />} />
+              <Route path="/activity-level" element={<ActivityLevelSelectionPage />} />
+              <Route path="/select-week" element={<WeekSelectionPage />} />
+            </Route>
             <Route path="/subscription" element={<SubscriptionPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
 
@@ -69,6 +72,7 @@ const UserRoutes = () => {
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/doctors/details" element={<DoctorDetailsPage />} />
             <Route path="/wallet" element={<WalletPage />} />
+
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/appointments" element={<AppointmentPage />} />
             <Route path="/recipes" element={<RecipesGeneratorPage />} />
