@@ -25,7 +25,7 @@ export const useDoctorDetails = () => {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [bookSlots, { isLoading: isBookLoading }] = useBookSlotsMutation();
   const { data } = useDoctorDetailsQuery({ doctorId });
-  const { data: slots , refetch } = useGetAllSlotDetailsQuery({ doctorId });
+  const { data: slots, refetch } = useGetAllSlotDetailsQuery({ doctorId });
   const [verifyPayment] = useVerifyPaymentMutation();
   const [handleFailedPayment] = useHandleFailedPaymentMutation();
   const [isWalletSuccessModalOpen, setIsWalletSuccessModalOpen] = useState(false);
@@ -76,7 +76,11 @@ export const useDoctorDetails = () => {
       order_id: order.id,
       handler: async (response: RazorpayResponse) => {
         try {
-          await verifyPayment({ razorpay_order_id: response.razorpay_order_id ,doctorId: doctorId});
+          await verifyPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            doctorId: doctorId,
+            doctorName: doctorDetails?.name
+          })
           toast.success("Payment successful!");
           navigate("/appointments");
         } catch (error) {
@@ -159,7 +163,7 @@ export const useDoctorDetails = () => {
         navigate("/appointments");
       }, 5000);
     } catch (error) {
-      console.log("---------",error)
+      console.log("---------", error)
       const err = error as ErrorResponse;
       if (err?.data?.message) return toast.error(err?.data?.message);
       toast.error("Failed to book slot. Please try again.");
