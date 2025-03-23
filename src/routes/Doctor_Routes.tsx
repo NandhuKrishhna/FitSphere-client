@@ -25,15 +25,15 @@ const Doctor_Routes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-      <Route element={<PublicRoute />}>
-        <Route path="/signup" element={<GoogleOAuthWrapper><DoctorSignUp /></GoogleOAuthWrapper>} />
-        <Route path="/verify/otp" element={<DoctorOtpVerification />} />
-        <Route path="/registration" element={<ProfessionalDetailsForm />} />
-        <Route path="/login" element={<GoogleOAuthWrapper><DoctorLoginPage /></GoogleOAuthWrapper>} />
-        <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
-        <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
-        <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
-      </Route>
+        <Route element={<PublicRoute />}>
+          <Route path="/signup" element={<GoogleOAuthWrapper><DoctorSignUp /></GoogleOAuthWrapper>} />
+          <Route path="/verify/otp" element={<DoctorOtpVerification />} />
+          <Route path="/registration" element={<ProfessionalDetailsForm />} />
+          <Route path="/login" element={<GoogleOAuthWrapper><DoctorLoginPage /></GoogleOAuthWrapper>} />
+          <Route path="/forgot-password" element={<DoctorForgotPasswordPage />} />
+          <Route path="/verify-reset-otp" element={<DoctorForgotPasswordOTPPage />} />
+          <Route path="/reset/new-password" element={<SetNewPasswordPage />} />
+        </Route>
         {/*Protected Routes*/}
         <Route element={<RequireAuth allowedRoles={[Roles.DOCTOR]} redirectTo={"/doctor/login"} />}>
           <Route element={<DoctorMainLayout />}>
@@ -42,10 +42,10 @@ const Doctor_Routes = () => {
             <Route path="/create-meet" element={<MeetingPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
             <Route path="/chat" element={<ChatPage />} />
-             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/transactions" element={<TransactionsPage />} />
             <Route path="/consultation/:meetId" element={<ConsultationPage />} />
             <Route path="/wallet" element={<WalletPage />} />
-        <Route path="/profile" element={<DoctorProflePage />} />
+            <Route path="/profile" element={<DoctorProflePage />} />
           </Route>
         </Route>
       </Route>
