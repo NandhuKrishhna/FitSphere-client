@@ -40,7 +40,7 @@ export default function PageLayout({
       <div className="w-full flex justify-between mt-8 mb-4 max-w-md">
         <button
           onClick={backAction}
-          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50               disabled:cursor-not-allowed"
           disabled={!backAction}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -56,9 +56,8 @@ export default function PageLayout({
         {!hideNext && (
           <button
             onClick={nextAction}
-            className={`flex items-center justify-center gap-2 ${
-              nextLabel === "Save" ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
-            } text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`flex items-center justify-center gap-2 ${nextLabel === "Save" ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
+              } text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed`}
             disabled={nextDisabled}
           >
             {nextLabel}
