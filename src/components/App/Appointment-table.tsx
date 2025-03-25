@@ -10,6 +10,7 @@ import { AppointmentDetailsDialog } from "./AppointmentDetailDialog"
 import { useSelector } from "react-redux"
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 import { Roles } from "@/utils/Enums"
+import { formatDate, formatToIndianTime } from "@/utils/useTimeFormatter"
 
 
 export interface AppointmentQueryParams {
@@ -51,7 +52,6 @@ export default function AppointmentTable() {
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<string>("all")
   const [consultationTypeFilter, setConsultationTypeFilter] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
   const [sortConfig, setSortConfig] = useState<{
     key: string
     direction: "asc" | "desc"
@@ -65,7 +65,7 @@ export default function AppointmentTable() {
 
   const queryParams: AppointmentQueryParams = {
     page: currentPage,
-    limit: pageSize,
+    limit: 5,
     sortBy: sortConfig.key,
     sortOrder: sortConfig.direction,
   }
@@ -88,28 +88,7 @@ export default function AppointmentTable() {
     setSortConfig({ key, direction })
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(date)
-  }
 
-  const formatTime = (timeString?: string) => {
-    if (!timeString) return "Invalid Time"; 
-  
-    const date = new Date(timeString);
-    if (isNaN(date.getTime())) return "Invalid Time"; 
-  
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }).format(date);
-  };
-  
 
   const handleViewDetails = (appointment: Appointment) => {
     setSelectedAppointment(appointment)
@@ -289,7 +268,7 @@ export default function AppointmentTable() {
                   </thead>
                   <tbody>
                     {appointments.length > 0 ? (
-                      appointments.map((appointment : Appointment) => (
+                      appointments.map((appointment: Appointment) => (
                         <tr
                           key={appointment._id}
                           className="border-t border-gray-800 hover:bg-gray-800 transition-colors"
@@ -309,37 +288,35 @@ export default function AppointmentTable() {
                           </td>
                           <td className="px-4 py-3 text-sm capitalize text-gray-300">{appointment.consultationType}</td>
                           <td className="px-4 py-3 text-sm text-gray-300">
-  {appointment?.slot?.startTime && appointment?.slot?.endTime
-    ? `${formatTime(appointment.slot.startTime)} - ${formatTime(appointment.slot.endTime)}`
-    : "Time Not Available"}
-</td>
+                            {appointment?.slot?.startTime && appointment?.slot?.endTime
+                              ? `${formatToIndianTime(appointment.slot.startTime)} - ${formatToIndianTime(appointment.slot.endTime)}`
+                              : "Time Not Available"}
+                          </td>
                           <td className="px-4 py-3 text-sm font-medium">
                             <span className="text-indigo-400">₹{appointment.amount.toLocaleString()}</span>
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                appointment.paymentStatus === "completed"
-                                  ? "bg-green-900/20 text-green-400"
-                                  : appointment.paymentStatus === "pending"
+                              className={`px-2 py-1 text-xs font-medium rounded-full ${appointment.paymentStatus === "completed"
+                                ? "bg-green-900/20 text-green-400"
+                                : appointment.paymentStatus === "pending"
                                   ? "bg-yellow-900/20 text-yellow-400"
                                   : "bg-red-900/20 text-red-400"
-                              }`}
+                                }`}
                             >
                               {appointment.paymentStatus}
                             </span>
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                appointment.status === "scheduled"
-                                  ? "bg-blue-900/20 text-blue-400"
-                                  : appointment.status === "completed"
+                              className={`px-2 py-1 text-xs font-medium rounded-full ${appointment.status === "scheduled"
+                                ? "bg-blue-900/20 text-blue-400"
+                                : appointment.status === "completed"
                                   ? "bg-green-900/20 text-green-400"
                                   : appointment.status === "failed"
-                                  ? "bg-red-900/20 text-red-400"
-                                  : "bg-orange-900/20 text-orange-400"
-                              }`}
+                                    ? "bg-red-900/20 text-red-400"
+                                    : "bg-orange-900/20 text-orange-400"
+                                }`}
                             >
                               {appointment.status}
                             </span>
