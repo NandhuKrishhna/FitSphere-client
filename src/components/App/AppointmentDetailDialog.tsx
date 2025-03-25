@@ -35,8 +35,8 @@ interface AppointmentDetailsModalProps {
 }
 
 export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }: AppointmentDetailsModalProps) {
-  const {handleCancelAppointment,isAppointmentCancelLoading} = useAppointmentActions()
-  const {handleJoinMeet , isJoiningMeeting} =useHandleJoinMeeting()
+  const { handleCancelAppointment, isAppointmentCancelLoading } = useAppointmentActions()
+  const { handleJoinMeet, isJoiningMeeting } = useHandleJoinMeeting()
   if (!appointment) return null
   // console.log(appointment)
   const formatDate = (dateString: string) => {
@@ -83,25 +83,24 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
               </div>
               <div className="flex items-center gap-3">
                 <span
-                  className={`px-3 py-1.5 text-sm font-medium rounded-full ${
-                    appointment.status === "scheduled"
+                  className={`px-3 py-1.5 text-sm font-medium rounded-full ${appointment.status === "scheduled"
                       ? "bg-blue-900/20 text-blue-400"
                       : appointment.status === "completed"
                         ? "bg-green-900/20 text-green-400"
                         : appointment.status === "failed"
                           ? "bg-red-900/20 text-red-400"
                           : "bg-orange-900/20 text-orange-400"
-                  }`}
+                    }`}
                 >
                   {appointment.status}
                 </span>
                 {appointment.meetingId && appointment.status === "scheduled" && (
-                 <Button
-                 onClick={() => handleJoinMeet(appointment?.meetingId)}
-                 className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2"
-               >
-                 {isJoiningMeeting ? <Loader className="animate-spin" />  : "Join Meet"}
-               </Button>
+                  <Button
+                    onClick={() => handleJoinMeet(appointment?.meetingId)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2"
+                  >
+                    {isJoiningMeeting ? <Loader className="animate-spin" /> : "Join Meet"}
+                  </Button>
                 )}
               </div>
             </div>
@@ -147,13 +146,12 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
                   <span className="text-sm">Payment Status</span>
                 </div>
                 <span
-                  className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    appointment.paymentStatus === "completed"
+                  className={`px-2 py-1 text-xs font-medium rounded-full ${appointment.paymentStatus === "completed"
                       ? "bg-green-900/20 text-green-400"
                       : appointment.paymentStatus === "pending"
                         ? "bg-yellow-900/20 text-yellow-400"
                         : "bg-red-900/20 text-red-400"
-                  }`}
+                    }`}
                 >
                   {appointment.paymentStatus}
                 </span>
@@ -194,11 +192,14 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
               </div>
               {role === Roles.USER && appointment.status === "scheduled" && (
                 <Button
-                className="bg-indigo-500 ml-auto"
+                  className="bg-indigo-500 ml-auto"
                   variant="outline"
-                  onClick={() => handleCancelAppointment(appointment._id)}
+                  onClick={async () => {
+                    await handleCancelAppointment(appointment._id);
+                    onClose();
+                  }}
                 >
-                  {isAppointmentCancelLoading ? <Loader className="animate-spin" size={15}/> : "Cancel Appointment"}
+                  {isAppointmentCancelLoading ? <Loader className="animate-spin" size={15} /> : "Cancel Appointment"}
                 </Button>
               )}
             </div>
