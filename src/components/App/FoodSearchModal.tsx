@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useMemo, useRef, useState } from "react"
 import { X, Search } from "lucide-react"
 import useSearchFood from "@/hooks/App/useSerachFood"
@@ -139,9 +137,8 @@ export const FoodSearchModal = ({
             resultsArray.map((food: IFoodItem, index: number) => (
               <div
                 key={index}
-                className={`p-4 cursor-pointer transition-colors ${
-                  selectedFood && selectedFood.name === food.name ? "bg-[#ffffff1a]" : "hover:bg-[#ffffff0d]"
-                }`}
+                className={`p-4 cursor-pointer transition-colors ${selectedFood && selectedFood.name === food.name ? "bg-[#ffffff1a]" : "hover:bg-[#ffffff0d]"
+                  }`}
                 onClick={() => {
                   setSelectedFood(food)
                   setQuantity(editMode && food.name === selectedFood?.name ? quantity : 100)
@@ -171,9 +168,8 @@ export const FoodSearchModal = ({
                   <button
                     key={option}
                     onClick={() => setQuantity(option)}
-                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                      quantity === option ? "bg-purple-500 text-white" : "bg-[#2a2a40] text-gray-300 hover:bg-[#3a3a50]"
-                    }`}
+                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${quantity === option ? "bg-purple-500 text-white" : "bg-[#2a2a40] text-gray-300 hover:bg-[#3a3a50]"
+                      }`}
                   >
                     {option}g
                   </button>
