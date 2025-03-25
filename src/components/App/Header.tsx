@@ -1,5 +1,4 @@
 import { useLogout } from "@/hooks/userLogoutHook";
-import { getSocket } from "@/lib/socketManager";
 import { useGetAllNotificationQuery } from "@/redux/api/appApi";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { Roles } from "@/utils/Enums";
@@ -46,8 +45,7 @@ type Props = {
 };
 
 export default function Header({ value, onChange }: Props) {
-  const socket = getSocket();
-  const { data: notificationsData , refetch } = useGetAllNotificationQuery({});
+  const { data: notificationsData } = useGetAllNotificationQuery({});
   const navigate = useNavigate();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -56,15 +54,7 @@ export default function Header({ value, onChange }: Props) {
   const profileRef = useRef<HTMLDivElement>(null);
   const { handleLogout, isLoading } = useLogout();
   const location = useLocation();
- useEffect(() =>{
-   socket?.on("new-notification", (notificaiton) =>{
-    console.log(notificaiton);
-    refetch();
-   });
-   return () => {
-    socket?.off("new-notification")
-   }
- },[socket , refetch])
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -82,7 +72,7 @@ export default function Header({ value, onChange }: Props) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
   const handleNavigate = () => {
     if (user?.role === Roles.USER) {
       navigate("/profile");
@@ -90,36 +80,36 @@ export default function Header({ value, onChange }: Props) {
       navigate("/doctor/profile");
     }
   };
-  
+
   return (
     <header className="flex justify-between items-center p-4 bg-[#1e1e30] shadow-md">
       <h1 className="text-xl font-bold text-white">Fitsphere</h1>
       <div className="flex items-center gap-4">
-        {user?.role === "user" &&  location.pathname === "/doctors/all" &&(
+        {user?.role === "user" && location.pathname === "/doctors/all" && (
           <input
-          type="text"
-          value={value}
-          onChange={onChange}
-          placeholder="Search"
-          className="w-full sm:w-48 sm:pl-4 left-2 py-1 pl-1 text-sm rounded-md
+            type="text"
+            value={value}
+            onChange={onChange}
+            placeholder="Search"
+            className="w-full sm:w-48 sm:pl-4 left-2 py-1 pl-1 text-sm rounded-md
            bg-[#2a2a40] text-white border border-gray-600 
            focus:outline-none focus:ring-1 focus:ring-purple-500 "
-        />
+          />
         )}
-      
+
         {user?.role !== "admin" && (
           <>
-       
-        <NotificationDropdown
-          isOpen={isNotificationOpen}
-          setIsOpen={setIsNotificationOpen}
-          dropdownRef={notificationRef}
-          setIsOtherDropdownOpen={setIsProfileOpen}
-          notifications={notificationsData?.allNotifications || []}
-          role={user?.role}
-          
-        />
-           </>
+
+            <NotificationDropdown
+              isOpen={isNotificationOpen}
+              setIsOpen={setIsNotificationOpen}
+              dropdownRef={notificationRef}
+              setIsOtherDropdownOpen={setIsProfileOpen}
+              notifications={notificationsData?.allNotifications || []}
+              role={user?.role}
+
+            />
+          </>
         )}
         <ProfileDropdown
           isOpen={isProfileOpen}
@@ -131,7 +121,7 @@ export default function Header({ value, onChange }: Props) {
           isLoading={isLoading}
           handleNavigate={handleNavigate}
         />
-        
+
       </div>
     </header>
   );
@@ -139,14 +129,14 @@ export default function Header({ value, onChange }: Props) {
 
 interface NotificationDropdownProps extends DropdownProps {
   notifications?: INotification[];
-  role?:string
+  role?: string
 }
 
-function NotificationDropdown({ 
-  isOpen, 
-  setIsOpen, 
-  setIsOtherDropdownOpen, 
-  dropdownRef, 
+function NotificationDropdown({
+  isOpen,
+  setIsOpen,
+  setIsOtherDropdownOpen,
+  dropdownRef,
   notifications = [],
   role
 }: NotificationDropdownProps) {
@@ -169,7 +159,7 @@ function NotificationDropdown({
       return `${diffInDays} days ago`;
     }
   };
-  
+
   const handleNotificationClick = (notification: INotification) => {
     if (notification.type === "appointment" && notification.metadata?.appointMentId) {
       navigate(`/consultation/${notification.metadata.meetingId}`);
@@ -182,7 +172,7 @@ function NotificationDropdown({
     }
     setIsOpen(false);
   };
-  
+
   return (
     <div className="relative">
       <button
@@ -211,7 +201,7 @@ function NotificationDropdown({
           <div className="p-3 border-b border-gray-700 flex justify-between items-center">
             <h3 className="font-medium">Unread Notifications</h3>
             {unreadNotifications.length > 0 && (
-              <button 
+              <button
                 className="text-xs text-purple-400 hover:text-purple-300"
                 onClick={() => {
                   if (role === Roles.USER) {
@@ -229,7 +219,7 @@ function NotificationDropdown({
           <div className="max-h-80 overflow-y-auto">
             {unreadNotifications.length > 0 ? (
               unreadNotifications.map((notification) => (
-                <div 
+                <div
                   key={notification._id}
                   className="p-3 border-b border-gray-700 hover:bg-[#2a2a40] cursor-pointer"
                   onClick={() => handleNotificationClick(notification)}
@@ -250,16 +240,16 @@ function NotificationDropdown({
               ))
             ) : (
               <div className="p-6 text-center text-gray-400 text-sm">
-               <h1 className="text-red-400">No Unread Notifications</h1>
-               <button 
-               onClick={() =>{
-                if (role === Roles.USER) {
-                  navigate("/notifications");
-                } else {
-                  navigate("/doctor/notifications");
-                }
-               }}
-               className="mt-4 font-bold bg-indigo-500 px-7 py-1.5 rounded-lg text-white cursor-pointer">View All Notifications</button>
+                <h1 className="text-red-400">No Unread Notifications</h1>
+                <button
+                  onClick={() => {
+                    if (role === Roles.USER) {
+                      navigate("/notifications");
+                    } else {
+                      navigate("/doctor/notifications");
+                    }
+                  }}
+                  className="mt-4 font-bold bg-indigo-500 px-7 py-1.5 rounded-lg text-white cursor-pointer">View All Notifications</button>
               </div>
             )}
           </div>
@@ -289,7 +279,7 @@ function ProfileDropdown({
           if (setIsOtherDropdownOpen) setIsOtherDropdownOpen(false);
         }}
       >
-        <AvatarDemo image={user?.profilePicture} name={user?.name}/>
+        <AvatarDemo image={user?.profilePicture} name={user?.name} />
       </button>
       {isOpen && (
         <div
@@ -310,12 +300,12 @@ function ProfileDropdown({
           </div>
           <div>
             {user?.role !== Roles.ADMIN &&
-            <>
-            <button className="w-full text-left p-3 hover:bg-[#2a2a40] flex items-center" onClick={handleNavigate}>
-              <User className="w-4 h-4 mr-2" />
-              <span>Profile</span>
-            </button>
-            </>}
+              <>
+                <button className="w-full text-left p-3 hover:bg-[#2a2a40] flex items-center" onClick={handleNavigate}>
+                  <User className="w-4 h-4 mr-2" />
+                  <span>Profile</span>
+                </button>
+              </>}
             <button
               className="w-full text-left p-3 hover:bg-[#2a2a40] flex items-center text-red-400"
               onClick={handleLogout}
