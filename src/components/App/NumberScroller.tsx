@@ -64,10 +64,9 @@ export default function NumberScroller({
           onClick={() => onChange(num)}
           className={`
             transition-all duration-300 ease-in-out cursor-pointer text-center py-2 w-full
-            ${
-              num === value
-                ? "text-4xl font-bold text-yellow-300"
-                : Math.abs(num - value) === 1
+            ${num === value
+              ? "text-4xl font-bold text-yellow-300"
+              : Math.abs(num - value) === 1
                 ? "text-2xl opacity-60"
                 : "text-xl opacity-40"
             }
