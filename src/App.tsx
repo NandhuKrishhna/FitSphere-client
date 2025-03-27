@@ -6,6 +6,7 @@ import Admin_Routes from "./routes/Admin_Routes";
 import UserRoutes from "./routes/UserRoutes";
 import Unauthorized from "./pages/UnAuthorized";
 import GlobalSocketListener from "./components/App/GlobalSocketListener";
+import NotFound from "./pages/Not-Found";
 function App() {
   return (
     <>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/*" element={<UserRoutes />} />
           <Route path="/doctor/*" element={<Doctor_Routes />} />
           <Route path="/admin/*" element={<Admin_Routes />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </>
