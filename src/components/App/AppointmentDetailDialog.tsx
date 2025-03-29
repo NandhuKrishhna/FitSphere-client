@@ -38,7 +38,6 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
   const { handleCancelAppointment, isAppointmentCancelLoading } = useAppointmentActions()
   const { handleJoinMeet, isJoiningMeeting } = useHandleJoinMeeting()
   if (!appointment) return null
-  // console.log(appointment)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat("en-US", {
@@ -84,12 +83,12 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
               <div className="flex items-center gap-3">
                 <span
                   className={`px-3 py-1.5 text-sm font-medium rounded-full ${appointment.status === "scheduled"
-                      ? "bg-blue-900/20 text-blue-400"
-                      : appointment.status === "completed"
-                        ? "bg-green-900/20 text-green-400"
-                        : appointment.status === "failed"
-                          ? "bg-red-900/20 text-red-400"
-                          : "bg-orange-900/20 text-orange-400"
+                    ? "bg-blue-900/20 text-blue-400"
+                    : appointment.status === "completed"
+                      ? "bg-green-900/20 text-green-400"
+                      : appointment.status === "failed"
+                        ? "bg-red-900/20 text-red-400"
+                        : "bg-orange-900/20 text-orange-400"
                     }`}
                 >
                   {appointment.status}
@@ -147,10 +146,10 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
                 </div>
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded-full ${appointment.paymentStatus === "completed"
-                      ? "bg-green-900/20 text-green-400"
-                      : appointment.paymentStatus === "pending"
-                        ? "bg-yellow-900/20 text-yellow-400"
-                        : "bg-red-900/20 text-red-400"
+                    ? "bg-green-900/20 text-green-400"
+                    : appointment.paymentStatus === "pending"
+                      ? "bg-yellow-900/20 text-yellow-400"
+                      : "bg-red-900/20 text-red-400"
                     }`}
                 >
                   {appointment.paymentStatus}

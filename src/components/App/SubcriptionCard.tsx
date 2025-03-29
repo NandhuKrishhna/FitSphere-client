@@ -6,14 +6,14 @@ type SubscriptionCardProps = {
   price: string;
   features: string[];
   highlight?: boolean;
+  onClick?: () => void
 };
 
-const SubscriptionCard = ({ title, description, price, features, highlight }: SubscriptionCardProps) => {
+const SubscriptionCard = ({ title, description, price, features, highlight, onClick }: SubscriptionCardProps) => {
   return (
     <div
-      className={`rounded-2xl shadow-xl overflow-hidden transform transition-all hover:scale-105 ${
-        highlight ? "bg-indigo-900 shadow-2xl" : "bg-gray-900"
-      }`}
+      className={`rounded-2xl shadow-xl overflow-hidden transform transition-all hover:scale-105 ${highlight ? "bg-indigo-900 shadow-2xl" : "bg-gray-900"
+        }`}
     >
       {highlight && (
         <div className="absolute top-0 right-0">
@@ -28,9 +28,10 @@ const SubscriptionCard = ({ title, description, price, features, highlight }: Su
           <span className={highlight ? "text-indigo-200 ml-1" : "text-gray-400 ml-1"}>/month</span>
         </div>
         <button
-          className={`w-full py-2 px-4 rounded-lg transition-colors ${
-            highlight ? "bg-indigo-600 text-white hover:bg-indigo-500" : "bg-gray-800 text-white hover:bg-gray-700"
-          }`}
+
+          className={`w-full py-2 px-4 rounded-lg transition-colors ${highlight ? "bg-indigo-600 text-white hover:bg-indigo-500" : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
+          onClick={onClick}
         >
           Get Started
         </button>

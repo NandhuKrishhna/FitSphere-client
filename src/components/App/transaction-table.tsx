@@ -11,10 +11,11 @@ import { TransactionTypeBadge } from "./transaction-status-badge"
 import { TransactionStatusBadge } from "./transaction-type-badge"
 import { Pagination } from "./TestPagination"
 import { Transaction } from "@/types/transaction"
+import { formatDate } from "@/utils/useTimeFormatter"
 
-type PaymentType = "slot_booking" | "cancel_appointment" | "subscription" | "refund"; 
+type PaymentType = "slot_booking" | "cancel_appointment" | "subscription" | "refund";
 export interface TransactionQueryParams {
-    page?: number
+  page?: number
   limit?: number
   search?: string
   type?: string
@@ -30,7 +31,6 @@ export default function TransactionTable() {
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [paymentTypeFilter, setPaymentTypeFilter] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
   const [sortConfig, setSortConfig] = useState<{
     key: string
     direction: "asc" | "desc"
@@ -40,11 +40,10 @@ export default function TransactionTable() {
   })
 
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
-  console.log(selectedTransaction)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const queryParams: TransactionQueryParams = {
     page: currentPage,
-    limit: pageSize,
+    limit: 5,
     sortBy: sortConfig.key,
     sortOrder: sortConfig.direction,
   }
@@ -54,7 +53,6 @@ export default function TransactionTable() {
   if (paymentTypeFilter !== "all") queryParams.paymentType = paymentTypeFilter;
 
   const { data, isLoading, isFetching, error } = useGetTransactionsQuery(queryParams);
- console.log(data)
   const transactions = data?.transactions || []
   const totalPages = data?.totalPages || 1
   const totalItems = data?.total || 0
@@ -70,16 +68,7 @@ export default function TransactionTable() {
     }
     setSortConfig({ key, direction })
   }
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date)
-  }
+
   const handleViewDetails = (transaction: Transaction) => {
     setSelectedTransaction(transaction)
     setIsModalOpen(true)
@@ -127,7 +116,7 @@ export default function TransactionTable() {
                 </SelectContent>
               </Select>
 
-   
+
               <Select
                 value={statusFilter}
                 onValueChange={(value) => {
@@ -154,7 +143,7 @@ export default function TransactionTable() {
                 value={paymentTypeFilter}
                 onValueChange={(value) => {
                   setPaymentTypeFilter(value)
-                  setCurrentPage(1) 
+                  setCurrentPage(1)
                 }}
               >
                 <SelectTrigger className="w-full sm:w-[180px] bg-gray-900 border-gray-700 text-white">
@@ -250,7 +239,7 @@ export default function TransactionTable() {
                   </thead>
                   <tbody>
                     {transactions.length > 0 ? (
-                      transactions.map((transaction : Transaction) => (
+                      transactions.map((transaction: Transaction) => (
                         <tr
                           key={transaction._id}
                           className="border-t border-gray-800 hover:bg-gray-800 transition-colors"
@@ -261,20 +250,21 @@ export default function TransactionTable() {
                               <div className="h-8 w-8 rounded-full overflow-hidden mr-2">
                                 <img
                                   src={
-                                    transaction.type === "debit"
-                                      ? transaction.toDetails.profilePicture
-                                      : transaction.fromDetails.profilePicture
+                                    transaction.paymentType === "subscription"
+                                      ? transaction?.fromDetails?.profilePicture
+                                      : transaction?.toDetails?.profilePicture || transaction?.fromDetails?.profilePicture
                                   }
                                   alt="Profile"
                                   className="h-full w-full object-cover"
                                 />
                               </div>
                               <div className="truncate max-w-[120px]">
-                                {transaction.type === "debit"
-                                  ? transaction.toDetails.name
-                                  : transaction.fromDetails.name}
+                                {transaction.paymentType === "subscription"
+                                  ? transaction?.fromDetails?.name
+                                  : transaction?.toDetails?.name || transaction?.fromDetails?.name}
                               </div>
                             </div>
+
                           </td>
                           <td className="px-4 py-3">
                             <TransactionTypeBadge type={transaction.type} />
@@ -283,19 +273,19 @@ export default function TransactionTable() {
                             {transaction.paymentType.replace(/_/g, " ")}
                           </td>
                           <td className="px-4 py-3 text-sm font-medium">
-  <span
-    className={
-      transaction.type === "credit"
-        ? "text-indigo-600"
-        : transaction.type === "failed"
-        ? "text-gray-400 italic"
-        : "text-red-600"
-    }
-  >
-    {transaction.type !== "failed" && (transaction.type === "credit" ? "+" : "-")}
-    {transaction.currency} {transaction.amount.toLocaleString()}
-  </span>
-</td>
+                            <span
+                              className={
+                                transaction.type === "credit"
+                                  ? "text-indigo-600"
+                                  : transaction.type === "failed"
+                                    ? "text-gray-400 italic"
+                                    : "text-red-600"
+                              }
+                            >
+                              {transaction.type !== "failed" && (transaction.type === "credit" ? "+" : "-")}
+                              {transaction.currency} {transaction.amount.toLocaleString()}
+                            </span>
+                          </td>
 
                           <td className="px-4 py-3">
                             <TransactionStatusBadge status={transaction.status} />

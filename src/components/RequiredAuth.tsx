@@ -18,12 +18,10 @@ const RequireAuth = ({ allowedRoles, redirectTo }: RequireAuthProps) => {
   }
 
   if (!token) {
-    console.log("Redirecting to:", redirectTo);
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
   if (!allowedRoles.includes(authUser?.role ?? "")) {
-    console.log("Redirecting to: /unauthorized");
     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 

@@ -75,7 +75,7 @@ export default function AppointmentTable() {
   if (consultationTypeFilter !== "all") queryParams.consultationType = consultationTypeFilter
 
   const { data, isLoading, isFetching, error } = useGetAppointmentDetailsQuery(queryParams)
-  console.log(data)
+
   const appointments = data?.data || []
   const totalPages = data?.meta?.totalPages || 1
   const totalItems = data?.meta?.total || 0

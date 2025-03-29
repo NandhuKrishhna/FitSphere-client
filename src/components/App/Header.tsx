@@ -45,7 +45,6 @@ type Props = {
 };
 
 export default function Header({ value, onChange }: Props) {
-  const { data: notificationsData } = useGetAllNotificationQuery({});
   const navigate = useNavigate();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -54,7 +53,14 @@ export default function Header({ value, onChange }: Props) {
   const profileRef = useRef<HTMLDivElement>(null);
   const { handleLogout, isLoading } = useLogout();
   const location = useLocation();
+  const { data: notificationsResponse } = useGetAllNotificationQuery(
+    {},
+    { skip: user?.role === Roles.ADMIN }
+  );
 
+  const notifications = user?.role !== Roles.ADMIN
+    ? notificationsResponse?.allNotifications?.notifications?.slice(0, 5) || []
+    : [];
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -98,18 +104,14 @@ export default function Header({ value, onChange }: Props) {
         )}
 
         {user?.role !== "admin" && (
-          <>
-
-            <NotificationDropdown
-              isOpen={isNotificationOpen}
-              setIsOpen={setIsNotificationOpen}
-              dropdownRef={notificationRef}
-              setIsOtherDropdownOpen={setIsProfileOpen}
-              notifications={notificationsData?.allNotifications || []}
-              role={user?.role}
-
-            />
-          </>
+          <NotificationDropdown
+            isOpen={isNotificationOpen}
+            setIsOpen={setIsNotificationOpen}
+            dropdownRef={notificationRef}
+            setIsOtherDropdownOpen={setIsProfileOpen}
+            notifications={notifications}
+            role={user?.role}
+          />
         )}
         <ProfileDropdown
           isOpen={isProfileOpen}
@@ -121,7 +123,6 @@ export default function Header({ value, onChange }: Props) {
           isLoading={isLoading}
           handleNavigate={handleNavigate}
         />
-
       </div>
     </header>
   );
@@ -129,7 +130,7 @@ export default function Header({ value, onChange }: Props) {
 
 interface NotificationDropdownProps extends DropdownProps {
   notifications?: INotification[];
-  role?: string
+  role?: string;
 }
 
 function NotificationDropdown({
@@ -160,16 +161,13 @@ function NotificationDropdown({
     }
   };
 
-  const handleNotificationClick = (notification: INotification) => {
-    if (notification.type === "appointment" && notification.metadata?.appointMentId) {
-      navigate(`/consultation/${notification.metadata.meetingId}`);
+  const handleNotificationClick = () => {
+    if (role === Roles.USER) {
+      navigate("/notifications");
     } else {
-      if (role === Roles.USER) {
-        navigate("/notifications");
-      } else {
-        navigate("/doctor/notifications");
-      }
+      navigate("/doctor/notifications");
     }
+
     setIsOpen(false);
   };
 
@@ -222,7 +220,7 @@ function NotificationDropdown({
                 <div
                   key={notification._id}
                   className="p-3 border-b border-gray-700 hover:bg-[#2a2a40] cursor-pointer"
-                  onClick={() => handleNotificationClick(notification)}
+                  onClick={() => handleNotificationClick()}
                 >
                   <div className="flex items-start">
                     <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">

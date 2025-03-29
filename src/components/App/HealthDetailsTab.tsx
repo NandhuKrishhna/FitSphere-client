@@ -50,7 +50,6 @@ interface DoctorDetailsTabProps {
 }
 
 const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorLoading }) => {
-  // console.log(doctorData)
   const { handleUpdateDoctorDetails, isUpdatingDetails } = useUpdateDoctorDetails();
   const [editingDoctor, setEditingDoctor] = useState(false);
   const [doctorForm, setDoctorForm] = useState<DoctorDetails>({
@@ -82,17 +81,16 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
       setDoctorForm(doctorData.doctorDetails);
     }
   }, [doctorData, doctorForm._id]);
-  
+
   const handleSave = () => {
     setDoctorForm((prev) => {
-      console.log("Updated doctorForm before API call:", prev);
       handleUpdateDoctorDetails(prev);
       return prev;
     });
     setEditingDoctor(false);
   };
-  
-  
+
+
   return (
     <Card className="bg-zinc-900 border-zinc-800">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -151,9 +149,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 <Select
                   disabled={!editingDoctor}
                   value={doctorForm.details.gender}
-                  onValueChange={(value) => setDoctorForm({ 
-                    ...doctorForm, 
-                    details: { ...doctorForm.details, gender: value } 
+                  onValueChange={(value) => setDoctorForm({
+                    ...doctorForm,
+                    details: { ...doctorForm.details, gender: value }
                   })}
                 >
                   <SelectTrigger id="gender" className="bg-zinc-800 border-zinc-700 text-white">
@@ -172,9 +170,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Professional Title"
                 type="text"
                 value={doctorForm.details.professionalTitle}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, professionalTitle: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, professionalTitle: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -184,9 +182,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Primary Specialty"
                 type="text"
                 value={doctorForm.details.primarySpecialty}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, primarySpecialty: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, primarySpecialty: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -196,21 +194,21 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Years of Experience"
                 type="text"
                 value={doctorForm.details.experience}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, experience: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, experience: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
-              
+
               <FormField
                 id="consultationFees"
                 label="Consultation Fees"
                 type="text"
                 value={doctorForm.details.consultationFees}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, consultationFees: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, consultationFees: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -222,9 +220,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Contact Phone Number"
                 type="text"
                 value={doctorForm.details.contactPhoneNumber}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, contactPhoneNumber: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, contactPhoneNumber: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -234,9 +232,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Professional Email"
                 type="email"
                 value={doctorForm.details.professionalEmail}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, professionalEmail: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, professionalEmail: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -246,9 +244,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Medical License Number"
                 type="text"
                 value={doctorForm.details.medicalLicenseNumber}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, medicalLicenseNumber: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, medicalLicenseNumber: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -258,9 +256,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Office Address"
                 type="text"
                 value={doctorForm.details.officeAddress}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, officeAddress: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, officeAddress: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -270,9 +268,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Clinic Locations"
                 type="text"
                 value={doctorForm.details.clinicLocations}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, clinicLocations: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, clinicLocations: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -282,9 +280,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 label="Consultation Languages"
                 type="text"
                 value={doctorForm.details.consultationLanguages}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, consultationLanguages: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, consultationLanguages: e.target.value }
                 })}
                 disabled={!editingDoctor}
               />
@@ -297,9 +295,9 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
               <Textarea
                 id="bio"
                 value={doctorForm.details.bio}
-                onChange={(e) => setDoctorForm({ 
-                  ...doctorForm, 
-                  details: { ...doctorForm.details, bio: e.target.value } 
+                onChange={(e) => setDoctorForm({
+                  ...doctorForm,
+                  details: { ...doctorForm.details, bio: e.target.value }
                 })}
                 disabled={!editingDoctor}
                 className="bg-zinc-800 border-zinc-700 text-white h-32 mt-2"

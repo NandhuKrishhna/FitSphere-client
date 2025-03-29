@@ -4,8 +4,6 @@ import {
   Twitter,
   Youtube,
   Linkedin,
-  CreditCard,
-  DollarSign,
 } from 'lucide-react';
 
 const Footer = () => {
@@ -41,13 +39,12 @@ const Footer = () => {
             <li><a href="#" className="text-gray-600 hover:text-gray-800">Track Calories</a></li>
             <li><a href="#" className="text-gray-600 hover:text-gray-800">Book Doctors</a></li>
             <li><a href="#" className="text-gray-600 hover:text-gray-800">Fitness Tips</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-gray-800">Community Forum</a></li>
+
           </ul>
         </div>
 
         {/* Subscribe Section */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">Subscribe to Our Newsletter</h3>
           <p className="mt-2 text-gray-600">
             Get the latest fitness tips and updates right in your inbox.
           </p>
@@ -68,7 +65,7 @@ const Footer = () => {
       <div className="mt-10 border-t border-gray-300 pt-6">
         <div className="container mx-auto px-4 md:flex md:justify-between md:items-center">
           <p className="text-gray-600">&copy; 2025 FitLife. All rights reserved.</p>
-          <div className="flex gap-4 mt-4 md:mt-0">
+          {/* <div className="flex gap-4 mt-4 md:mt-0">
             <CreditCard className="w-6 h-6 text-gray-600" aria-label="Visa" />
             <DollarSign className="w-6 h-6 text-gray-600" aria-label="Razorpay" />
             <img
@@ -81,7 +78,7 @@ const Footer = () => {
               alt="Stripe"
               className="w-6 h-6 object-contain"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

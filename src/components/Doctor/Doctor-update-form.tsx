@@ -60,7 +60,6 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
 
   const handleSave = () => {
     setDoctorForm((prev) => {
-      console.log("Updated doctorForm before API call:", prev);
       handleUpdateDoctorDetails(prev);
       return prev;
     });
@@ -76,8 +75,8 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
         </div>
         {!editingDoctor ? (
           <Button
-          className="bg-indigo-400" 
-          onClick={() => setEditingDoctor(true)} variant="outline" size="sm">
+            className="bg-indigo-400"
+            onClick={() => setEditingDoctor(true)} variant="outline" size="sm">
             <Edit className="w-4 h-4 mr-2" />
             Edit
           </Button>
@@ -88,8 +87,8 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
               Save
             </Button>
             <Button
-            className="bg-red-400" 
-            onClick={() => setEditingDoctor(false)} variant="outline" size="sm">
+              className="bg-red-400"
+              onClick={() => setEditingDoctor(false)} variant="outline" size="sm">
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
@@ -150,7 +149,7 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                 onChange={(e) => setDoctorForm({ ...doctorForm, experience: e.target.value })}
                 disabled={!editingDoctor}
               />
-              
+
               <FormField
                 id="consultationFees"
                 label="Consultation Fees"

@@ -21,7 +21,6 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [visibleDatesStart, setVisibleDatesStart] = useState(0);
-  // console.log(slots)
   const { datesArray, groupedSlots } = useMemo(() => {
     const groups: { [key: string]: Slot[] } = {};
     const safeSlots = slots?.slots || [];
@@ -139,11 +138,10 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 <button
                   key={date.isoDate}
                   onClick={() => setSelectedDate(date.isoDate)}
-                  className={`flex-1 min-w-0 p-2 md:p-3 rounded-lg border ${
-                    selectedDate === date.isoDate
+                  className={`flex-1 min-w-0 p-2 md:p-3 rounded-lg border ${selectedDate === date.isoDate
                       ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-700"
                       : "border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-700"
-                  }`}
+                    }`}
                 >
                   <div className="text-xs md:text-sm text-purple-600 dark:text-purple-400">{date.day}</div>
                   <div className="text-lg md:text-xl font-semibold mt-1">{date.date}</div>
@@ -151,9 +149,8 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                   {date.slots > 0 ? (
                     <div className="text-xs mt-1 flex items-center justify-center">
                       <span
-                        className={`inline-block w-2 h-2 rounded-full ${
-                          date.slots > 5 ? "bg-green-500" : "bg-yellow-500"
-                        } mr-1`}
+                        className={`inline-block w-2 h-2 rounded-full ${date.slots > 5 ? "bg-green-500" : "bg-yellow-500"
+                          } mr-1`}
                       />
                       <span className="truncate">{date.slots} slots</span>
                     </div>
@@ -189,11 +186,10 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                 <Button
                   key={slot._id}
                   variant="outline"
-                  className={`justify-start font-normal lg:w-40  text-xs md:text-sm ${
-                    selectedSlotId === slot._id
+                  className={`justify-start font-normal lg:w-40  text-xs md:text-sm ${selectedSlotId === slot._id
                       ? "bg-purple-500 text-white hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-800"
                       : "bg-purple-50/50 hover:bg-purple-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
-                  }`}
+                    }`}
                   onClick={() => handleSlotClick(slot)}
                 >
                   {timeLabel}
@@ -203,10 +199,10 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
           </div>
 
           {filteredSlots.length === 0 && (
-  <div className="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">
-    No available slots 
-  </div>
-)}
+            <div className="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">
+              No available slots
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

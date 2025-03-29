@@ -1,9 +1,6 @@
-import Header from "../Header";
-
 const WalletSkeleton = () => {
   return (
     <div className="min-h-screen bg-black">
-      <Header />
       <div className="max-w-3xl mt-10 mx-auto">
         <div className="bg-zinc-800 shadow-xl rounded-lg overflow-hidden">
           <div className="px-4 py-5 sm:p-6 bg-gradient-to-r from-indigo-700 to-indigo-900">

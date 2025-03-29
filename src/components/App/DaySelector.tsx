@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
@@ -88,20 +86,18 @@ export default function DaySelector({ selectedDay, setSelectedDay }: DaySelector
           {days.map((day, index) => (
             <button
               key={index}
-              className={`flex flex-col items-center px-1 ${
-                selectedDay === day.date ? "text-white" : isToday(day.date) ? "text-blue-400" : "text-gray-500"
-              }`}
+              className={`flex flex-col items-center px-1 ${selectedDay === day.date ? "text-white" : isToday(day.date) ? "text-blue-400" : "text-gray-500"
+                }`}
               onClick={() => handleDaySelect(day.date)}
             >
               <span className="text-xs">{day.name}</span>
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center mt-1 ${
-                  selectedDay === day.date
+                className={`w-10 h-10 rounded-full flex items-center justify-center mt-1 ${selectedDay === day.date
                     ? "bg-orange-500"
                     : isToday(day.date)
-                    ? "bg-blue-800 border border-blue-500"
-                    : "bg-gray-800"
-                }`}
+                      ? "bg-blue-800 border border-blue-500"
+                      : "bg-gray-800"
+                  }`}
               >
                 <span className="text-sm">{day.dateObj.getDate()}</span>
               </div>

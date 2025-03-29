@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Coffee, Plus, ChevronDown, ChevronUp, Trash2, Edit2, Loader } from "lucide-react"
 import type { IFoodItem } from "@/types/food"
@@ -159,7 +157,7 @@ function FoodItemsList({
               onClick={() => handleDeleteFood(item?._id, selectedDay)}
             >
               {loadingItems[item._id!] ? (
-               <Loader className="animate-spin mx-auto"  size={15}/>
+                <Loader className="animate-spin mx-auto" size={15} />
               ) : (
                 <Trash2 className="w-4 h-4 text-red-500" />
               )}

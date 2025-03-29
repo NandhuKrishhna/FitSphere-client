@@ -28,7 +28,6 @@ const useForgotPasswordHook = () => {
       const res = await resetPassword({ data, role }).unwrap();
       localStorage.setItem("ForgotPasswordEmail", res.email);
       localStorage.setItem("ForgotPasswordUserId", res.userId);
-      console.log(res);
       toast.success(res.message);
       navigate("/verify-reset-otp");
     } catch (err) {

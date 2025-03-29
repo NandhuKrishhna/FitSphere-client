@@ -1,9 +1,9 @@
-
-import { ArrowUpDown, Star } from "lucide-react";
+import { useState } from "react";
+import { Star } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetReviewsQuery } from "@/redux/api/appApi";
-
+import { useGetAllReviewsAndRatingsQuery } from "@/redux/api/doctorApi";
+import { Pagination } from "../App/TestPagination";
 
 type Review = {
   _id: string;
@@ -20,25 +20,23 @@ type Review = {
 };
 
 export default function ReviewsRatings({ id }: { id: string | undefined }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  const { data: reviewsAndRatings, isLoading } = useGetReviewsQuery(id);
+  const { data: reviewsAndRatings, isLoading } = useGetAllReviewsAndRatingsQuery(id);
 
-  // Calculate rating distribution if data is available
   const calculateRatingDistribution = () => {
     if (!reviewsAndRatings?.response?.reviews) return [];
 
     const reviews = reviewsAndRatings.response.reviews;
     const totalReviews = reviews.length;
 
-    // Initialize counts for each star rating
     const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
-    // Count reviews for each rating
     reviews.forEach((review: Review) => {
       counts[review.rating as keyof typeof counts]++;
     });
 
-    // Create distribution data
     return [5, 4, 3, 2, 1].map((stars) => {
       const count = counts[stars as keyof typeof counts];
       const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
@@ -50,8 +48,19 @@ export default function ReviewsRatings({ id }: { id: string | undefined }) {
   const averageRating = reviewsAndRatings?.response?.averageRating || 0;
   const reviews = reviewsAndRatings?.response?.reviews || [];
 
+  // Pagination logic
+  const totalReviews = reviews.length;
+  const totalPages = Math.ceil(totalReviews / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedReviews = reviews.slice(startIndex, endIndex);
+
   const formatReviewDate = (dateString: string) => {
     return format(new Date(dateString), "MMMM d, yyyy");
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   if (isLoading) {
@@ -62,7 +71,6 @@ export default function ReviewsRatings({ id }: { id: string | undefined }) {
     <div className="text-white">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold">Reviews and Ratings</h2>
-        <ArrowUpDown className="h-5 w-5" />
       </div>
 
       <div className="flex items-center gap-8 mb-8">
@@ -81,34 +89,46 @@ export default function ReviewsRatings({ id }: { id: string | undefined }) {
       </div>
 
       <div className="space-y-4">
-        {reviews.length === 0 ? (
+        {totalReviews === 0 ? (
           <p className="text-sm text-gray-400">No reviews yet.</p>
         ) : (
-          reviews.map((review: Review) => (
-            <div key={review._id} className="flex gap-3">
-              <img
-                src={review.userDetails.profilePicture || "/placeholder.svg?height=40&width=40"}
-                alt={review.userDetails.name}
-                className="w-8 h-8 rounded-full"
-              />
-              <div>
-                <div className="flex justify-between">
-                  <h3 className="text-sm font-medium">{review.userDetails.name}</h3>
-                  <span className="text-xs text-gray-400">{formatReviewDate(review.createdAt)}</span>
-                </div>
-                <p className="text-xs text-gray-300 mt-1">{review.reviewText}</p>
-                <div className="flex mt-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={14}
-                      className={i < review.rating ? "text-yellow-300 fill-yellow-300" : "text-gray-400"}
-                    />
-                  ))}
+          <>
+            {paginatedReviews.map((review: Review) => (
+              <div key={review._id} className="flex gap-3">
+                <img
+                  src={review.userDetails.profilePicture || "/placeholder.svg?height=40&width=40"}
+                  alt={review.userDetails.name}
+                  className="w-8 h-8 rounded-full"
+                />
+                <div>
+                  <div className="flex justify-between">
+                    <h3 className="text-sm font-medium">{review.userDetails.name}</h3>
+                    <span className="text-xs text-gray-400">{formatReviewDate(review.createdAt)}</span>
+                  </div>
+                  <p className="text-xs text-gray-300 mt-1">{review.reviewText}</p>
+                  <div className="flex mt-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={14}
+                        className={i < review.rating ? "text-yellow-300 fill-yellow-300" : "text-gray-400"}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

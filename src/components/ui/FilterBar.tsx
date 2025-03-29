@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Check, Filter, X } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -80,7 +78,6 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
   const hasActiveFilters =
     localGender.length > 0 || localSpecialty.length > 0 || localLanguage.length > 0 || localExperience > 0;
 
-  // For mobile view
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -92,7 +89,6 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
   if (isMobile) {
     return (
       <div className="space-y-6">
-        {/* Custom Accordion for Specialty */}
         <div className="border-b border-gray-700">
           <button
             onClick={() => toggleSection("specialty")}
@@ -128,7 +124,6 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
           )}
         </div>
 
-        {/* Custom Accordion for Language */}
         <div className="border-b border-gray-700">
           <button
             onClick={() => toggleSection("language")}
@@ -162,7 +157,6 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
           )}
         </div>
 
-        {/* Custom Accordion for Gender */}
         <div className="border-b border-gray-700">
           <button
             onClick={() => toggleSection("gender")}
@@ -204,8 +198,6 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
             </div>
           )}
         </div>
-
-        {/* Custom Accordion for Experience */}
         <div className="border-b border-gray-700">
           <button
             onClick={() => toggleSection("experience")}
@@ -253,10 +245,8 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
     );
   }
 
-  // For desktop view
   return (
     <div className="space-y-6">
-      {/* Active filters display */}
       {hasActiveFilters && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -339,7 +329,7 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
                 <Filter className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0 bg-gray-800 border-gray-700">
+            <PopoverContent className="w-full p-0 bg-indigo-300 border-gray-700">
               <Command className="bg-transparent">
                 <CommandInput placeholder="Search specialties..." className="text-gray-300" />
                 <CommandList className="text-gray-300">
@@ -385,7 +375,7 @@ const FilterBar = ({ onApplyFilters }: FilterBarProps) => {
                 <Filter className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0 bg-gray-800 border-gray-700">
+            <PopoverContent className="w-full p-0 bg-indigo-300 border-gray-700">
               <Command className="bg-transparent">
                 <CommandInput placeholder="Search languages..." className="text-gray-300" />
                 <CommandList className="text-gray-300">

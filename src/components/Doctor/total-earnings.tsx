@@ -7,34 +7,56 @@ import { ArrowUpRight, Wallet } from "lucide-react"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+export type TotalEarningsProps = {
+  selectedView: string
+  onViewChange: (view: string) => void
+}
 
-export default function TotalEarnings({ selectedView, onViewChange }) {
+type Transaction = {
+  amount: number
+  createdAt: string
+  currency: string
+  description: string
+  role: string
+  status: string
+  type: string
+  updatedAt: string
+  userId: string
+  walletId: string
+  _id: string
+}
+
+type ChartDataItem = {
+  date: string
+  amount: number
+}
+
+export default function TotalEarnings({ selectedView, onViewChange }: TotalEarningsProps) {
   const user = useSelector(selectCurrentUser)
   const userId = user?._id
   const role = user?.role
 
-  // Fetch wallet data
   const { data: walletData, error, isLoading } = useGetWalletQuery({ userId, role })
 
   const balance = walletData?.response?.wallet?.balance || 0
-  const transactions = walletData?.response?.transactions || []
-
-  // Process data for the chart
-  const chartData = transactions
-    .reduce((acc, transaction) => {
+  const transactions: Transaction[] = walletData?.response?.transactions || []
+  const chartData: ChartDataItem[] = transactions
+    .reduce<ChartDataItem[]>((acc, transaction) => {
       const date = new Date(transaction.createdAt).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       })
       const existing = acc.find((item) => item.date === date)
+
       if (existing) {
         existing.amount += transaction.amount
       } else {
         acc.push({ date, amount: transaction.amount })
       }
+
       return acc
     }, [])
-    .slice(-7) 
+    .slice(-7)
 
   const totalEarnings = transactions.reduce((sum, tx) => sum + (tx.amount > 0 ? tx.amount : 0), 0)
   const previousPeriodEarnings = totalEarnings * 0.8
@@ -100,11 +122,10 @@ export default function TotalEarnings({ selectedView, onViewChange }) {
                   <button
                     key={view}
                     onClick={() => onViewChange(view)}
-                    className={`px-3 py-1 text-xs rounded-md ${
-                      selectedView === view
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                    }`}
+                    className={`px-3 py-1 text-xs rounded-md ${selectedView === view
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                      }`}
                   >
                     {view}
                   </button>
@@ -143,34 +164,6 @@ export default function TotalEarnings({ selectedView, onViewChange }) {
               </BarChart>
             </ChartContainer>
 
-            {transactions.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recent Transactions</h3>
-                <div className="space-y-2">
-                  {transactions.slice(0, 3).map((tx, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium text-sm text-gray-800 dark:text-gray-200">
-                          {tx.description || `Transaction #${index + 1}`}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {new Date(tx.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <p
-                        className={`font-semibold text-sm ${tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
-                      >
-                        {tx.amount > 0 ? "+" : ""}
-                        {tx.amount.toLocaleString()} INR
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </CardContent>

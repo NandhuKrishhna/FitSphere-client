@@ -74,23 +74,22 @@ export function TransactionDetailsModal({ isOpen, onClose, transaction }: Transa
               </div>
 
               <div className="space-y-2">
-  <div className="flex items-center text-gray-400">
-    <CreditCard className="h-4 w-4 mr-2" />
-    <span className="text-sm">Amount</span>
-  </div>
-  <p
-    className={`text-lg font-bold ${
-      transaction.type === "credit"
-        ? "text-indigo-400"
-        : transaction.type === "failed"
-        ? "text-gray-400 italic"
-        : "text-red-400"
-    }`}
-  >
-    {transaction.type !== "failed" && (transaction.type === "credit" ? "+" : "-")}
-    {transaction.currency} {transaction.amount.toLocaleString()}
-  </p>
-</div>
+                <div className="flex items-center text-gray-400">
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  <span className="text-sm">Amount</span>
+                </div>
+                <p
+                  className={`text-lg font-bold ${transaction.type === "credit"
+                    ? "text-indigo-400"
+                    : transaction.type === "failed"
+                      ? "text-gray-400 italic"
+                      : "text-red-400"
+                    }`}
+                >
+                  {transaction.type !== "failed" && (transaction.type === "credit" ? "+" : "-")}
+                  {transaction.currency} {transaction.amount.toLocaleString()}
+                </p>
+              </div>
 
             </div>
           </div>
@@ -122,30 +121,32 @@ export function TransactionDetailsModal({ isOpen, onClose, transaction }: Transa
               </div>
             </div>
 
-            <div className="bg-gray-800 p-4 rounded-lg">
-              <h3 className="text-lg font-medium text-white mb-4">To</h3>
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 border-2 border-indigo-600">
-                  <AvatarImage src={transaction.toDetails.profilePicture} alt={transaction.toDetails.name} />
-                  <AvatarFallback className="bg-indigo-900 text-white">
-                    {transaction.toDetails.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+            {transaction.paymentType !== "subscription" && (
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <h3 className="text-lg font-medium text-white mb-4">To</h3>
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16 border-2 border-indigo-600">
+                    <AvatarImage src={transaction.toDetails?.profilePicture} alt={transaction.toDetails?.name} />
+                    <AvatarFallback className="bg-indigo-900 text-white">
+                      {transaction.toDetails?.name?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
 
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <User className="h-4 w-4 mr-2 text-indigo-400" />
-                    <p className="font-medium">{transaction.toDetails.name}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <User className="h-4 w-4 mr-2 text-indigo-400" />
+                      <p className="font-medium">{transaction.toDetails?.name}</p>
+                    </div>
+
+                    <div className="flex items-center">
+                      <Mail className="h-4 w-4 mr-2 text-indigo-400" />
+                      <p className="text-sm text-gray-300">{transaction.toDetails?.email}</p>
+                    </div>
                   </div>
-
-                  <div className="flex items-center">
-                    <Mail className="h-4 w-4 mr-2 text-indigo-400" />
-                    <p className="text-sm text-gray-300">{transaction.toDetails.email}</p>
-                  </div>
-
                 </div>
               </div>
-            </div>
+            )}
+
           </div>
         </div>
       </DialogContent>

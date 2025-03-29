@@ -89,11 +89,10 @@ export default function ConsultationCalendar({
         <div className="flex gap-4">
           <Button
             variant={consultationType === "audio" ? "default" : "outline"}
-            className={`rounded-lg flex gap-2 flex-1 ${
-              consultationType === "audio"
+            className={`rounded-lg flex gap-2 flex-1 ${consultationType === "audio"
                 ? "bg-purple-600 hover:bg-purple-700 text-white"
                 : "bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-200"
-            }`}
+              }`}
             onClick={() => setConsultationType("audio")}
           >
             <Phone className="h-4 w-4" />
@@ -101,11 +100,10 @@ export default function ConsultationCalendar({
           </Button>
           <Button
             variant={consultationType === "video" ? "default" : "outline"}
-            className={`rounded-lg flex gap-2 flex-1 ${
-              consultationType === "video"
+            className={`rounded-lg flex gap-2 flex-1 ${consultationType === "video"
                 ? "bg-purple-600 hover:bg-purple-700 text-white"
                 : "bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-200"
-            }`}
+              }`}
             onClick={() => setConsultationType("video")}
           >
             <Video className="h-4 w-4" />

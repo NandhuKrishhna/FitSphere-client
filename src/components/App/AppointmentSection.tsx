@@ -20,13 +20,12 @@ const AppointmentSection: React.FC<AppointmentSectionProps> = ({
   handleBookSlot,
   isLoading,
 }) => {
-  // console.log("Slots Data", slots);
   return (
     <>
       <ConsultationModal slots={slots || []} onSlotClick={handleSlotClick} name={doctorName} dept={specialty} />
       <button
         onClick={handleBookSlot}
-        disabled={isLoading  || slots?.slots?.length === 0}
+        disabled={isLoading || slots?.slots?.length === 0}
         className="w-full mt-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-colors disabled:opacity-70"
       >
         {isLoading ? <span className="loading loading-spinner loading-sm"></span> : "Book Appointment"}

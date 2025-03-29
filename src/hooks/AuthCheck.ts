@@ -5,7 +5,6 @@ import { useEffect } from "react";
 const useAuthCheck = (dispatch: AppDispatch) => {
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
-    console.log("AuthCheck called:", token?.slice(0, 10) + "...");
     if (!token) {
       dispatch(setLogout());
     }

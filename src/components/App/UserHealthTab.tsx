@@ -59,7 +59,6 @@ const UserHealthDetailsTab: React.FC<HealthDetailsTabProps> = ({ healthData, hea
 
   const handleSave = () => {
     setHealthForm((prev) => {
-      console.log("Updated healthForm before API call:", prev);
       handleUpdateUserHealthDetails(prev);
       return prev;
     });

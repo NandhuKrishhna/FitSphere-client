@@ -1,6 +1,10 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import SubscriptionDetails from "./SubscriptionDetails";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
+
 
 interface User {
   name?: string;
@@ -39,6 +43,8 @@ interface OverviewTabProps {
   healthLoading: boolean;
   weightData?: WeightData;
   weightLoading: boolean;
+  subscriptionDetails?: any
+  subscriptionLoading?: boolean
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({
@@ -47,18 +53,31 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
   healthLoading,
   weightData,
   weightLoading,
+  subscriptionDetails,
+  subscriptionLoading = false,
 }) => {
   const formattedWeightData = weightData?.weightProgress?.map((entry) => ({
     date: new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
     weight: entry.weight,
   })) || [];
-
+  const navigate = useNavigate()
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Button
+        onClick={() => navigate('/subscription')}
+      >
+        Manage Subscription
+      </Button>
+      {subscriptionDetails && (
+        <div className="col-span-1 md:col-span-2">
+
+          <SubscriptionDetails subscriptionDetails={subscriptionDetails} isLoading={subscriptionLoading} />
+        </div>
+      )}
       {/* Weight Progress Chart */}
-      <WeightProgressChart 
-        weightLoading={weightLoading} 
-        formattedWeightData={formattedWeightData} 
+      <WeightProgressChart
+        weightLoading={weightLoading}
+        formattedWeightData={formattedWeightData}
       />
 
       {/* Profile Information */}
