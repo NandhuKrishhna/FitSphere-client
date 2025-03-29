@@ -6,7 +6,7 @@ import { ErrorResponse } from "./doctorLoginHook";
 import toast from "react-hot-toast";
 
 type SlotDatas = {
-  date : Date;
+  date: Date;
   startTime: Date;
   endTime: Date;
   consultationType: string;
@@ -19,13 +19,10 @@ const useSlotAddingHook = () => {
     formState: { errors },
   } = useForm<SlotDatas>({ resolver: zodResolver(slotSchema) });
   const onSubmit = async (data: SlotDatas) => {
-    console.log(data)
     try {
       const res = await addSlots(data).unwrap();
-      console.log(res);
       toast.success(res.message);
     } catch (err) {
-        console.log(err)
       const error = err as ErrorResponse;
       if (error.data?.errors) {
         error.data.errors.forEach((err) => {
@@ -40,8 +37,8 @@ const useSlotAddingHook = () => {
   };
 
   return {
-    register ,
-    handleSubmit : handleSubmit(onSubmit),
+    register,
+    handleSubmit: handleSubmit(onSubmit),
     errors,
     isLoading
   }

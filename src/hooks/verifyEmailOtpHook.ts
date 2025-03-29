@@ -18,15 +18,13 @@ const useVerificationCodeHook = () => {
   const dispatch = useDispatch()
   const validateForm = () => {
     const otpString = otp.join("");
-    console.log(otpString);
-    console.log(typeof otpString);
     if (otpString.length < 6) return toast.error("Please enter a valid code");
     return true;
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = validateForm();
-  
+
     if (success === true) {
       try {
         const userId = localStorage.getItem("userId");
@@ -40,9 +38,8 @@ const useVerificationCodeHook = () => {
         navigate("/age", { replace: true });
         setTimeout(() => {
           dispatch(setCredentials({ ...userDetails }));
-        }, 500); 
+        }, 500);
       } catch (err) {
-        console.log(err);
         const error = err as ErrorResponse;
         if (error.data?.errors) {
           const fieldErrors: Record<string, string> = {};

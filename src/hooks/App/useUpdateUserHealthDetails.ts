@@ -12,7 +12,6 @@ const useUserHealthDetails = () => {
   const activityLevel = getLocalStorageValue("activityLevel").replace(/"/g, "");
   const week = getLocalStorageValue("weeksToGoal");
   const updatedWeek = Number(week);
-  console.log("Updated week", updatedWeek)
 
   const allDetails = {
     age: Number(getLocalStorageValue("age")),
@@ -27,7 +26,6 @@ const useUserHealthDetails = () => {
 
   const onSubmit = async () => {
     try {
-      console.log("Submitting data to backend:", allDetails); 
       const response = await userHealthDetail(allDetails).unwrap();
       toast.success(response.message);
     } catch (error) {
@@ -35,7 +33,7 @@ const useUserHealthDetails = () => {
       if (err.data.message) return toast.error(err.data.message);
     }
   };
-  
+
 
   return {
     onSubmit,

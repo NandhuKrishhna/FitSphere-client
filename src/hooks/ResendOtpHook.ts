@@ -13,7 +13,6 @@ const useResendPasswordHook = () => {
     try {
       const res = await resendNewOtp({ email: email, role: role }).unwrap();
       toast.success(res.message);
-      console.log(res);
     } catch (error) {
       const err = error as ErrorResponse;
       if (err.data?.message) return toast.error(err.data.message);

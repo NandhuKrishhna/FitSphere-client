@@ -4,15 +4,13 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 export const useAppointmentActions = () => {
-  const [cancelAppointment , {isLoading:isAppointmentCancelLoading}] = useCancelAppointmentMutation();
+  const [cancelAppointment, { isLoading: isAppointmentCancelLoading }] = useCancelAppointmentMutation();
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleCancelAppointment = async (appointmentId: string) => {
     try {
-      const response = await cancelAppointment({ appointmentId }).unwrap();
-      console.log(response);
-      toast.success("Appointment cancelled successfully");
+      await cancelAppointment({ appointmentId }).unwrap();
     } catch (error) {
       console.error(error);
       toast.error("Failed to cancel appointment");

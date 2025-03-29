@@ -28,12 +28,10 @@ const useDoctorResetPasswordHook = () => {
       try {
         const userId = localStorage.getItem("ForgotPasswordUserId");
         const res = await verifyResetPasswordCode({ code: otp.join(""), userId: userId }).unwrap();
-        console.log(res);
         toast.success(res.message);
         setOtp(new Array(6).fill(""));
         navigate("/doctor/reset/new-password");
       } catch (err) {
-        console.log(err);
         const error = err as ErrorResponse;
         if (error.data?.errors) {
           const fieldErrors: Record<string, string> = {};

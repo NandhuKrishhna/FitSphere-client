@@ -4,7 +4,7 @@ import { useSearchFoodQuery } from "@/redux/api/caloriesApi";
 
 const useSearchFood = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [quantity, setQuantity] = useState(50); 
+  const [quantity, setQuantity] = useState(50);
   const { data, isFetching, error } = useSearchFoodQuery(
     { query: searchQuery, quantity },
     { skip: searchQuery.length < 2 }

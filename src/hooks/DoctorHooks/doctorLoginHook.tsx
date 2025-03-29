@@ -32,15 +32,14 @@ const useDoctorLoginHook = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await doctorLogin(data).unwrap();
-      console.log(res);
-      // console.log(res.doctor)
+
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
       connectSocket(res.response._id, dispatch);
       localStorage.setItem("accessToken", res.response.accessToken);
       navigate("/doctor/dashboard");
     } catch (err) {
-      console.log(err);
+
       const error = err as ErrorResponse;
       if (error.data?.message) {
         toast.error(error.data.message);

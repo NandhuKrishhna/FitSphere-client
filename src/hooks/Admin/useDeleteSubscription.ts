@@ -7,7 +7,6 @@ import { useDeleteSubcriptionMutation } from "@/redux/api/adminApi";
 const useDeleteSubcription = () => {
     const [deleteSubcription, { isLoading: isDeleteSubscriptionLoading }] = useDeleteSubcriptionMutation();
     const handleDeleteSubscription = async (id: string) => {
-        console.log("ID from useDeleteSubcription", id)
         try {
             const response = await deleteSubcription(id).unwrap();
             toast.success(response.message);

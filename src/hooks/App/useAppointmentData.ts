@@ -5,8 +5,6 @@ import { Appointment } from "@/types/appointmentList";
 
 export const useAppointmentData = () => {
   const { data, isLoading } = useGetAppointmentDetailsQuery({});
-  console.log(data)
-  // State management
   const [processedAppointments, setProcessedAppointments] = useState<Appointment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -19,19 +17,16 @@ export const useAppointmentData = () => {
     if (data?.success && data?.response) {
       let filtered = [...data.response];
 
-      // Apply status filter
       if (statusFilter !== "all") {
         filtered = filtered.filter((appointment) => appointment.status === statusFilter);
       }
 
-      // Apply search filter (doctor name)
       if (searchQuery.trim() !== "") {
         filtered = filtered.filter((appointment) =>
           appointment.doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
 
-      // Apply sorting
       filtered.sort((a, b) => {
         let comparison = 0;
         if (sortField === "date") {
@@ -52,13 +47,11 @@ export const useAppointmentData = () => {
     }
   }, [data, sortField, sortDirection, statusFilter, searchQuery]);
 
-  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = processedAppointments.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(processedAppointments.length / itemsPerPage);
 
-  // Sorting functions
   const handleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");

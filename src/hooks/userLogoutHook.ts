@@ -9,11 +9,11 @@ import { resetAppState } from "@/redux/slice/appFeatSlice";
 export const useLogout = () => {
   const dispatch = useDispatch();
   const [logout, { isLoading }] = useLazyLogoutQuery();
-  const handleLogout = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogout = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     try {
-      const response = await logout({}).unwrap();
-      console.log(response);
+      await logout({}).unwrap();
+
       dispatch(setLogout());
       disconnectSocket();
       dispatch(resetSocketState());

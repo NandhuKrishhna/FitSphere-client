@@ -17,8 +17,6 @@ const useDoctorEmailOtpVerificatio = () => {
 
   const validateForm = () => {
     const otpString = otp.join("");
-    console.log(otpString);
-    console.log(typeof otpString);
     if (otpString.length < 6) return toast.error("Please enter a valid code");
     return true;
   };
@@ -29,12 +27,10 @@ const useDoctorEmailOtpVerificatio = () => {
       try {
         const userId = localStorage.getItem("userId");
         const res = await verifyEmailByOtp({ code: otp.join(""), userId }).unwrap();
-        console.log(res);
         toast.success(res.message);
         setOtp(new Array(6).fill(""));
         navigate("/doctor/registration");
       } catch (err) {
-        console.log(err);
         const error = err as ErrorResponse;
         if (error.data?.errors) {
           const fieldErrors: Record<string, string> = {};

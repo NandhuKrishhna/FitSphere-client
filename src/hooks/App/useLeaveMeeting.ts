@@ -5,16 +5,16 @@ import { setMeetingId } from "@/redux/slice/appFeatSlice";
 import { useDispatch } from "react-redux";
 
 const useLeaveMeeting = () => {
-     const dispatch = useDispatch() 
-    const[leaveMeeting] = useLeaveMeetingMutation();
-    const handleLeaveMeeting = async(meetingId:string) => {
+    const dispatch = useDispatch()
+    const [leaveMeeting] = useLeaveMeetingMutation();
+    const handleLeaveMeeting = async (meetingId: string) => {
         if (!meetingId) return;
         try {
-            await leaveMeeting(meetingId).unwrap();
+            await leaveMeeting({ meetingId: meetingId }).unwrap();
             dispatch(setMeetingId(null));
         } catch (error) {
             const err = error as ErrorResponse;
-            if(err.data.message) return toast.error(err.data.message);
+            if (err.data.message) return toast.error(err.data.message);
             toast.error("Unexpected Error . Please try again.")
         }
 

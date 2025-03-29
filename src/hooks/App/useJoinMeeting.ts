@@ -8,7 +8,7 @@ import { useState } from "react";
 import { setMeetingId } from "@/redux/slice/appFeatSlice";
 
 const useHandleJoinMeeting = () => {
-  const dispatch= useDispatch();
+  const dispatch = useDispatch();
   const [joinMeeting, { isLoading: isJoiningMeeting }] = useJoinMeetingMutation();
   const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>({});
   const navigate = useNavigate();
@@ -24,20 +24,23 @@ const useHandleJoinMeeting = () => {
       const response = await joinMeeting({ meetingId: meetingId }).unwrap();
       if (response.success) {
         toast.success("Successfully joined the meeting");
-        navigate(`/consultation/${meetingId}`);
+        if (user?.role === "user") {
+          navigate(`/consultation/${meetingId}`)
+        } else {
+          navigate(`/doctor/consultation/${meetingId}`);
+        }
         dispatch(setMeetingId(meetingId));
       }
     } catch (error) {
       const err = error as ErrorResponse;
-      console.log(error);
       if (err.data.message) return toast.error(err.data.message);
       toast.error(message);
-    }finally{
+    } finally {
       setLoadingItems((prev) => ({ ...prev, [meetingId]: false }));
     }
   };
 
-  return { handleJoinMeet, isJoiningMeeting ,loadingItems};
+  return { handleJoinMeet, isJoiningMeeting, loadingItems };
 };
 
 export default useHandleJoinMeeting;

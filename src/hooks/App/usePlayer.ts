@@ -19,7 +19,7 @@ interface PlayerState {
 
 const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
   const meetingId = useSelector(selectedMeetingId)
-  const {handleLeaveMeeting} = useLeaveMeeting()
+  const { handleLeaveMeeting } = useLeaveMeeting()
   const socket = getSocket();
   const user = useSelector(selectCurrentUser);
   const [player, setPlayer] = React.useState<PlayerState>({});
@@ -34,12 +34,12 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
       return acc;
     }, {} as PlayerState);
 
-    const onLeaveMeeting = () => {
-      handleLeaveMeeting(meetingId!)
-    }
+  const onLeaveMeeting = () => {
+    handleLeaveMeeting(meetingId!)
+  }
 
   const toggleAudio = () => {
-    if (!player[myId]) return; 
+    if (!player[myId]) return;
 
     setPlayer((prev) => {
       const copy = cloneDeep(prev);
@@ -51,7 +51,7 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
   };
 
   const toggleVideo = () => {
-    if (!player[myId]) return; 
+    if (!player[myId]) return;
 
     setPlayer((prev) => {
       const copy = cloneDeep(prev);
@@ -62,28 +62,26 @@ const usePlayer = (myId: string, roomId: string, peer: Peer | null) => {
     socket?.emit("user-toggle-video", myId, roomId);
   };
 
-  const leaveRoom = async() => {
+  const leaveRoom = async () => {
     if (player[myId]?.url instanceof MediaStream) {
       player[myId].url.getTracks().forEach(track => track.stop());
     }
-    
+
     socket?.emit("user-leave", myId, roomId);
-    console.log(`User ${myId} left room ${roomId}`);
-  
-    peer?.disconnect(); 
-  
+    peer?.disconnect();
+
     setPlayer((prev) => {
       const copy = cloneDeep(prev);
-      delete copy[myId]; 
+      delete copy[myId];
       return copy;
     });
     if (meetingId) {
-      await onLeaveMeeting(); 
+      await onLeaveMeeting();
     }
     const navigateTo = user?.role === Roles.DOCTOR ? "/doctor/appointments" : "/appointments";
     navigate(navigateTo);
   };
-  
+
 
   return { player, setPlayer, playerHighlight, nonHighlighted, toggleAudio, toggleVideo, leaveRoom };
 };

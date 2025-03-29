@@ -36,16 +36,14 @@ export const useDoctorDetails = () => {
       profilePicture: doctorDetails?.profilePicture || "/avatar.png",
       _id: doctorDetails?._id || "",
     },
+    lastMessage: ""
   };
   const handlePaymentFailure = async (orderId: string) => {
-    if (!orderId) {
-      console.log("Order ID is missing. Cannot record payment failure.");
-      return;
-    }
+    if (!orderId) return;
+
 
     try {
       await handleFailedPayment({ orderId: orderId }).unwrap();
-      console.log("Payment failure recorded successfully");
     } catch (error) {
       console.error("Failed to record payment failure:", error);
       const err = error as ErrorResponse;
@@ -79,13 +77,15 @@ export const useDoctorDetails = () => {
           await verifyPayment({
             razorpay_order_id: response.razorpay_order_id,
             doctorId: doctorId,
-            doctorName: doctorDetails?.name
+            doctorName: doctorDetails?.name,
+            paymentType: "slot_booking"
           })
           toast.success("Payment successful!");
           navigate("/appointments");
         } catch (error) {
-          console.log(error);
-          toast.error("Payment verification failed");
+          const err = error as ErrorResponse;
+          if (err.data.message) return toast.error(err.data.message);
+          toast.error("Something went wrong. Please try again.");
           await handlePaymentFailure(order.id);
         }
       },
@@ -104,10 +104,9 @@ export const useDoctorDetails = () => {
 
     try {
       const rzp = new (window as any).Razorpay(options);
-      rzp.on("payment.failed", async (response: RazorpayErrorResponse) => {
+      rzp.on("payment.failed", async () => {
         rzp.close();
         setTimeout(async () => {
-          console.log(response)
           await handlePaymentFailure(order.id);
           navigate("/appointments");
         }, 500);
@@ -139,7 +138,6 @@ export const useDoctorDetails = () => {
 
       initPay(response.order);
     } catch (error) {
-      console.log(error);
       const err = error as ErrorResponse;
       if (err.data.message) return toast.error(err.data.message);
       toast.error("Failed to book slot. Please try again.");
@@ -156,14 +154,18 @@ export const useDoctorDetails = () => {
         slotId: selectedSlot?._id,
         amount: doctorDetails?.details.consultationFees,
       });
-      console.log(response);
+      if ("error" in response) {
+        const err = response.error as ErrorResponse;
+        if (err?.data?.message) return toast.error(err?.data?.message);
+
+        return toast.error("Failed to book slot. Please try again.");
+      }
       setIsWalletSuccessModalOpen(true);
       setTimeout(() => {
         setIsWalletSuccessModalOpen(false);
         navigate("/appointments");
       }, 5000);
     } catch (error) {
-      console.log("---------", error)
       const err = error as ErrorResponse;
       if (err?.data?.message) return toast.error(err?.data?.message);
       toast.error("Failed to book slot. Please try again.");

@@ -31,20 +31,16 @@ const useLoginHook = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await login(data).unwrap();
-      console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
       connectSocket(res.response._id, dispatch);
       navigate("/home");
     } catch (err) {
-      console.log(err);
       const error = err as ErrorResponse;
       if (error.data?.message) {
         toast.error(error.data.message);
-        return;
       }
       if (error.status === 401 && error.data?.message === ERRORS.EMAIL_VERIFICATION_REQUIRED) {
-        toast.error(ERRORS.EMAIL_VERIFICATION_REQUIRED);
         navigate("/verify-email");
         return;
       }

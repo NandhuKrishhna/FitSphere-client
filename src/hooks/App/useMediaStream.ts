@@ -11,10 +11,9 @@ const useMediaStream = () => {
           video: true,
           audio: true,
         });
-        console.log("setting your stream");
         setState(stream);
       } catch (error) {
-        console.log("Error in media stream", error);
+        console.error(error);
       }
     })();
   }, []);

@@ -15,7 +15,6 @@ const useSearchRecipesHook = () => {
 
     try {
       const response = await searchFoodItems({ ingredients: searchResults }).unwrap();
-      console.log(response);
       setResponseData(response);
       setSearchResults("");
     } catch (error) {
