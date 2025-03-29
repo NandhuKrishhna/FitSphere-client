@@ -6,7 +6,9 @@ import React, { useEffect } from "react";
 import usePlayer from "@/hooks/App/usePlayer";
 import { useParams } from "react-router-dom";
 import { cloneDeep } from "lodash";
-import type Peer from "peerjs";
+import Peer from "peerjs";
+import type { MediaConnection } from "peerjs";
+
 import { Mic, MicOff, Video, VideoOff, PhoneOff } from "lucide-react";
 
 
@@ -29,16 +31,15 @@ const ConsultationPage: React.FC = () => {
     roomId as string,
     peer as Peer | null
   );
-  const [users, setUsers] = React.useState<string[]>([]);
+  const [users, setUsers] = React.useState<Record<string, MediaConnection | null>>({});
+
 
   useEffect(() => {
     if (!socket || !peer || !stream) return;
     const handleUserConnected = (newUser: string) => {
-      console.log(`User ${newUser} connected`);
       if (stream) {
         const call = peer?.call(newUser, stream);
         call.on("stream", (incomingStream) => {
-          console.log(`Incoming call from ${newUser}`);
           setPlayer((prev: PlayerObject) => ({
             ...prev,
             [newUser]: {
@@ -71,7 +72,6 @@ const ConsultationPage: React.FC = () => {
       call.answer(stream);
 
       call.on("stream", (userVideoStream) => {
-        console.log(`Incoming call from ${calledId}`);
         setPlayer((prev: PlayerObject) => ({
           ...prev,
           [calledId]: {
@@ -90,7 +90,6 @@ const ConsultationPage: React.FC = () => {
 
   useEffect(() => {
     if (!stream || !myId) return;
-    console.log(`setting my stream ${myId}`);
     setPlayer((prev: PlayerObject) => ({
       ...prev,
       [myId]: {
@@ -104,7 +103,7 @@ const ConsultationPage: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
     const handleToggleAudio = (userId: string) => {
-      console.log(`Toggling audio for user ${userId}`);
+
       setPlayer((prev) => {
         const copy = cloneDeep(prev);
         copy[userId].muted = !copy[userId].muted;
@@ -112,7 +111,7 @@ const ConsultationPage: React.FC = () => {
       });
     };
     const handleToggleVideo = (userId: string) => {
-      console.log(`Toggling audio for user ${userId}`);
+
       setPlayer((prev) => {
         const copy = cloneDeep(prev);
         copy[userId].playing = !copy[userId].playing;
@@ -121,7 +120,7 @@ const ConsultationPage: React.FC = () => {
     };
 
     const handleUserLeave = (userId: string) => {
-      console.log(`User ${userId} left the room`);
+
       users[userId]?.close();
       const playersCopy = cloneDeep(player);
       delete playersCopy[userId];
@@ -185,18 +184,16 @@ const ConsultationPage: React.FC = () => {
         <div className="flex gap-4">
           <button
             onClick={() => toggleAudio()}
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              isMyAudioMuted ? "bg-red-500" : "bg-gray-700 hover:bg-gray-600"
-            }`}
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${isMyAudioMuted ? "bg-red-500" : "bg-gray-700 hover:bg-gray-600"
+              }`}
           >
             {isMyAudioMuted ? <MicOff size={20} /> : <Mic size={20} />}
           </button>
 
           <button
             onClick={() => toggleVideo()}
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              isMyVideoOff ? "bg-red-500" : "bg-gray-700 hover:bg-gray-600"
-            }`}
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${isMyVideoOff ? "bg-red-500" : "bg-gray-700 hover:bg-gray-600"
+              }`}
           >
             {isMyVideoOff ? <VideoOff size={20} /> : <Video size={20} />}
           </button>
@@ -211,9 +208,9 @@ const ConsultationPage: React.FC = () => {
       </div>
 
     </div>
-    
+
   );
-  
+
 };
 
 export default ConsultationPage;

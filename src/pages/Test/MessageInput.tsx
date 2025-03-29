@@ -10,7 +10,9 @@ import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import toast from "react-hot-toast";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-
+interface Emoji {
+  native: string;
+}
 const ChatInput: React.FC = () => {
   const currentUser = useSelector(selectCurrentUser);
   const receiver = useSelector(selectSelectedUser);
@@ -20,12 +22,11 @@ const ChatInput: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   useEffect(() => {
     let socket = getSocket();
-  
+
     if (!socket || !socket.connected) {
-      console.error("⚠️ Socket not connected! Retrying...");
       setTimeout(() => {
         socket = getSocket();
       }, 1000);
@@ -37,7 +38,7 @@ const ChatInput: React.FC = () => {
     } else {
       socket.emit("stop_typing", { senderId: currentUser?._id, receiverId: receiver?.doctorDetails._id });
     }
-  }, [message]);
+  }, [currentUser?._id, message, receiver?.doctorDetails._id]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,7 +61,7 @@ const ChatInput: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const addEmoji = (emoji: any) => {
+  const addEmoji = (emoji: Emoji) => {
     setMessage((prev) => prev + emoji.native);
     setShowEmojiPicker(false);
   };

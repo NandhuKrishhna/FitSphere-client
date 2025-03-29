@@ -18,7 +18,6 @@ const AppointmentTable = () => {
   const { isJoiningMeeting, handleJoinMeet } = useHandleJoinMeeting();
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  console.log(selectedAppointment);
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(5);
   const [search, setSearch] = useState<string>("");
@@ -328,9 +327,8 @@ const AppointmentTable = () => {
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`text-sm font-medium ${
-                        appointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
-                      }`}
+                      className={`text-sm font-medium ${appointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
+                        }`}
                     >
                       {appointment.paymentStatus} (₹{appointment.amount})
                     </span>
@@ -338,13 +336,12 @@ const AppointmentTable = () => {
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        appointment.status === "cancelled"
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${appointment.status === "cancelled"
                           ? "bg-red-900/30 text-red-400"
                           : appointment.status === "completed"
-                          ? "bg-green-900/30 text-green-400"
-                          : "bg-yellow-900/30 text-yellow-400"
-                      }`}
+                            ? "bg-green-900/30 text-green-400"
+                            : "bg-yellow-900/30 text-yellow-400"
+                        }`}
                     >
                       {appointment.status}
                     </span>
@@ -376,11 +373,10 @@ const AppointmentTable = () => {
             <div className="flex space-x-1">
               <button
                 onClick={() => setPage(page - 1)}
-                className={`px-3 py-1 rounded-md ${
-                  page === 1
+                className={`px-3 py-1 rounded-md ${page === 1
                     ? "bg-gray-700 text-gray-500 cursor-not-allowed"
                     : "bg-gray-700 text-white hover:bg-gray-600"
-                }`}
+                  }`}
                 disabled={page === 1}
                 aria-label="Previous page"
               >
@@ -404,9 +400,8 @@ const AppointmentTable = () => {
                   <button
                     key={`page-${pageNum}`}
                     onClick={() => setPage(pageNum)}
-                    className={`px-3 py-1 rounded-md ${
-                      page === pageNum ? "bg-purple-600 text-white" : "bg-gray-700 text-white hover:bg-gray-600"
-                    }`}
+                    className={`px-3 py-1 rounded-md ${page === pageNum ? "bg-purple-600 text-white" : "bg-gray-700 text-white hover:bg-gray-600"
+                      }`}
                     aria-label={`Page ${pageNum}`}
                     aria-current={page === pageNum ? "page" : undefined}
                   >
@@ -417,11 +412,10 @@ const AppointmentTable = () => {
 
               <button
                 onClick={() => setPage(page + 1)}
-                className={`px-3 py-1 rounded-md ${
-                  page === meta.totalPages
+                className={`px-3 py-1 rounded-md ${page === meta.totalPages
                     ? "bg-gray-700 text-gray-500 cursor-not-allowed"
                     : "bg-gray-700 text-white hover:bg-gray-600"
-                }`}
+                  }`}
                 disabled={page === meta.totalPages}
                 aria-label="Next page"
               >
@@ -473,13 +467,12 @@ const AppointmentTable = () => {
                   <p className="text-gray-400">{selectedAppointment.patient?.email}</p>
                   <div className="mt-2">
                     <span
-                      className={`px-3 py-1 text-sm rounded-full ${
-                        selectedAppointment.status === "cancelled"
+                      className={`px-3 py-1 text-sm rounded-full ${selectedAppointment.status === "cancelled"
                           ? "bg-red-900/30 text-red-300"
                           : selectedAppointment.status === "completed"
-                          ? "bg-green-900/30 text-green-300"
-                          : "bg-yellow-900/30 text-yellow-300"
-                      }`}
+                            ? "bg-green-900/30 text-green-300"
+                            : "bg-yellow-900/30 text-yellow-300"
+                        }`}
                     >
                       {selectedAppointment.status}
                     </span>
@@ -511,8 +504,8 @@ const AppointmentTable = () => {
                     <p className="text-white">
                       {selectedAppointment.slot?.startTime
                         ? `${formatTime(selectedAppointment.slot.startTime)} - ${formatTime(
-                            selectedAppointment.slot.endTime
-                          )}`
+                          selectedAppointment.slot.endTime
+                        )}`
                         : "Not specified"}
                     </p>
                   </div>
@@ -537,9 +530,8 @@ const AppointmentTable = () => {
                   <div>
                     <p className="text-gray-400 text-sm">Status</p>
                     <p
-                      className={`font-semibold ${
-                        selectedAppointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
-                      }`}
+                      className={`font-semibold ${selectedAppointment.paymentStatus === "completed" ? "text-green-400" : "text-red-400"
+                        }`}
                     >
                       {selectedAppointment.paymentStatus}
                     </p>

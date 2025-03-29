@@ -16,7 +16,6 @@ const usePeer = () => {
       setPeer(myPeer);
 
       myPeer.on("open", (id) => {
-        console.log("your peer id is ", id);
         setMyId(id);
         socket?.emit("join-room", roomId, id);
       });

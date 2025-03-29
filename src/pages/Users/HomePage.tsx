@@ -18,14 +18,13 @@ export default function HomePageTest() {
     { date: selectedDay },
     { skip: !selectedDay, refetchOnMountOrArgChange: true },
   )
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [selectedMealType, setSelectedMealType] = useState("")
   const [selectedFoodItem, setSelectedFoodItem] = useState<IFoodItem | null>(null)
   const [showCongrats, setShowCongrats] = useState(false)
   const [previousCalories, setPreviousCalories] = useState(0)
-  const { handleDeleteFood,loadingItems } = useDeleteFood()
+  const { handleDeleteFood, loadingItems } = useDeleteFood()
 
   useEffect(() => {
     if (foodLog) {
@@ -46,21 +45,21 @@ export default function HomePageTest() {
 
   const mealTypes = foodLogs?.response?.meals
     ? Object.keys(foodLogs.response.meals).map((type) => ({
-        id: type,
-        type: type.charAt(0).toUpperCase() + type.slice(1),
-        recommended: "440 - 550 kcal",
-        itemCount: foodLogs?.response?.meals[type as keyof typeof foodLogs.response.meals].length,
-        totalCalories: foodLogs.response.meals[type as keyof typeof foodLogs.response.meals].reduce(
-          (sum, item) => sum + item.calories,
-          0,
-        ),
-      }))
+      id: type,
+      type: type.charAt(0).toUpperCase() + type.slice(1),
+      recommended: "440 - 550 kcal",
+      itemCount: foodLogs?.response?.meals[type as keyof typeof foodLogs.response.meals].length,
+      totalCalories: foodLogs.response.meals[type as keyof typeof foodLogs.response.meals].reduce(
+        (sum, item) => sum + item.calories,
+        0,
+      ),
+    }))
     : [
-        { id: "breakfast", type: "Breakfast", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
-        { id: "lunch", type: "Lunch", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
-        { id: "dinner", type: "Dinner", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
-        { id: "snacks", type: "Snacks", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
-      ]
+      { id: "breakfast", type: "Breakfast", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
+      { id: "lunch", type: "Lunch", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
+      { id: "dinner", type: "Dinner", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
+      { id: "snacks", type: "Snacks", recommended: "440 - 550 kcal", itemCount: 0, totalCalories: 0 },
+    ]
 
   const totalCalories = foodLogs?.response?.totalCalories || 0
   const requiredCalories = foodLogs?.response?.requiredCalories || 3000

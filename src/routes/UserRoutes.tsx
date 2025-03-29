@@ -13,6 +13,7 @@ import ForgotPasswordPage from "@/pages/Users/ForgotPasswordPage";
 import ResetPasswordOtp from "@/pages/Users/ResetPasswordOtp";
 import ResetPasswordPage from "@/pages/Users/ResetPasswordPage";
 import UserHealthProtectedRoute from "./UserHealthProtectedRoutes";
+import NotFound from "@/pages/Not-Found";
 
 // Lazy-loaded components
 const DoctorsPage = lazy(() => import("../pages/Users/DoctorsPage"));
@@ -45,6 +46,7 @@ const UserRoutes = () => {
     }>
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route path="*" element={<NotFound />} />
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<GoogleOAuthWrapper><LoginPage /></GoogleOAuthWrapper>} />
             <Route path="/signup" element={<GoogleOAuthWrapper><SignupForm /></GoogleOAuthWrapper>} />

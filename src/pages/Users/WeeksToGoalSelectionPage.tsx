@@ -33,7 +33,6 @@ export default function WeeksGoalSelector() {
       localStorage.removeItem("activityLevel");
       localStorage.removeItem("targetWeight");
       localStorage.removeItem("weeksToGoal");
-      console.log("local storage cleared");
       navigate("/home");
     }
   };
@@ -53,7 +52,6 @@ export default function WeeksGoalSelector() {
         options={weekOptions}
         selectedValue={selectedWeeks}
         onChange={(value) => {
-          console.log("Setting weeksToGoal to:", value);
           setSelectedWeeks(value as WeekOption);
           localStorage.setItem("weeksToGoal", value);
         }}

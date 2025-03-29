@@ -2,28 +2,28 @@ import { Lock } from "lucide-react"
 import { useState, useRef, type KeyboardEvent, type ClipboardEvent, useEffect } from "react"
 import useDoctorEmailOtpVerificatio from "../../hooks/DoctorHooks/doctorVerifyEmailByOtp"
 const DoctorOtpVerification = () => {
-  const {otp , setOtp , handleSubmit , isLoading ,}  = useDoctorEmailOtpVerificatio()
+  const { otp, setOtp, handleSubmit, isLoading, } = useDoctorEmailOtpVerificatio()
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
-  const [timeLeft, setTimeLeft] = useState(300) 
+  const [timeLeft, setTimeLeft] = useState(300)
   const [canResend, setCanResend] = useState(false)
 
 
- useEffect(() => {
-  if (timeLeft > 0) {
-    const timerId = setTimeout(() => {
-      setTimeLeft(timeLeft - 1)
-    }, 1000)
-    return () => clearTimeout(timerId)
-  } else {
-    setCanResend(true)
-  }
-}, [timeLeft])
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setTimeout(() => {
+        setTimeLeft(timeLeft - 1)
+      }, 1000)
+      return () => clearTimeout(timerId)
+    } else {
+      setCanResend(true)
+    }
+  }, [timeLeft])
 
-const formatTime = (time: number) => {
-  const minutes = Math.floor(time / 60)
-  const seconds = time % 60
-  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
-}
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60)
+    const seconds = time % 60
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+  }
 
 
 
@@ -65,8 +65,8 @@ const formatTime = (time: number) => {
       inputRefs.current[Math.min(pastedData.length, 5)]?.focus()
     }
   }
-  
- 
+
+
 
   const handleResendCode = async () => {
 
@@ -97,19 +97,19 @@ const formatTime = (time: number) => {
             ))}
           </div>
           <button
-  className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center h-10"
-  onClick={handleSubmit}
-  disabled={isLoading} // Prevent multiple clicks
->
-  {isLoading ? (
-   <span className="loading loading-spinner loading-md"></span>
-  ) : (
-    <>
-      <Lock className="mr-2 h-4 w-4" />
-      <span>Verify OTP</span>
-    </>
-  )}
-</button>
+            className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center h-10"
+            onClick={handleSubmit}
+            disabled={isLoading} // Prevent multiple clicks
+          >
+            {isLoading ? (
+              <span className="loading loading-spinner loading-md"></span>
+            ) : (
+              <>
+                <Lock className="mr-2 h-4 w-4" />
+                <span>Verify OTP</span>
+              </>
+            )}
+          </button>
 
 
         </div>

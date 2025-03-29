@@ -21,7 +21,6 @@ export type PaymentSuccessResponse = {
 };
 
 export const initPay = (order: RazorpayOrder, onSuccess: (response: unknown) => void, onFailure: (error: unknown) => void) => {
-  console.log("Initializing payment with order:", order);
   if (!(window as any).Razorpay) {
     console.error("Razorpay SDK not loaded");
     toast.error("Razorpay SDK not loaded. Please try again.");
@@ -42,7 +41,6 @@ export const initPay = (order: RazorpayOrder, onSuccess: (response: unknown) => 
     description: "Payment for consultation",
     order_id: order.id,
     handler: function (response: PaymentSuccessResponse) {
-      console.log("Payment successful!", response);
       toast.success("Payment successful!");
       onSuccess(response);
     },
@@ -56,12 +54,10 @@ export const initPay = (order: RazorpayOrder, onSuccess: (response: unknown) => 
     },
   };
 
-  console.log("Razorpay options:", options);
 
   try {
     const rzp = new (window as any).Razorpay(options);
     rzp.on("payment.failed", function (response: PaymentFailedResponse) {
-      console.log("Response for failing : ", response)
       console.error("Payment failed:", response.error);
       toast.error(`Payment failed: ${response.error.description}`);
       onFailure(response.error);

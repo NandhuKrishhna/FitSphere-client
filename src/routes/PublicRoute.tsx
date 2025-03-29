@@ -9,7 +9,7 @@ const PublicRoute = () => {
 
   if (token) {
     if (role === "doctor") return <Navigate to="/doctor/dashboard" replace />;
-    if (role === "admin") return <Navigate to="/users-management" replace />;
+    if (role === "admin") return <Navigate to="/admin/users-management" replace />;
     return <Navigate to="/home" replace />;
   }
 

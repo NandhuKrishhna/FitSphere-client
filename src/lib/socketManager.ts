@@ -16,7 +16,6 @@ export const connectSocket = (userId: string, dispatch: AppDispatch) => {
   });
 
   socket.on("connect", () => {
-    console.log("Socket connected");
     dispatch(setConnectionStatus(true));
   });
 
@@ -25,12 +24,10 @@ export const connectSocket = (userId: string, dispatch: AppDispatch) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("Socket disconnected");
     dispatch(setConnectionStatus(false));
   });
 
   socket.on("newMessage", (message: MessagesData) => {
-    console.log("A new message is received", message);
     dispatch(addMessages(message));
   });
 };

@@ -22,20 +22,22 @@ export type SelectedUser = {
     profilePicture: string;
     _id: string;
   };
-  lastMessage?: string;
+  lastMessage: string;
   _id?: string;
   updatedAt?: string;
 };
 
 export type Users = {
   doctorDetails: {
-    name: string;
-    profilePicture: string;
-    _id: string;
-  } | null;
-  lastMessage: string;
-  _id: string;
+    name?: string;
+    profilePicture?: string;
+    _id?: string;
+  }
+  lastMessage?: string;
 };
+export type SidebarUsers = {
+  users: Users[]
+}
 
 export type MessagesData = {
   createdAt: string;
@@ -46,3 +48,17 @@ export type MessagesData = {
   senderId: string;
   _id: string;
 };
+
+export type ConversationResponse = {
+  _id: string;
+  participants: [string, string];
+  lastMessage?: string;
+  updatedAt: string;
+  createdAt: string
+}
+
+export type ConversationApiResponse = {
+  message: string;
+  success: boolean;
+  conversation: ConversationResponse | null
+}

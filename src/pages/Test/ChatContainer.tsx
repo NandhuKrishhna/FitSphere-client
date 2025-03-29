@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectSelectedUser } from "@/redux/slice/socket.ioSlice";
 import { formatMessageTime } from "./time";
@@ -8,6 +8,7 @@ import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import ChatHeader from "./ChatHeader";
 import { useGetMessagesQuery } from "@/redux/api/chatApi";
 import { getSocket } from "@/lib/socketManager";
+import ImagePreviewModal from "@/components/ImagePreview";
 export type MessageType = {
   createdAt: string,
   isRead: false,
@@ -24,9 +25,10 @@ export type NotificationDateType = {
     profilePicture: string
   }
 }
-// console.log(socket)
+
 const ChatContainer = () => {
   const selectedUser = useSelector(selectSelectedUser);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const messageEndRef = useRef<HTMLDivElement>(null);
   const authUser = useSelector(selectCurrentUser)
   const { data: messages, isLoading: isMessageLoading, refetch } = useGetMessagesQuery({
@@ -38,8 +40,7 @@ const ChatContainer = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleNewMessage = (message: string) => {
-      console.log("New message received in ChatContainer:", message);
+    const handleNewMessage = () => {
       refetch();
     };
 
@@ -68,7 +69,13 @@ const ChatContainer = () => {
       </div>
     );
   }
+  const handleImageClick = (imageSrc: string) => {
+    setSelectedImage(imageSrc);
+  };
 
+  const handleCloseImagePreview = () => {
+    setSelectedImage(null);
+  };
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
@@ -103,6 +110,7 @@ const ChatContainer = () => {
                   src={message.image}
                   alt="Attachment"
                   className="sm:max-w-[200px] rounded-md mb-2"
+                  onClick={() => handleImageClick(message.image!)}
                 />
               )}
               {message.message && <p>{message.message}</p>}
@@ -113,8 +121,14 @@ const ChatContainer = () => {
           </div>
         ))}
       </div>
-
       <MessageInput />
+      {selectedImage && (
+        <ImagePreviewModal
+          src={selectedImage}
+          alt="Full Image Preview"
+          onClose={handleCloseImagePreview}
+        />
+      )}
     </div>
   );
 };

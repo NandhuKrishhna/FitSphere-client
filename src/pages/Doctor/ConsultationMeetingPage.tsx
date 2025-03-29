@@ -41,19 +41,17 @@ export default function MeetingPage() {
     }
 
     const navigateTo = user.role === Roles.USER ? `/consultation/${meetId}` : `/doctor/consultation/${meetId}`;
-
-    console.log("Navigating to:", navigateTo);
     navigate(navigateTo);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#121212] text-white">
       {user?.role === "user" && (
-  <>
-    <Header />
-    <Navigation />
-  </>
-)}
+        <>
+          <Header />
+          <Navigation />
+        </>
+      )}
 
       <div className="flex justify-center items-center min-h-[60vh]">
         <div className="bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-lg">

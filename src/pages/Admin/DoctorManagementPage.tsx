@@ -20,7 +20,7 @@ export type DoctorInfo = {
   isPremium: boolean;
   isVerified: boolean;
   status: string;
-  isApproved : boolean;
+  isApproved: boolean;
 
 }
 const DoctorStatusBadge = ({ status }: { status: string }) => {
@@ -96,10 +96,9 @@ export default function DoctorManagement() {
   if (approvalFilter !== "all") queryParams.isApproved = approvalFilter === "approved" ? "true" : "false"
 
   const { data, isLoading, error } = useGetAllDoctorsQuery(queryParams);
-  const {handleBlock , handleUnblock , isblocking , isunblocking}  = useBlockUnblockUser();
+  const { handleBlock, handleUnblock, isblocking, isunblocking } = useBlockUnblockUser();
 
   const doctors = data?.doctors?.doctors || []
-  console.log(doctors)
   const totalDoctors = data?.doctors?.totalDoctors || 0
   const totalPages = data?.doctors?.totalPages || 1
   const verifiedDoctors = data?.doctors?.verifiedDoctors || 0
@@ -319,7 +318,7 @@ export default function DoctorManagement() {
                     </thead>
                     <tbody>
                       {doctors.length > 0 ? (
-                        doctors.map((doctor : DoctorInfo) => (
+                        doctors.map((doctor: DoctorInfo) => (
                           <tr key={doctor._id} className="border-t border-gray-800 hover:bg-gray-800 transition-colors">
                             <td className="px-4 py-3 text-sm text-gray-300">
                               <div className="flex items-center">
@@ -375,38 +374,38 @@ export default function DoctorManagement() {
                             </td>
                             <td className="px-4 py-3 text-center">
                               <div className="flex justify-center space-x-2">
-                              <Button
-                               variant="ghost"
-                               size="sm"
-                               onClick={() =>
-                                 doctor.status === "active"
-                                   ? handleBlock(doctor._id, doctor.role)
-                                   : handleUnblock(doctor._id, doctor.role)
-                               }
-                               className={
-                                 doctor.status === "active"
-                                   ? "text-red-400 hover:text-red-300 hover:bg-gray-700"
-                                   : "text-green-400 hover:text-green-300 hover:bg-gray-700"
-                               }
-                             >
-                               {doctor.status === "active" ? (
-                                 isblocking[doctor._id] ? (
-                                   <Loader className="animate-spin" size={15} />
-                                 ) : (
-                                   <>
-                                     <Ban className="h-4 w-4 mr-1" />
-                                     Block
-                                   </>
-                                 )
-                               ) : isunblocking[doctor._id] ? (
-                                 <Loader className="animate-spin" size={15} />
-                               ) : (
-                                 <>
-                                   <UserCheck className="h-4 w-4 mr-1" />
-                                   Unblock
-                                 </>
-                               )}
-                             </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    doctor.status === "active"
+                                      ? handleBlock(doctor._id, doctor.role)
+                                      : handleUnblock(doctor._id, doctor.role)
+                                  }
+                                  className={
+                                    doctor.status === "active"
+                                      ? "text-red-400 hover:text-red-300 hover:bg-gray-700"
+                                      : "text-green-400 hover:text-green-300 hover:bg-gray-700"
+                                  }
+                                >
+                                  {doctor.status === "active" ? (
+                                    isblocking[doctor._id] ? (
+                                      <Loader className="animate-spin" size={15} />
+                                    ) : (
+                                      <>
+                                        <Ban className="h-4 w-4 mr-1" />
+                                        Block
+                                      </>
+                                    )
+                                  ) : isunblocking[doctor._id] ? (
+                                    <Loader className="animate-spin" size={15} />
+                                  ) : (
+                                    <>
+                                      <UserCheck className="h-4 w-4 mr-1" />
+                                      Unblock
+                                    </>
+                                  )}
+                                </Button>
                               </div>
                             </td>
                           </tr>

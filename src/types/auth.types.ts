@@ -33,7 +33,7 @@ export interface DoctorRegistrationMetadata {
   contactPhoneNumber?: string;
   clinicLocations?: string;
   medicalLicenseNumber?: string;
-  profilePicture?: string;
+  certificate?: string;
   gender?: string;
   officeAddress?: string;
   consultationLanguages?: string;
@@ -60,6 +60,7 @@ export interface Notification {
   message: string;
   read: boolean;
   createdAt: string;
+  profilePicture: string;
   metadata: DoctorRegistrationMetadata;
 }
 export type UserType = {

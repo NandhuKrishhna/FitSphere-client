@@ -11,29 +11,27 @@ const ChatHeader = () => {
   const onlineUsers = useSelector(selectOnlineUsers)
   const dispatch = useDispatch();
   const [typingUser, setTypingUser] = useState<string | null>(null);
-    useEffect(() => {
-      const socket = getSocket();
-    
-      if (!socket) {
-        console.error("Socket not available in chat header.");
-        return;
-      }
-    
-      socket.on("typing", ({ senderId }) => {
-        console.log(`User ${senderId} is typing...`);
-        setTypingUser(senderId);
-      });
-    
-      socket.on("stop_typing", ({ senderId }) => {
-        console.log(`User ${senderId} stopped typing.`);
-        setTypingUser(null);
-      });
-    
-      return () => {
-        socket.off("typing");
-        socket.off("stop_typing");
-      };
-    }, []);
+  useEffect(() => {
+    const socket = getSocket();
+
+    if (!socket) {
+      console.error("Socket not available in chat header.");
+      return;
+    }
+
+    socket.on("typing", ({ senderId }) => {
+      setTypingUser(senderId);
+    });
+
+    socket.on("stop_typing", () => {
+      setTypingUser(null);
+    });
+
+    return () => {
+      socket.off("typing");
+      socket.off("stop_typing");
+    };
+  }, []);
   return (
     <div className="p-2.5 border-b border-base-300">
       <div className="flex items-center justify-between">
@@ -44,7 +42,7 @@ const ChatHeader = () => {
           <div>
             <h3 className="font-medium text-white">{selectedUser?.doctorDetails.name}</h3>
             <p className="text-sm text-base-content/70">
-            {typingUser ? "Typing..." :onlineUsers.includes(selectedUser!.doctorDetails!._id) ? "Online" : "Offline"}
+              {typingUser ? "Typing..." : onlineUsers.includes(selectedUser!.doctorDetails!._id) ? "Online" : "Offline"}
             </p>
           </div>
         </div>

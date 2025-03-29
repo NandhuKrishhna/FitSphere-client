@@ -1,24 +1,24 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../redux/slice/Auth_Slice";
-import Header from "@/components/App/Header";
-import Navigation from "@/components/App/Navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  useGetUserHealthDetailsQuery, 
-  useGetWeightProgressQuery 
-} from "@/redux/api/caloriesApi";
-import ProfileHeader from "@/components/App/ProfileHeader";
-import OverviewTab from "@/components/App/ProfileOverviewTab";
-import SecurityTab from "@/components/App/SecurityTab";
-import UserHealthDetailsTab from "@/components/App/UserHealthTab";
+import type React from "react"
+import { useSelector } from "react-redux"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
+import { useGetUserHealthDetailsQuery, useGetWeightProgressQuery } from "@/redux/api/caloriesApi"
+import { useGetSubscriptionDetailsQuery } from "@/redux/api/appApi"
+import Header from "@/components/App/Header"
+import Navigation from "@/components/App/Navigation"
+import ProfileHeader from "@/components/App/ProfileHeader"
+import OverviewTab from "@/components/App/ProfileOverviewTab"
+import UserHealthDetailsTab from "@/components/App/UserHealthTab"
+import SecurityTab from "@/components/App/SecurityTab"
+
 
 const UserProfilePage: React.FC = () => {
-  const auth = useSelector(selectCurrentUser);
-  
+  const auth = useSelector(selectCurrentUser)
+
   // Queries
-  const { data: healthData, isLoading: healthLoading } = useGetUserHealthDetailsQuery({});
-  const { data: weightData, isLoading: weightLoading } = useGetWeightProgressQuery({});
+  const { data: healthData, isLoading: healthLoading } = useGetUserHealthDetailsQuery({})
+  const { data: weightData, isLoading: weightLoading } = useGetWeightProgressQuery({})
+  const { data: subscriptionDetails, isLoading: subscriptionLoading } = useGetSubscriptionDetailsQuery({})
 
   return (
     <div className="min-h-screen bg-black">
@@ -26,11 +26,7 @@ const UserProfilePage: React.FC = () => {
       <Navigation />
 
       <div className="container mx-auto px-4 py-8">
-        <ProfileHeader 
-          name={auth?.name}
-          email={auth?.email}
-          profilePicture={auth?.profilePicture}
-        />
+        <ProfileHeader name={auth?.name} email={auth?.email} profilePicture={auth?.profilePicture} />
 
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-8 bg-zinc-800 text-indigo-400">
@@ -40,29 +36,31 @@ const UserProfilePage: React.FC = () => {
           </TabsList>
 
           <TabsContent value="overview">
-            <OverviewTab 
+            <OverviewTab
               auth={auth}
               healthData={healthData}
               healthLoading={healthLoading}
               weightData={weightData}
               weightLoading={weightLoading}
+              subscriptionDetails={subscriptionDetails?.response}
+              subscriptionLoading={subscriptionLoading}
             />
           </TabsContent>
 
           <TabsContent value="health">
-            <UserHealthDetailsTab 
-              healthData={healthData}
-              healthLoading={healthLoading}
-            />
+            <UserHealthDetailsTab healthData={healthData} healthLoading={healthLoading} />
           </TabsContent>
-          
+          {/*
+            //TODO : for users login from google dont show the security tab
+           */}
           <TabsContent value="security">
             <SecurityTab />
           </TabsContent>
         </Tabs>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserProfilePage;
+export default UserProfilePage
+

@@ -24,7 +24,6 @@ const DoctorDashboardPage = () => {
     refetchOnMountOrArgChange: true,
     skip: false,
   });
-  // console.log("All slots : ", data);
   const slots: Slot[] = data?.response || [];
 
   return (

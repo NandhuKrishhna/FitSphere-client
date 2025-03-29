@@ -6,7 +6,6 @@ const allowedSignupRoutes = ["/age", "/gender", "/height", "/current-weight", "/
 const UserHealthProtectedRoute = () => {
   const location = useLocation();
   const signupInProgress = localStorage.getItem("signupInProgress");
-  console.log("Is signup in progress : ",signupInProgress)
 
   if (signupInProgress && !allowedSignupRoutes.includes(location.pathname)) {
     return <Navigate to="/age" replace />;

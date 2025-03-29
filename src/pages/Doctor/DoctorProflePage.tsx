@@ -1,6 +1,5 @@
-import {  useState } from "react"
+import { useState } from "react"
 import { useSelector } from "react-redux"
-import { useDoctorDetailsQuery } from "@/redux/api/doctorApi"
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 import DoctorProfile from "@/components/Doctor/doctor-profile"
 import ReviewsRatings from "@/components/Doctor/reviews-ratings"
@@ -8,13 +7,14 @@ import TotalEarnings from "@/components/Doctor/total-earnings"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import SecurityTab from "@/components/App/SecurityTab"
 import DoctorDetailsTab from "@/components/Doctor/Doctor-update-form"
+import { useDoctorProfileQuery } from "@/redux/api/doctorApi"
 
 
 export default function DoctorProfilePage() {
   const [selectedEarningsView, setSelectedEarningsView] = useState("Monthly")
   const user = useSelector(selectCurrentUser)
-  const { data: doctorDetails , isLoading} = useDoctorDetailsQuery({ doctorId: user?._id })
-  
+  const { data: doctorDetails, isLoading } = useDoctorProfileQuery({ doctorId: user?._id })
+
   return (
     <div className="min-h-screen bg-black to-purple-900 p-4 md:p-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">

@@ -4,10 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { useSelector } from "react-redux"
-import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 
-// Define the transaction interface based on the provided data structure
+
 interface Transaction {
   _id: string
   from: string
@@ -38,8 +36,8 @@ interface TransactionTableProps {
 
 export default function TransactionTable({ data }: TransactionTableProps) {
   // Default props for development/testing
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const transactions = data?.transactions || []
-  const userId = useSelector(selectCurrentUser)?._id
 
   // State for search, filters, and sorting
   const [searchTerm, setSearchTerm] = useState("")
@@ -54,7 +52,6 @@ export default function TransactionTable({ data }: TransactionTableProps) {
     direction: "descending",
   })
 
-  // Get unique payment types for filter dropdown
   const uniquePaymentTypes = useMemo(() => {
     const types = new Set<string>()
     transactions.forEach((transaction) => {
@@ -63,41 +60,47 @@ export default function TransactionTable({ data }: TransactionTableProps) {
     return Array.from(types)
   }, [transactions])
 
-  // Filter and sort transactions
+
   const filteredAndSortedTransactions = useMemo(() => {
-    // First, filter the transactions
+
     const filtered = transactions.filter((transaction) => {
-      // Search term filter (check multiple fields)
+
       const searchMatch =
         searchTerm === "" ||
         transaction.transactionId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         transaction.paymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
         transaction.amount.toString().includes(searchTerm)
 
-      // Type filter
+
       const typeMatch = typeFilter === "all" || transaction.type === typeFilter
 
-      // Status filter
+
       const statusMatch = statusFilter === "all" || transaction.status === statusFilter
 
-      // Payment type filter
       const paymentTypeMatch = paymentTypeFilter === "all" || transaction.paymentType === paymentTypeFilter
 
       return searchMatch && typeMatch && statusMatch && paymentTypeMatch
     })
 
-    // Then, sort the filtered transactions
-    if (sortConfig.key) {
+
+    if (sortConfig.key !== null) {
+      const key = sortConfig.key as keyof Transaction;
+
       filtered.sort((a, b) => {
-        if (a[sortConfig.key!] < b[sortConfig.key!]) {
-          return sortConfig.direction === "ascending" ? -1 : 1
+        const valueA = a[key] as string | number;
+        const valueB = b[key] as string | number;
+
+        if (valueA < valueB) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
         }
-        if (a[sortConfig.key!] > b[sortConfig.key!]) {
-          return sortConfig.direction === "ascending" ? 1 : -1
+        if (valueA > valueB) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
         }
-        return 0
-      })
+        return 0;
+      });
     }
+
+
 
     return filtered
   }, [transactions, searchTerm, typeFilter, statusFilter, paymentTypeFilter, sortConfig])
@@ -123,16 +126,7 @@ export default function TransactionTable({ data }: TransactionTableProps) {
     }).format(date)
   }
 
-  // Determine if transaction is incoming or outgoing relative to current user
-  const getTransactionDirection = (transaction: Transaction) => {
-    if (transaction.from === userId) {
-      return "outgoing"
-    } else if (transaction.to === userId) {
-      return "incoming"
-    } else {
-      return transaction.type
-    }
-  }
+
 
   return (
     <Card className="w-full bg-black text-white border-gray-800">
@@ -288,11 +282,10 @@ export default function TransactionTable({ data }: TransactionTableProps) {
                       <td className="px-4 py-3">
                         <Badge
                           variant={transaction.type === "credit" ? "default" : "secondary"}
-                          className={`${
-                            transaction.type === "credit"
-                              ? "bg-indigo-100 text-indigo-800 hover:bg-indigo-100"
-                              : "bg-red-400  text-black hover:bg-black hover:bg-opacity-10"
-                          }`}
+                          className={`${transaction.type === "credit"
+                            ? "bg-indigo-100 text-indigo-800 hover:bg-indigo-100"
+                            : "bg-red-400  text-black hover:bg-black hover:bg-opacity-10"
+                            }`}
                         >
                           {transaction.type}
                         </Badge>
@@ -309,11 +302,10 @@ export default function TransactionTable({ data }: TransactionTableProps) {
                       <td className="px-4 py-3">
                         <Badge
                           variant={transaction.status === "success" ? "outline" : "destructive"}
-                          className={`${
-                            transaction.status === "success"
-                              ? "bg-indigo-100 text-indigo-800 hover:bg-indigo-100 border-indigo-200"
-                              : "bg-red-100 text-red-800 hover:bg-red-100"
-                          }`}
+                          className={`${transaction.status === "success"
+                            ? "bg-indigo-100 text-indigo-800 hover:bg-indigo-100 border-indigo-200"
+                            : "bg-red-100 text-red-800 hover:bg-red-100"
+                            }`}
                         >
                           {transaction.status}
                         </Badge>

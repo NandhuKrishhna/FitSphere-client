@@ -1,11 +1,12 @@
 export interface IFoodItem {
-  quantity:string
+  quantity: string
   name: string;
   calories: number;
   protein?: number;
   carbs?: number;
   fats?: number;
   _id?: string;
+  unit?: number
 }
 
 export interface MealData {

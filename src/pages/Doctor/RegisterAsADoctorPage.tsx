@@ -5,6 +5,7 @@ import { useRegisterAsDoctorMutation } from "../../redux/api/doctorApi";
 import { professionalSchema } from "../../types/Validations/registerAsDoctorForm";
 import RegistrationSuccessPopup from "../../components/RegistrationSuccessPop";
 import { Camera } from "lucide-react";
+import toast from "react-hot-toast";
 
 type ProfessionalDetails = z.infer<typeof professionalSchema>;
 
@@ -52,12 +53,26 @@ export default function ProfessionalDetailsForm() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const MAX_FILE_SIZE = 1 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(`File size should be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`, {
+        position: "top-right",
+        duration: 4000,
+      });
+      e.target.value = '';
+      return;
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
       const base64Image = reader.result as string;
       setSelectedImg(base64Image);
       setFormData((prev) => ({ ...prev, certificate: base64Image }));
+      toast.success("Certificate image uploaded successfully!", {
+        position: "top-right",
+        duration: 3000,
+      });
     };
   };
 
@@ -65,11 +80,9 @@ export default function ProfessionalDetailsForm() {
     e.preventDefault();
     try {
       professionalSchema.parse(formData);
-      console.log("Form data is valid:", formData);
       const userId = localStorage.getItem("userId");
       const doctorInfo = JSON.parse(localStorage.getItem("doctorInfo") || "{}");
-      const response = await registerAsDoctor({ formData, userId, doctorInfo }).unwrap();
-      console.log("Registration successful:", response);
+      await registerAsDoctor({ formData, userId, doctorInfo }).unwrap();
       setShowSuccess(true);
     } catch (error) {
       console.error("Submission failed:", error);

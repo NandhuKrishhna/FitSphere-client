@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { MessagesData, SelectedUser } from "@/types/ChatTypes";
+import { MessagesData, SelectedUser, Users } from "@/types/ChatTypes";
+
 
 interface SocketState {
   messages: MessagesData[];
-  users: string[];
+  users: Users[];
   selectedUser: SelectedUser | null;
   onlineUsers: string[];
   isConnected: boolean;
@@ -25,11 +26,16 @@ const socketSlice = createSlice({
     setOnlineUsers(state, action) {
       state.onlineUsers = action.payload;
     },
-    setUsers(state, action) {
-      state.users = action.payload;
+    setUsers: (state, action: PayloadAction<Users[]>) => {
+
+      const newUsers = action.payload.filter(
+        (newUser) => !state.users.some((existingUser) => existingUser.doctorDetails._id === newUser.doctorDetails._id)
+      );
+      state.users = [...state.users, ...newUsers];
     },
+
+
     setSelectedUser: (state, action: PayloadAction<SelectedUser | null>) => {
-      console.log("Selected User:", action.payload);
       state.selectedUser = action.payload;
     },
     setConnectionStatus: (state, action: PayloadAction<boolean>) => {
@@ -42,9 +48,6 @@ const socketSlice = createSlice({
     addMessages: (state, action: PayloadAction<MessagesData>) => {
       state.messages.push(action.payload);
     },
-    addUserToSidebar: (state, action: PayloadAction<string[]>) => {
-      state.users.push(...action.payload);
-    },
   },
 });
 
@@ -56,7 +59,6 @@ export const {
   setMessages,
   resetSocketState,
   addMessages,
-  addUserToSidebar,
 } = socketSlice.actions;
 export default socketSlice.reducer;
 // Selectors

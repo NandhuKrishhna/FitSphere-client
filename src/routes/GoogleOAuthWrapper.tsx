@@ -6,7 +6,6 @@ interface GoogleOAuthWrapperProps {
   children: ReactNode;
 }
 const GOOGLE_OAUTH_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-console.log(GOOGLE_OAUTH_CLIENT_ID)
 const GoogleOAuthWrapper: React.FC<GoogleOAuthWrapperProps> = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_OAUTH_CLIENT_ID}>

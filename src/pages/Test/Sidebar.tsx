@@ -9,10 +9,7 @@ import { AvatarDemo } from "@/components/App/Avatar";
 import { SelectedUser } from "@/types/ChatTypes";
 
 const ChatSideBar = () => {
-  const { data, isLoading, refetch } = useGetSidebarUsersQuery({
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
-  });
+  const { data, isLoading, refetch } = useGetSidebarUsersQuery({});
   const dispatch = useDispatch();
   const onlineUsers = useSelector(selectOnlineUsers);
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
@@ -20,13 +17,9 @@ const ChatSideBar = () => {
   const socket = getSocket();
   const selectedUserId = useSelector(selectSelectedUser)?.doctorDetails?._id;
 
-  useEffect(() => {
-    refetch();
-  }, []);
 
   useEffect(() => {
-    socket?.on("newMessage", (message) => {
-      console.log("New message received:", message);
+    socket?.on("newMessage", () => {
       refetch();
     });
 
@@ -34,6 +27,11 @@ const ChatSideBar = () => {
       socket?.off("newMessage");
     };
   }, [socket, refetch]);
+  useEffect(() => {
+    if (selectedUserId) {
+      refetch();
+    }
+  }, [selectedUserId]);
 
   const sortedUsers = data?.users ? [...data.users] : [];
 
@@ -46,16 +44,15 @@ const ChatSideBar = () => {
   }
   const filteredUsers = sortedUsers.filter((user) => {
     const meetsOnlineFilter = showOnlineOnly ? onlineUsers.includes(user.doctorDetails?._id) : true;
-    
-    const meetsSearchFilter = searchTerm 
+
+    const meetsSearchFilter = searchTerm
       ? user.doctorDetails?.name?.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
-    
+
     return meetsOnlineFilter && meetsSearchFilter;
   });
 
   if (isLoading) return <SidebarSkeleton />;
-  console.log(filteredUsers)
 
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
@@ -64,7 +61,7 @@ const ChatSideBar = () => {
           <Users className="size-6 text-indigo-400" />
           <span className="font-medium text-indigo-400 hidden lg:block">Contacts</span>
         </div>
-        
+
         {/* Search input - visible in both mobile and desktop */}
         <div className="mt-3 relative hidden lg:block">
           <div className="flex items-center w-full border border-base-300 rounded-md overflow-hidden">
@@ -80,7 +77,7 @@ const ChatSideBar = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Online filters - visible only on desktop */}
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
@@ -102,9 +99,8 @@ const ChatSideBar = () => {
             <button
               key={user?.doctorDetails?._id}
               onClick={() => dispatch(setSelectedUser(user))}
-              className={`w-full p-3 flex items-center justify-between gap-3 hover:bg-base-300 transition-colors ${
-                user.doctorDetails?._id === selectedUserId ? "bg-base-200" : ""
-              }`}
+              className={`w-full p-3 flex items-center justify-between gap-3 hover:bg-base-300 transition-colors ${user.doctorDetails?._id === selectedUserId ? "bg-base-200" : ""
+                }`}
             >
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -119,17 +115,6 @@ const ChatSideBar = () => {
                   <p className="text-sm text-zinc-400 truncate">{user.lastMessage?.slice(0, 30) || "No messages yet"}</p>
                 </div>
               </div>
-
-              {/* Time aligned to the right */}
-              <p className="hidden lg:block text-sm text-zinc-400 whitespace-nowrap">
-                {user?.updatedAt
-                  ? new Date(user.updatedAt).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })
-                  : "N/A"}
-              </p>
             </button>
           ))
         ) : (

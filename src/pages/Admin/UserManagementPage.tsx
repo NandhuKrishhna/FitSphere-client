@@ -15,7 +15,7 @@ import useBlockUnblockUser from "@/hooks/Admin/Block_UnBlockUserHook"
 
 // useBlockUsersMutation,
 //   useUnblockUsersMutation,
-const UserStatusBadge = ({ status }:{status : string}) => {
+const UserStatusBadge = ({ status }: { status: string }) => {
   const getStatusColor = () => {
     switch (status) {
       case "active":
@@ -37,7 +37,7 @@ const UserStatusBadge = ({ status }:{status : string}) => {
 }
 
 // User Role Badge component
-const UserRoleBadge = ({ role }:{role : string}) => {
+const UserRoleBadge = ({ role }: { role: string }) => {
   const getRoleColor = () => {
     switch (role) {
       case "admin":
@@ -92,13 +92,12 @@ export default function UserManagement() {
 
   if (searchTerm) queryParams.search = searchTerm
   if (statusFilter !== "all") queryParams.status = statusFilter
-if (verificationFilter !== "all") queryParams.isVerfied = verificationFilter === "verfied" ? "true" : "false"
+  if (verificationFilter !== "all") queryParams.isVerfied = verificationFilter === "verfied" ? "true" : "false"
 
   const { data, isLoading, error } = useGetAllUsersQuery(queryParams);
-  const {handleBlock ,handleUnblock , isblocking , isunblocking} = useBlockUnblockUser();
+  const { handleBlock, handleUnblock, isblocking, isunblocking } = useBlockUnblockUser();
 
   const users = data?.users?.users || []
-  console.log(users)
   const totalUsers = data?.users?.totalUsers || 0
   const totalPages = data?.users?.totalPages || 1
   const verifiedUsers = data?.users?.verifiedUsers || 0
@@ -307,7 +306,7 @@ if (verificationFilter !== "all") queryParams.isVerfied = verificationFilter ===
                     </thead>
                     <tbody>
                       {users.length > 0 ? (
-                        users.map((user : UserInfo) => (
+                        users.map((user: UserInfo) => (
                           <tr key={user._id} className="border-t border-gray-800 hover:bg-gray-800 transition-colors">
                             <td className="px-4 py-3 text-sm text-gray-300">
                               <div className="flex items-center">
@@ -379,40 +378,40 @@ if (verificationFilter !== "all") queryParams.isVerfied = verificationFilter ===
                               <UserStatusBadge status={user.status} />
                             </td>
                             <td className="px-4 py-3 text-center">
-                            <Button
-                               variant="ghost"
-                               size="sm"
-                               onClick={() =>
-                                 user.status === "active"
-                                   ? handleBlock(user._id, user.role)
-                                   : handleUnblock(user._id, user.role)
-                               }
-                               className={
-                                 user.status === "active"
-                                   ? "text-red-400 hover:text-red-300 hover:bg-gray-700"
-                                   : "text-green-400 hover:text-green-300 hover:bg-gray-700"
-                               }
-                             >
-                               {user.status === "active" ? (
-                                 isblocking[user._id] ? (
-                                   <Loader className="animate-spin" size={15} />
-                                 ) : (
-                                   <>
-                                     <Ban className="h-4 w-4 mr-1" />
-                                     Block
-                                   </>
-                                 )
-                               ) : isunblocking[user._id] ? (
-                                 <Loader className="animate-spin" size={15} />
-                               ) : (
-                                 <>
-                                   <UserCheck className="h-4 w-4 mr-1" />
-                                   Unblock
-                                 </>
-                               )}
-                             </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  user.status === "active"
+                                    ? handleBlock(user._id, user.role)
+                                    : handleUnblock(user._id, user.role)
+                                }
+                                className={
+                                  user.status === "active"
+                                    ? "text-red-400 hover:text-red-300 hover:bg-gray-700"
+                                    : "text-green-400 hover:text-green-300 hover:bg-gray-700"
+                                }
+                              >
+                                {user.status === "active" ? (
+                                  isblocking[user._id] ? (
+                                    <Loader className="animate-spin" size={15} />
+                                  ) : (
+                                    <>
+                                      <Ban className="h-4 w-4 mr-1" />
+                                      Block
+                                    </>
+                                  )
+                                ) : isunblocking[user._id] ? (
+                                  <Loader className="animate-spin" size={15} />
+                                ) : (
+                                  <>
+                                    <UserCheck className="h-4 w-4 mr-1" />
+                                    Unblock
+                                  </>
+                                )}
+                              </Button>
 
-                              
+
                             </td>
                           </tr>
                         ))
