@@ -25,7 +25,6 @@ const GlobalSocketListener = () => {
         if (!socket || !currentUser?._id) return;
 
         const handleNewMessage = (data: NotificationDateType) => {
-            console.log("Notification received:", data);
             addToast({
                 type: "success",
                 message: `You have a new message from ${data.data.name}`,
@@ -33,7 +32,6 @@ const GlobalSocketListener = () => {
             });
         };
         const handleNewMessageNotification = (data: NotificationType) => {
-            console.log("Notification received:", data.message);
             addToast({
                 type: "info",
                 message: data.message,
@@ -42,7 +40,6 @@ const GlobalSocketListener = () => {
             refetch()
         }
         const handleSuspend = (data: NotificationType) => {
-            console.log("Notification received:", data.message);
             addToast({
                 type: "warning",
                 message: data.message,
