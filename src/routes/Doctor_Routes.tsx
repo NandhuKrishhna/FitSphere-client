@@ -21,10 +21,12 @@ import TransactionsPage from "@/pages/Users/TransactionPage";
 import WalletPage from "@/pages/Users/WalletPage";
 import GoogleOAuthWrapper from "./GoogleOAuthWrapper";
 import PublicRoute from "./PublicRoute";
+import NotFound from "@/pages/Not-Found";
 const Doctor_Routes = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        <Route path="*" element={<NotFound />} />
         <Route element={<PublicRoute />}>
           <Route path="/signup" element={<GoogleOAuthWrapper><DoctorSignUp /></GoogleOAuthWrapper>} />
           <Route path="/verify/otp" element={<DoctorOtpVerification />} />
