@@ -31,7 +31,7 @@ export const caloriesApi = apiSlice.injectEndpoints({
         url: "/app/get-userHealthDetails",
         method: "GET",
       }),
-      providesTags :["userHealthDetails"]
+      providesTags: ["userHealthDetails"]
     }),
 
     getUserFoodLogsDetails: builder.query({
@@ -49,7 +49,7 @@ export const caloriesApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    
+
     addFoodLog: builder.mutation({
       query: (data) => ({
         url: "/app/add-foodlog",
@@ -66,7 +66,7 @@ export const caloriesApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["foodlogs"],
     }),
-    editFood : builder.mutation({
+    editFood: builder.mutation({
       query: (data) => ({
         url: "/app/edit-food",
         method: "PATCH",
@@ -74,19 +74,19 @@ export const caloriesApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["foodlogs"],
     }),
-    getWeightProgress : builder.query({
-      query : () => ({
-        url:"/app/get-weight-progress",
-        method :"GET"
+    getWeightProgress: builder.query({
+      query: () => ({
+        url: "/app/get-weight-progress",
+        method: "GET"
       })
     }),
     updateUserHealthDetails: builder.mutation({
-      query : (data) => ({
-        url :"/app/update-userdetails",
-        method :"PATCH",
-        body :data
+      query: (data) => ({
+        url: "/app/update-userdetails",
+        method: "PATCH",
+        body: data
       }),
-      invalidatesTags :["userHealthDetails"]
+      invalidatesTags: ["userHealthDetails"]
     }),
   }),
 });

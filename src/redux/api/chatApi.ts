@@ -8,15 +8,15 @@ export const chatApi = apiSlice.injectEndpoints({
       query: ({ receiverId }) => {
         const role = getCurrentUserRole();
         const baseUrl = role === "doctor" ? DoctorURL.GET_MESSAGES : AppURL.GET_MESSAGES;
-        
+
         return {
-          url: `${baseUrl}?receiverId=${receiverId}`, 
+          url: `${baseUrl}?receiverId=${receiverId}`,
           method: "GET",
         };
       },
       providesTags: ["chatsidebar", "chats",],
     }),
-    
+
 
     sendMessages: builder.mutation({
       query: (data) => {
@@ -28,7 +28,7 @@ export const chatApi = apiSlice.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["chatsidebar", "chats" , "notification"],
+      invalidatesTags: ["chatsidebar", "chats", "notification"],
     }),
 
     getSidebarUsers: builder.query({
@@ -50,20 +50,21 @@ export const chatApi = apiSlice.injectEndpoints({
         }
       },
     }),
-    createConversation : builder.mutation({
+    createConversation: builder.mutation({
       query: (data) => ({
         url: "/app/create-conversation",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["chatsidebar"],
     }),
 
   }),
-  
+
 });
 
-export const { useGetMessagesQuery, 
+export const { useGetMessagesQuery,
   useSendMessagesMutation,
-   useGetSidebarUsersQuery,
-   useCreateConversationMutation
-   } = chatApi;
+  useGetSidebarUsersQuery,
+  useCreateConversationMutation
+} = chatApi;

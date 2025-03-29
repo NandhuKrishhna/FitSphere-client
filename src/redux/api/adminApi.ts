@@ -11,21 +11,21 @@ export const adminApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-   getAllUsers : builder.query({
-           query: (params: UserQueryParams) => {
-                 const { ...queryParams } = params;
-                 const queryString = Object.entries(queryParams)
-                   .filter(([value]) => value !== undefined && value !== "")
-                   .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
-                   .join("&");
-         
-                 return {
-                   url: `/admin/users${queryString ? `?${queryString}` : ""}`,
-                   method: "GET",
-                 };
-               },
-               providesTags: ["users"],
-       }),
+    getAllUsers: builder.query({
+      query: (params: UserQueryParams) => {
+        const { ...queryParams } = params;
+        const queryString = Object.entries(queryParams)
+          .filter(([value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
+
+        return {
+          url: `/admin/users${queryString ? `?${queryString}` : ""}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["users"],
+    }),
     getAllDoctors: builder.query({
       query: (params: UserQueryParams) => {
         const { ...queryParams } = params;
@@ -82,7 +82,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["users" , "doctors"],
+      invalidatesTags: ["users", "doctors"],
     }),
     blockUsers: builder.mutation({
       query: (data) => ({
@@ -90,10 +90,47 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["users" ,"doctors"],
+      invalidatesTags: ["users", "doctors"],
     }),
+    addSubcription: builder.mutation({
+      query: (data) => ({
+        url: "/admin/create-subcription-plan",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["subcription"],
+    }),
+    editSubcription: builder.mutation({
+      query: (data) => ({
+        url: "/admin/edit-subcription-plan",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["subcription"],
+    }),
+    deleteSubcription: builder.mutation({
+      query: (id) => ({
+        url: `/admin/delete-subscription-plan/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["subcription"],
+    }),
+    getAllSubcription: builder.query({
+      query: () => ({
+        url: "/admin/get-subcription-plan",
+        method: "GET",
+      }),
+      providesTags: ["subcription"],
+    }),
+    adminDashboard: builder.query({
+      query: () => ({
+        url: "/admin/dashboard",
+        method: "GET",
+      }),
+    }),
+
   }),
-  overrideExisting: false,
+
 });
 
 export const {
@@ -107,4 +144,9 @@ export const {
   useDoctorManagementQuery,
   useBlockUsersMutation,
   useUnblockUsersMutation,
+  useAddSubcriptionMutation,
+  useEditSubcriptionMutation,
+  useDeleteSubcriptionMutation,
+  useGetAllSubcriptionQuery,
+  useAdminDashboardQuery
 } = adminApi;

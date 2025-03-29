@@ -102,13 +102,12 @@ export const doctorApi = apiSlice.injectEndpoints({
       }),
     }),
     getAllReviewsAndRatings: builder.query({
-      query: (data) => ({
-        url: "/doctor/get-reviews",
-        method: "POST",
-        body: data,
+      query: (doctorId) => ({
+        url: `/doctor/get-reviews/${doctorId}`,
+        method: "GET",
       }),
     }),
-    doctorDetails: builder.query({
+    doctorProfile: builder.query({
       query: (data) => ({
         url: "/doctor/profile",
         method: "POST",
@@ -124,10 +123,10 @@ export const doctorApi = apiSlice.injectEndpoints({
     }),
 
     updateDoctorDetails: builder.mutation({
-      query :(data) => ({
-        url : "/doctor/update-details",
-        method : "PATCH",
-        body : data
+      query: (data) => ({
+        url: "/doctor/update-details",
+        method: "PATCH",
+        body: data
       }),
       invalidatesTags: ["doctorDetails"],
     }),
@@ -148,7 +147,7 @@ export const {
   useVerifyResetPasswordCodeMutation,
   useSetNewPasswordForDoctorMutation,
   useGetAllReviewsAndRatingsQuery,
-  useDoctorDetailsQuery,
+  useDoctorProfileQuery,
   useAllDoctorDetailsQuery,
   useUpdateDoctorDetailsMutation,
 } = doctorApi;

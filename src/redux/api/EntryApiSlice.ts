@@ -49,6 +49,9 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       api.dispatch(setLogout());
     }
   }
+  if (error?.status === 401 && error?.data?.errorCode === "AccountSuspended") {
+    api.dispatch(setLogout());
+  }
 
   return result;
 };
@@ -69,7 +72,10 @@ export const apiSlice = createApi({
     "reviews",
     "ratings",
     "userHealthDetails",
-    "doctorDetails"
+    "doctorDetails",
+    "subcription",
+    "transactions",
+    "subscriptionPlan",
   ],
   endpoints: () => ({}),
 });

@@ -3,6 +3,7 @@ import { apiSlice } from "./EntryApiSlice";
 import { AppointmentQueryParams } from "@/types/appointmentList";
 import { WalletTransactionQuery } from "@/types/wallet.types";
 import { Roles } from "@/utils/Enums";
+import { NotificaitonQueryParams } from "@/types/NotificationTypes";
 export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     displayAllDoctors: builder.query({
@@ -66,7 +67,7 @@ export const appApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["appointments", "slots","notification"],
+      invalidatesTags: ["appointments", "slots", "notification", "transactions"],
     }),
     getAppointmentDetails: builder.query({
       query: (params: AppointmentQueryParams) => {
@@ -77,27 +78,26 @@ export const appApi = apiSlice.injectEndpoints({
           .join("&");
 
         return {
-          url: `/app/get-appointments${queryString ? `?${queryString}` : ""}`,
+          url: `/app-common/get-appointments${queryString ? `?${queryString}` : ""}`,
           method: "GET",
         };
       },
       providesTags: ["appointments"],
-}),
+    }),
     cancelAppointment: builder.mutation({
       query: (data) => ({
         url: "/app/cancel/appointments",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["appointments", "wallet"],
+      invalidatesTags: ["appointments", "wallet",],
     }),
     getWallet: builder.query({
       query: ({ userId, role, ...queryParams }: { userId?: string; role?: string } & WalletTransactionQuery) => {
-        console.log("Role from api",role)
         const queryString = Object.entries(queryParams)
-        .filter(([, value]) => value !== undefined && value !== "")
-        .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
-        .join("&");
+          .filter(([, value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
         return {
           url: `${role === Roles.USER ? `/app/wallet/${userId}` : `/doctor/wallet/${userId}`}${queryString ? `?${queryString}` : ""}`,
           method: "GET",
@@ -105,14 +105,14 @@ export const appApi = apiSlice.injectEndpoints({
       },
       providesTags: ["wallet"],
     }),
-    
+
     handleFailedPayment: builder.mutation({
       query: (data) => ({
         url: "/app/payment-failure",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["appointments", "slots"],
+      invalidatesTags: ["appointments", "slots", "transactions"],
     }),
     walletPayment: builder.mutation({
       query: (data) => ({
@@ -120,7 +120,7 @@ export const appApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["appointments", "wallet","notification","slots"],
+      invalidatesTags: ["appointments", "wallet", "notification", "slots"],
     }),
     addReview: builder.mutation({
       query: (data) => ({
@@ -132,79 +132,120 @@ export const appApi = apiSlice.injectEndpoints({
     }),
     getReviews: builder.query({
       query: (doctorId) => ({
-        url: `/app/get-reviews/${doctorId}`,  
+        url: `/app-common/get-reviews/${doctorId}`,
         method: "GET",
       }),
       providesTags: ["reviews"],
     }),
-    
+
     getAllRatings: builder.query({
       query: () => ({
-        url: "/app/get-all-ratings",
+        url: "/app-common/get-all-ratings",
         method: "GET",
       }),
       providesTags: ["ratings"],
     }),
-    getAllNotification : builder.query({
-      query: () => ({
-        url: "/app/get-all-notification",
-        method: "GET",
-      }),
-      providesTags:["notification"]
+    getAllNotification: builder.query({
+      query: (params: NotificaitonQueryParams) => {
+        const { ...queryParams } = params;
+        const queryString = Object.entries(queryParams)
+          .filter(([value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
+
+        return {
+          url: `/app-common/get-all-notification${queryString ? `?${queryString}` : ""}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["notification"]
     }),
-     markAsRead : builder.mutation({
+    markAsRead: builder.mutation({
       query: (data) => ({
-        url: "/app/mark-as-read",
+        url: "/app-common/mark-as-read",
         method: "POST",
-        body:data
+        body: data
       }),
-      invalidatesTags:["notification"]
-     }),
-     getAllTransactions : builder.query({
+      invalidatesTags: ["notification"]
+    }),
+    getAllTransactions: builder.query({
       query: () => ({
-        url: "/app/get-all-transactions",
+        url: "/app-common/get-all-transactions",
         method: "GET",
       }),
-     }),
-     editReview : builder.mutation({
+    }),
+    editReview: builder.mutation({
       query: (data) => ({
         url: "/app/edit-review",
         method: "PATCH",
-        body:data
+        body: data
       }),
-      invalidatesTags:["reviews"]
-     }),
-     deleteReviews : builder.mutation({
+      invalidatesTags: ["reviews"]
+    }),
+    deleteReviews: builder.mutation({
       query: (data) => ({
         url: "/app/delete-review",
         method: "DELETE",
-        body:data
+        body: data
       }),
-      invalidatesTags:["reviews"]
-     }),
-     getTransactions : builder.query({
-         query: (params: TransactionQueryParams) => {
-               const { ...queryParams } = params;
-               const queryString = Object.entries(queryParams)
-                 .filter(([value]) => value !== undefined && value !== "")
-                 .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
-                 .join("&");
-       
-               return {
-                 url: `/app/get-transaction-history${queryString ? `?${queryString}` : ""}`,
-                 method: "GET",
-               };
-             },
-             providesTags: ["appointments"],
-     }),
-     updatePassword : builder.mutation({
+      invalidatesTags: ["reviews"]
+    }),
+    getTransactions: builder.query({
+      query: (params: TransactionQueryParams) => {
+        const { ...queryParams } = params;
+        const queryString = Object.entries(queryParams)
+          .filter(([value]) => value !== undefined && value !== "")
+          .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+          .join("&");
+
+        return {
+          url: `/app-common/get-transaction-history${queryString ? `?${queryString}` : ""}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["transactions"],
+    }),
+    updatePassword: builder.mutation({
       query: (data) => ({
-        url: "/app/update-password",
+        url: "/app-common/update-password",
         method: "PATCH",
-        body:data
+        body: data
       }),
+
+    }),
+    getConversation: builder.query({
+      query: (receiverId) => ({
+        url: `/app/get-conversation`,
+        method: "GET",
+        params: { receiverId },
+      }),
+    }),
+
+    getAllSubscriptionPlans: builder.query({
+      query: () => ({
+        url: "/app/get-all-subscription-plans",
+        method: "GET",
+      }),
+
+    }),
+
+    purchaseSubscription: builder.mutation({
+      query: (data) => ({
+        url: "/app/buy-subscription",
+        method: "POST",
+        body: data
+      }),
+      invalidatesTags: ["transactions", "subscriptionPlan"],
+    }),
+
+    getSubscriptionDetails: builder.query({
+      query: () => ({
+        url: "/app/get-subscription-details",
+        method: "GET",
+      }),
+      providesTags: ["subscriptionPlan"],
+    }),
   }),
-}),
 });
 
 export const {
@@ -228,6 +269,10 @@ export const {
   useEditReviewMutation,
   useDeleteReviewsMutation,
   useGetTransactionsQuery,
-  useUpdatePasswordMutation
+  useUpdatePasswordMutation,
+  useGetConversationQuery,
+  useGetAllSubscriptionPlansQuery,
+  usePurchaseSubscriptionMutation,
+  useGetSubscriptionDetailsQuery
 }
- = appApi;
+  = appApi;
