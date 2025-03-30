@@ -19,7 +19,7 @@ type CustomError = FetchBaseQueryError & {
 
 // Define base query
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api",
+  baseUrl: `${import.meta.env.VITE_SOCKET_URL}/api`,
   credentials: "include",
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("accessToken");

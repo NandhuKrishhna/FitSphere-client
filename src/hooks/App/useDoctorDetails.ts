@@ -10,7 +10,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import toast from "react-hot-toast";
-import { Order, RazorpayErrorResponse, RazorpayResponse } from "../../types/Payments";
+import { Order, RazorpayResponse } from "../../types/Payments";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useNavigate } from "react-router-dom";
 import { Slot } from "../../components/App/SlotCalender";

@@ -9,7 +9,7 @@ const useGoogleLoginHook = () => {
     const [triggerGoogleAuthLogin] = useLazyGoogleAuthLoginQuery();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const responseGoogle = async (authResult) => {
+    const responseGoogle = async (authResult: any) => {
         const { code } = authResult;
         try {
             if (!code) throw new Error("No auth code received from Google.");

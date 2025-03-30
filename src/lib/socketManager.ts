@@ -8,7 +8,7 @@ let socket: Socket | null = null;
 export const connectSocket = (userId: string, dispatch: AppDispatch) => {
   if (socket?.connected) return;
 
-  socket = io("http://localhost:5000", {
+  socket = io(import.meta.env.VITE_SOCKET_URL, {
     query: { userId },
     reconnection: true,
     reconnectionAttempts: 5,

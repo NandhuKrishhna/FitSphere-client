@@ -1,4 +1,4 @@
-import { Delete, Loader, Trash2 } from "lucide-react";
+import { Loader, Trash2 } from "lucide-react";
 import { Slot } from "../../types/Slot";
 import { useCancelSlotMutation } from "../../redux/api/doctorApi";
 import ConfirmDialog from "./AlertConfirmation";
@@ -79,7 +79,7 @@ const SlotItem = ({ slot }: SlotItemProps) => {
           color="bg-red-600"
           trigger={
             <button className="text-red-400 hover:text-red-300 transition" disabled={isCancelLoading}>
-             {isCancelLoading ? <Loader className="animate-spin" size={14}/> : <Trash2 size={20} />}
+              {isCancelLoading ? <Loader className="animate-spin" size={14} /> : <Trash2 size={20} />}
             </button>
           }
         />
