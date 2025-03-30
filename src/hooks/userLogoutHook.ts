@@ -19,6 +19,7 @@ export const useLogout = () => {
       dispatch(resetSocketState());
       dispatch(resetAppState());
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("signupInProgress");
       toast.success("Logout Successfull");
     } catch (error) {
       console.log(error);

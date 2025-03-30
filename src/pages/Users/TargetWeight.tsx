@@ -6,13 +6,12 @@ import toast from "react-hot-toast";
 
 export default function TargetWeightSelector() {
   const navigate = useNavigate();
-  const { value: currentWeight } = useSelectorState<number>("selectedWeight", 70);
+  const { value: currentWeight } = useSelectorState<number>("weight", 70);
   const { value: targetWeight, setValue: setTargetWeight } = useSelectorState<number>("targetWeight", currentWeight);
 
   const handleNextPage = () => {
-    const minHealthyWeight = currentWeight * 0.8;
-    const maxHealthyWeight = currentWeight * 1.3;
-
+    const minHealthyWeight = Math.round(currentWeight * 0.8);
+    const maxHealthyWeight = Math.round(currentWeight * 1.3);
     if (targetWeight < minHealthyWeight) {
       toast.error("This target weight is too low and may be unhealthy!");
     } else if (targetWeight > maxHealthyWeight) {
@@ -21,6 +20,8 @@ export default function TargetWeightSelector() {
       navigate("/activity-level");
     }
   };
+
+
 
   return (
     <PageLayout

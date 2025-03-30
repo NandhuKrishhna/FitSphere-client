@@ -3,14 +3,17 @@ import { useNavigate } from "react-router-dom";
 import OptionSelector from "@/components/App/OptionSelector";
 import PageLayout from "@/components/App/UserDetailsPageLayout";
 import useUserHealthDetails from "@/hooks/App/useUpdateUserHealthDetails";
+import { connectSocket } from "@/lib/socketManager";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 
 type WeekOption = "1" | "2" | "3" | "4";
 
 export default function WeeksGoalSelector() {
   const navigate = useNavigate();
   const { onSubmit, isLoading } = useUserHealthDetails();
-
-  // Get the initial value from localStorage
+  const user = useSelector(selectCurrentUser);
+  const dispatch = useDispatch()
   const [selectedWeeks, setSelectedWeeks] = useState<WeekOption | null>(
     (localStorage.getItem("weeksToGoal") as WeekOption) || null
   );
@@ -33,6 +36,9 @@ export default function WeeksGoalSelector() {
       localStorage.removeItem("activityLevel");
       localStorage.removeItem("targetWeight");
       localStorage.removeItem("weeksToGoal");
+      if (user) {
+        connectSocket(user._id!, dispatch)
+      }
       navigate("/home");
     }
   };
