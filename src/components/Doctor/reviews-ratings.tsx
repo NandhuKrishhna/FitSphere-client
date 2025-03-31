@@ -165,7 +165,9 @@ function ReviewsSkeleton() {
                 <Skeleton className="h-4 w-24 bg-white/20" />
                 <Skeleton className="h-3 w-20 bg-white/20" />
               </div>
-              <Skeleton className="h-3 w-full mt-2 bg-white/20" />
+              <span className="text-sm text-gray-400">
+                <Skeleton className="h-3 w-full mt-2 bg-white/20" />
+              </span>
               <Skeleton className="h-3 w-3/4 mt-1 bg-white/20" />
               <div className="flex mt-2 gap-1">
                 {[...Array(5)].map((_, i) => (

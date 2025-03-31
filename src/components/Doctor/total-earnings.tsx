@@ -86,7 +86,7 @@ export default function TotalEarnings({ selectedView, onViewChange }: TotalEarni
             <Wallet className="h-7 w-7 text-white" />
           </div>
           <div>
-            <p className="text-4xl font-bold text-gray-800 dark:text-white">
+            <div className="text-4xl font-bold text-gray-800 dark:text-white">
               {isLoading ? (
                 <Skeleton className="h-10 w-32" />
               ) : (
@@ -95,7 +95,7 @@ export default function TotalEarnings({ selectedView, onViewChange }: TotalEarni
                   <span className="text-lg font-semibold text-gray-500 dark:text-gray-400">INR</span>
                 </>
               )}
-            </p>
+            </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Current Balance</p>
           </div>
         </div>
