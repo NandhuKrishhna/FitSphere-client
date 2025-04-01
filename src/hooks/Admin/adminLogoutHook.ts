@@ -15,6 +15,7 @@ export const useAdminLogout = () => {
         e.preventDefault()
         try {
             await adminLogin({}).unwrap()
+            localStorage.removeItem("accessToken");
             dispatch(setLogout())
             toast.success("Logout Successfull")
         } catch (error) {
