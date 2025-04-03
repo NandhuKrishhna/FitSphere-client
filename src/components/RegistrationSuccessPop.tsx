@@ -1,22 +1,21 @@
 import { useEffect } from "react"
 import { CheckCircle2, X } from "lucide-react"
 import { Card } from "./ui/card"
-import { useNavigate } from "react-router-dom" // Import useNavigate
+import { useNavigate } from "react-router-dom"
 
-interface RegistrationSuccessPopupProps {
+export interface RegistrationSuccessPopupProps {
   isOpen: boolean
   onClose: () => void
 }
 
 export default function RegistrationSuccessPopup({ isOpen, onClose }: RegistrationSuccessPopupProps) {
-  const navigate = useNavigate() // Initialize useNavigate
+  const navigate = useNavigate()
 
-  // Auto-close popup after 5 seconds
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose()
-        navigate("/") // Navigate to the "/" page when closing
+        navigate("/")
       }, 5000)
       return () => clearTimeout(timer)
     }
@@ -27,16 +26,16 @@ export default function RegistrationSuccessPopup({ isOpen, onClose }: Registrati
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm"
-      onClick={(e) => e.stopPropagation()} // Prevent click from closing the popup
+      onClick={(e) => e.stopPropagation()}
     >
       <Card
         className="w-full max-w-md bg-[#E6E6FA] p-6 rounded-3xl space-y-4"
-        onClick={(e) => e.stopPropagation()} // Prevent card click from closing
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Icon */}
-        <div className="absolute top-4 right-4 cursor-pointer" onClick={() => { 
+
+        <div className="absolute top-4 right-4 cursor-pointer" onClick={() => {
           onClose()
-          navigate("/") // Navigate to the "/" page when closing
+          navigate("/")
         }}>
           <X className="w-6 h-6 text-gray-600 hover:text-gray-900" />
         </div>
