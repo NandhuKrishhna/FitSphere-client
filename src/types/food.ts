@@ -6,7 +6,6 @@ export interface IFoodItem {
   carbs?: number;
   fats?: number;
   _id?: string;
-  unit?: number
 }
 
 export interface MealData {
@@ -33,4 +32,55 @@ export interface FoodLogResponse {
     updatedAt: string;
     __v: number;
   };
+}
+export interface FoodSearchModalProps {
+  isOpen: boolean
+  onClose: () => void
+  mealType: string
+  editMode?: boolean
+  foodToEdit?: IFoodItem | null
+  selectedDay: string
+}
+
+export interface MacrosCardProps {
+  totalProtein: number;
+  totalCarbs: number;
+  totalFats: number;
+  proteinPercentage: number;
+  carbsPercentage: number;
+  fatsPercentage: number;
+}
+
+export interface MealType {
+  id: string
+  type: string
+  recommended: string
+  itemCount: number
+  totalCalories: number
+}
+
+export interface MealData {
+  breakfast: IFoodItem[]
+  lunch: IFoodItem[]
+  dinner: IFoodItem[]
+  snacks: IFoodItem[]
+}
+
+export interface MealListProps {
+  mealTypes: MealType[]
+  meals: MealData | undefined
+  selectedDay: string
+  handleOpenAddFoodModal: (mealId: string) => void
+  handleOpenEditFoodModal: (mealId: string, foodItem: IFoodItem) => void
+  handleDeleteFood: (foodId: string | undefined, date: string, mealType: string) => void
+  loadingItems: { [key: string]: boolean }
+}
+
+export interface FoodItemsListProps {
+  mealType: string
+  items: IFoodItem[]
+  handleDeleteFood: (foodId: string | undefined, date: string, mealType: string) => void
+  handleEditFood: (foodItem: IFoodItem, date: string,) => void
+  selectedDay: string
+  loadingItems: { [key: string]: boolean }
 }

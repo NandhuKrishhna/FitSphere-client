@@ -80,3 +80,19 @@ export type UserResponse = {
   success: boolean;
   users: UserType[];
 };
+
+
+export type AvatarProps = {
+  image?: string,
+  name?: string
+}
+export interface UserQueryParams {
+  page?: number
+  limit?: number
+  search?: string
+  status?: string
+  role?: string
+  isVerfied?: string
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+}

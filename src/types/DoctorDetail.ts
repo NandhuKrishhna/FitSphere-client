@@ -49,3 +49,12 @@ export type SlotsResponse = {
   success: boolean;
   message: string;
 };
+
+
+export type DoctorProfileProps = {
+  doctorDetails: DoctorDetails;
+  averageRating: number;
+  totalReviews: number;
+};
+
+

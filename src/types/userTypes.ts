@@ -89,15 +89,15 @@ export interface RecipeResponse {
 }
 
 
-export type UserQueryParams ={
+export type UserQueryParams = {
   page?: number;
   limit?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   search?: string;
   isVerfied?: string;
-  isActive? :string;
-  isApproved? : string;
+  isActive?: string;
+  isApproved?: string;
   name?: string;
   email?: string;
 };
@@ -113,3 +113,40 @@ export type UserInfo = {
   isVerfied: boolean;
   status: string;
 }
+
+
+export interface IUser {
+  _id?: string;
+  name?: string;
+  email?: string;
+  profilePicture?: string;
+  role?: string;
+}
+
+export interface INotification {
+  _id: string;
+  message: string;
+  createdAt: string;
+  read: boolean;
+  type: string;
+  metadata?: {
+    meetingId?: string;
+    appointMentId?: string;
+  };
+}
+
+export interface DropdownProps {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+  setIsOtherDropdownOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  user?: IUser | null;
+  handleLogout?: (e: React.MouseEvent) => void;
+  isLoading?: boolean;
+  handleNavigate?: () => void;
+}
+
+export type Props = {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};

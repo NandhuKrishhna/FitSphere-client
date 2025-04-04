@@ -33,6 +33,7 @@ export type Slot = {
   status: "booked" | "available" | "cancelled" | "completed" | "expired";
   createdAt: string;
   updatedAt: string;
+  patientId?: string;
   __v: number;
 };
 
@@ -42,3 +43,39 @@ export type CalendarDate = {
   year: number;
   isCurrentMonth: boolean;
 };
+export type SlotListProps = {
+  slots: Slot[];
+  isLoading: boolean;
+  onCancel?: (slotId: string) => void;
+  isCancelLoading?: boolean;
+};
+
+export interface TimeSelectProps {
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+}
+export type TotalEarningsProps = {
+  selectedView: string
+  onViewChange: (view: string) => void
+}
+
+export type Transaction = {
+  amount: number
+  createdAt: string
+  currency: string
+  description: string
+  role: string
+  status: string
+  type: string
+  updatedAt: string
+  userId: string
+  walletId: string
+  _id: string
+}
+
+export type ChartDataItem = {
+  date: string
+  amount: number
+}
