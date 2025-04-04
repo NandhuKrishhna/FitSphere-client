@@ -1,6 +1,7 @@
 import { FoodItem, FoodLogResponse, IAddFoodData, IDeleteFoodItem, IDeleteFoodItemResponse, IEditFoodApiResponse, IEditFoodProps, Meals } from "@/types/api/calories-api-types";
 import { apiSlice } from "./EntryApiSlice";
 import { IGetUserHealthDetails, IUpdateUserHealthDetails, IUpdateUserHealthDetailsResponse } from "@/types/api/user-api-types";
+import { HealthDetails } from "@/types/types";
 
 export const caloriesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -230,7 +231,7 @@ export const caloriesApi = apiSlice.injectEndpoints({
               (draft) => {
                 if (!draft.userHealthDetails) return;
                 if (!draft.userHealthDetails) {
-                  draft.userHealthDetails = { ...arg };
+                  draft.userHealthDetails = { ...draft.userHealthDetails as object, ...arg } as HealthDetails;
                 } else {
                   draft.userHealthDetails = { ...draft.userHealthDetails, ...arg };
                 }
