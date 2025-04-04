@@ -37,15 +37,53 @@ export interface Doctor {
     profilePicture: string;
 }
 export interface GetDoctorsResponse {
-    doctors: Doctor[];
-    totalDoctors: number;
-    verifiedDoctors: number;
-    activeDoctors: number;
-    approvedDoctors: number;
-    blockedDoctors: number;
-    currentPage: number;
-    totalPages: number;
+    doctors: {
+
+        doctors: Doctor[];
+        totalDoctors: number;
+        verifiedDoctors: number;
+        activeDoctors: number;
+        approvedDoctors: number;
+        blockedDoctors: number;
+        currentPage: number;
+        totalPages: number;
+        pendingDoctors: number
+    }
 }
 export interface UpdadedUserResponse {
     updatedUser: User | Doctor;
+}
+
+
+export interface ISubscription {
+    _id: string;
+    type: string;
+    planName: string;
+    price: number;
+    features: string[];
+}
+
+export interface ISubscriptionResponse {
+    success: boolean;
+    message?: string
+    subscriptionPlan: ISubscription[];
+}
+
+export interface IUpdateSubscriptionResponse {
+    success: boolean
+    message: string
+    updatedPremiumSubscription: ISubscription
+}
+
+export interface INewSubscriptionResponse {
+    success: boolean
+    message: string
+    newPremiumSubscription: ISubscription
+}
+
+
+export interface IApproveDoctorResponse {
+    success: boolean;
+    message: string;
+    newDoctor: Doctor
 }
