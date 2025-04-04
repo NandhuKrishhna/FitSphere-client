@@ -1,5 +1,7 @@
 import { AppointmentQueryParams } from "@/types/doctorAppoitment.types";
 import { apiSlice } from "./EntryApiSlice";
+import { ICaneceSlotResponse, IGetAllSlotDetailsResponse, IGetDoctorProfileResponse, IUpdateDoctorDetailsResponse } from "@/types/api/doctor-api-types";
+import { DoctorDetailsParams } from "@/types/doctorDetails";
 
 export const doctorApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -41,20 +43,40 @@ export const doctorApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["slots"],
     }),
-    getAllSlots: builder.query({
+    getAllSlots: builder.query<IGetAllSlotDetailsResponse, void>({
       query: () => ({
         url: "/doctor/get-slots",
         method: "GET",
       }),
       providesTags: ["slots"],
     }),
-    cancelSlot: builder.mutation({
+    // invalidatesTags: ["slots", "wallet"],
+    cancelSlot: builder.mutation<ICaneceSlotResponse, { slotId: string }>({
       query: (data) => ({
         url: "/doctor/cancel-slot",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["slots", "wallet"],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          doctorApi.util.updateQueryData(
+            "getAllSlots",
+            undefined,
+            (draft) => {
+              if (!draft.response) return;
+              const slotIndex = draft.response.findIndex((slot) => slot._id === arg.slotId);
+              if (slotIndex !== -1) {
+                draft.response.splice(slotIndex, 1);
+              }
+            }
+          )
+        )
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo()
+        }
+      }
     }),
 
     doctorLogout: builder.query({
@@ -107,7 +129,7 @@ export const doctorApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    doctorProfile: builder.query({
+    doctorProfile: builder.query<IGetDoctorProfileResponse, { doctorId: string | undefined }>({
       query: (data) => ({
         url: "/doctor/profile",
         method: "POST",
@@ -122,13 +144,33 @@ export const doctorApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    updateDoctorDetails: builder.mutation({
+    updateDoctorDetails: builder.mutation<IUpdateDoctorDetailsResponse, DoctorDetailsParams>({
       query: (data) => ({
         url: "/doctor/update-details",
         method: "PATCH",
         body: data
       }),
-      invalidatesTags: ["doctorDetails"],
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          doctorApi.util.updateQueryData(
+            "doctorProfile",
+            { doctorId: args.doctorId },
+            (draft) => {
+              if (!draft.doctorDetails || !draft.doctorDetails.details) return;
+              draft.doctorDetails.details = {
+                ...draft.doctorDetails.details,
+                ...args,
+              };
+            }
+
+          )
+        )
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo()
+        }
+      }
     }),
   }),
 });

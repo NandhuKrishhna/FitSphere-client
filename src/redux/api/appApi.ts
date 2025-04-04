@@ -4,6 +4,12 @@ import { AppointmentQueryParams } from "@/types/appointmentList";
 import { WalletTransactionQuery } from "@/types/wallet.types";
 import { Roles } from "@/utils/Enums";
 import { NotificaitonQueryParams } from "@/types/NotificationTypes";
+import {
+  AppointmentStatus,
+  IAppointmentApiResponse,
+  ICancelledAppointmentResponse
+} from "@/types/api/appointment-api-types";
+import { IAddReviewProps, IAddReviewResponse, IDeleteReviewProps, IDeleteReviewResponse, IEditReviewProps, IEditReviewResponse, IGetAllReviewAndRatingResponse } from "@/types/api/doctor-api-types";
 export const appApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     displayAllDoctors: builder.query({
@@ -69,7 +75,7 @@ export const appApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["appointments", "slots", "notification", "transactions"],
     }),
-    getAppointmentDetails: builder.query({
+    getAppointmentDetails: builder.query<IAppointmentApiResponse, AppointmentQueryParams>({
       query: (params: AppointmentQueryParams) => {
         const { ...queryParams } = params;
         const queryString = Object.entries(queryParams)
@@ -84,16 +90,49 @@ export const appApi = apiSlice.injectEndpoints({
       },
       providesTags: ["appointments"],
     }),
-    cancelAppointment: builder.mutation({
-      query: (data) => ({
-        url: "/app/cancel/appointments",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["appointments", "wallet",],
-    }),
+    //wallet , appointment
+    cancelAppointment: builder.mutation<ICancelledAppointmentResponse, { appointmentId: string, queryParams: AppointmentQueryParams }>(
+      {
+        query: (data) => ({
+          url: "/app/cancel/appointments",
+          method: "POST",
+          body: data,
+        }),
+        async onQueryStarted({ appointmentId, queryParams }, { dispatch, queryFulfilled }) {
+          const patchResult = dispatch(
+            appApi.util.updateQueryData("getAppointmentDetails", queryParams, (draft) => {
+              if (!draft?.data) return;
+              const appointmentIndex = draft.data.findIndex((appointment) => appointment._id === appointmentId);
+              if (appointmentIndex !== -1) {
+                draft.data[appointmentIndex].status = AppointmentStatus.CANCELLED;
+              }
+            })
+          );
+
+          try {
+            const { data: response } = await queryFulfilled;
+
+            dispatch(
+              appApi.util.updateQueryData("getAppointmentDetails", queryParams, (draft) => {
+                if (!draft?.data) return;
+                const appointmentIndex = draft.data.findIndex((appointment) => appointment._id === appointmentId);
+                if (appointmentIndex !== -1) {
+                  draft.data[appointmentIndex].status = response.response.status as AppointmentStatus;
+                }
+              })
+            );
+
+          } catch (error) {
+            patchResult.undo();
+            console.log(error);
+          }
+        },
+        invalidatesTags: ["wallet"],
+      }
+    ),
+
     getWallet: builder.query({
-      query: ({ userId, role, ...queryParams }: { userId?: string; role?: string } & WalletTransactionQuery) => {
+      query: ({ userId, role, ...queryParams }: { userId?: string; role?: string } & Partial<WalletTransactionQuery>) => {
         const queryString = Object.entries(queryParams)
           .filter(([, value]) => value !== undefined && value !== "")
           .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
@@ -122,15 +161,65 @@ export const appApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["appointments", "wallet", "notification", "slots"],
     }),
-    addReview: builder.mutation({
+    addReview: builder.mutation<IAddReviewResponse, IAddReviewProps>({
       query: (data) => ({
         url: "/app/add-reviews",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["reviews", "ratings"],
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const tempId = crypto.randomUUID();
+        const patchResult = dispatch(
+          appApi.util.updateQueryData(
+            "getReviews",
+            args.doctorId,
+            (draft) => {
+              if (!draft.response) return;
+              const reviewData = {
+                _id: tempId,
+                userId: args.userId,
+                doctorId: args.doctorId,
+                rating: args.rating,
+                reviewText: args.reviewText,
+                createdAt: new Date().toISOString(),
+                userDetails: {
+                  _id: args.userId!,
+                  name: args.name!,
+                  profilePicture: args.profilePicture!
+                }
+              }
+              draft.response.reviews.unshift(reviewData);
+              draft.response.totalReviews += 1;
+              const totalRating = draft.response.reviews.reduce(
+                (total, review) => total + review.rating, 0
+              );
+              draft.response.averageRating = totalRating / draft.response.totalReviews
+            }
+          )
+        )
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            appApi.util.updateQueryData(
+              "getReviews",
+              args.doctorId,
+              (draft) => {
+                if (!draft.response) return;
+                const reviewIndex = draft.response.reviews.findIndex((review) => {
+                  return review._id === tempId
+                });
+                if (reviewIndex !== -1) {
+                  draft.response.reviews[reviewIndex]._id = data.reviewId
+                }
+              }
+            )
+          )
+        } catch {
+          patchResult.undo();
+        }
+      }
     }),
-    getReviews: builder.query({
+    getReviews: builder.query<IGetAllReviewAndRatingResponse, string>({
       query: (doctorId) => ({
         url: `/app-common/get-reviews/${doctorId}`,
         method: "GET",
@@ -174,21 +263,71 @@ export const appApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    editReview: builder.mutation({
+    editReview: builder.mutation<IEditReviewResponse, IEditReviewProps>({
       query: (data) => ({
         url: "/app/edit-review",
         method: "PATCH",
         body: data
       }),
-      invalidatesTags: ["reviews"]
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          appApi.util.updateQueryData(
+            "getReviews",
+            args.doctorId,
+            (draft) => {
+              if (!draft.response) return;
+              const reviewIndex = draft.response.reviews.findIndex((review) => {
+                return review._id === args.reviewId
+              });
+              if (reviewIndex !== -1) {
+                draft.response.reviews[reviewIndex].createdAt = new Date().toISOString();
+                draft.response.reviews[reviewIndex].rating = args.rating;
+                draft.response.reviews[reviewIndex].reviewText = args.reviewText;
+              }
+            }
+          )
+        )
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      }
     }),
-    deleteReviews: builder.mutation({
+    deleteReviews: builder.mutation<IDeleteReviewResponse, IDeleteReviewProps>({
       query: (data) => ({
         url: "/app/delete-review",
         method: "DELETE",
         body: data
       }),
-      invalidatesTags: ["reviews"]
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          appApi.util.updateQueryData(
+            "getReviews",
+            args.doctorId,
+            (draft) => {
+              if (!draft.response) return;
+              const reviewIndex = draft.response.reviews.findIndex((review) => {
+                return review._id === args.reviewId
+              });
+              if (reviewIndex !== -1) {
+                draft.response.reviews.splice(reviewIndex, 1);
+                draft.response.totalReviews -= 1;
+                const totalRating = draft.response.reviews.reduce(
+                  (total, review) => total + review.rating, 0
+                );
+                draft.response.averageRating = totalRating / draft.response.totalReviews;
+              }
+            }
+          )
+        )
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      }
+
     }),
     getTransactions: builder.query({
       query: (params: TransactionQueryParams) => {

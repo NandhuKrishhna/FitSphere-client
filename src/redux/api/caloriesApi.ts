@@ -1,4 +1,6 @@
+import { FoodItem, FoodLogResponse, IAddFoodData, IDeleteFoodItem, IDeleteFoodItemResponse, IEditFoodApiResponse, IEditFoodProps, Meals } from "@/types/api/calories-api-types";
 import { apiSlice } from "./EntryApiSlice";
+import { IGetUserHealthDetails, IUpdateUserHealthDetails, IUpdateUserHealthDetailsResponse } from "@/types/api/user-api-types";
 
 export const caloriesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,15 +28,14 @@ export const caloriesApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    getUserHealthDetails: builder.query({
+    getUserHealthDetails: builder.query<IGetUserHealthDetails, void>({
       query: () => ({
         url: "/app/get-userHealthDetails",
         method: "GET",
       }),
-      providesTags: ["userHealthDetails"]
     }),
 
-    getUserFoodLogsDetails: builder.query({
+    getUserFoodLogsDetails: builder.query<FoodLogResponse, { date: string }>({
       query: (data) => ({
         url: "/app/get-foodlog",
         method: "POST",
@@ -50,29 +51,163 @@ export const caloriesApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    addFoodLog: builder.mutation({
+    addFoodLog: builder.mutation<FoodLogResponse, IAddFoodData>({
       query: (data) => ({
         url: "/app/add-foodlog",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["foodlogs"],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+
+        const tempId = crypto.randomUUID();
+        const patchResult = dispatch(
+          caloriesApi.util.updateQueryData(
+            "getUserFoodLogsDetails",
+            { date: arg.date },
+            (draft) => {
+              if (!draft.response) return;
+              if (!draft.response.meals) {
+                draft.response.meals = { breakfast: [], lunch: [], dinner: [], snacks: [] };
+              }
+              const foodItemWithTempId = {
+                ...arg.foodItem,
+                _id: tempId,
+              };
+              draft.response.meals[arg.mealType as keyof Meals].push(foodItemWithTempId);
+              draft.response.totalCalories += arg.foodItem.calories;
+              draft.response.totalCarbs += arg.foodItem.carbs;
+              draft.response.totalFats += arg.foodItem.fats;
+              draft.response.totalProtien += arg.foodItem.protein;
+            }
+          )
+        );
+
+        try {
+          const { data: serverResponse } = await queryFulfilled;
+          const serverId = serverResponse.response.meals[arg.mealType as keyof Meals].find(
+            (item) => item.name === arg.foodItem.name && item.calories === arg.foodItem.calories
+          )?._id;
+
+          if (serverId) {
+            dispatch(
+              caloriesApi.util.updateQueryData(
+                "getUserFoodLogsDetails",
+                { date: arg.date },
+                (draft) => {
+                  if (!draft.response || !draft.response.meals) return;
+                  const mealArray = draft.response.meals[arg.mealType as keyof Meals];
+                  const foodItemIndex = mealArray.findIndex((item) => item._id === tempId);
+
+                  if (foodItemIndex !== -1) {
+                    mealArray[foodItemIndex]._id = serverId;
+                  }
+                }
+              )
+            );
+          }
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
-    deleteFoodLog: builder.mutation({
+    deleteFoodLog: builder.mutation<IDeleteFoodItemResponse, IDeleteFoodItem>({
       query: (data) => ({
         url: "/app/delete-food",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["foodlogs"],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          caloriesApi.util.updateQueryData(
+            "getUserFoodLogsDetails",
+            { date: arg.date },
+            (draft) => {
+              if (!draft.response || !draft.response.meals) return;
+              const mealArray = draft.response.meals[arg.mealType as keyof Meals];
+
+              if (Array.isArray(mealArray)) {
+                const itemToRemove = mealArray.find((item) => item._id === arg.foodId);
+
+                if (itemToRemove) {
+                  draft.response.totalCalories -= itemToRemove.calories;
+                  draft.response.totalCarbs -= itemToRemove.carbs;
+                  draft.response.totalFats -= itemToRemove.fats;
+                  draft.response.totalProtien -= itemToRemove.protein;
+
+                  draft.response.meals[arg.mealType as keyof Meals] = mealArray.filter(
+                    (item) => item._id !== arg.foodId
+                  );
+                }
+              }
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
-    editFood: builder.mutation({
+
+    editFood: builder.mutation<IEditFoodApiResponse, IEditFoodProps>({
       query: (data) => ({
         url: "/app/edit-food",
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["foodlogs"],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          caloriesApi.util.updateQueryData(
+            "getUserFoodLogsDetails",
+            { date: arg.date },
+            (draft) => {
+              if (!draft.response) return;
+              const mealArray = draft.response.meals[arg.mealType as keyof Meals];
+              if (!Array.isArray(mealArray)) return;
+
+              const foodIndex = mealArray.findIndex((item) => item._id === arg.foodId);
+              if (foodIndex === -1) return;
+              const oldFoodItem = mealArray[foodIndex];
+              draft.response.totalCalories -= oldFoodItem.calories
+              draft.response.totalCarbs -= oldFoodItem.carbs
+              draft.response.totalProtien -= oldFoodItem.protein
+              draft.response.totalFats -= oldFoodItem.fats;
+
+              mealArray[foodIndex] = { ...arg.foodItem, _id: arg.foodId } as FoodItem
+
+              draft.response.totalCalories += arg.foodItem.calories;
+              draft.response.totalCarbs += arg.foodItem.carbs!;
+              draft.response.totalFats += arg.foodItem.fats!;
+              draft.response.totalProtien += arg.foodItem.protein!;
+            }
+          )
+        );
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.foodId) {
+            dispatch(
+              caloriesApi.util.updateQueryData(
+                "getUserFoodLogsDetails",
+                { date: arg.date },
+                (draft) => {
+                  const mealArray = draft.response.meals[arg.mealType as keyof Meals];
+                  if (!Array.isArray(mealArray)) return;
+
+                  const foodIndex = mealArray.findIndex((item) => item._id === arg.foodId);
+                  if (foodIndex !== -1) {
+                    mealArray[foodIndex]._id = data.foodId;
+                  }
+                }
+              )
+            );
+          }
+        } catch {
+          patchResult.undo();
+        }
+      }
+
     }),
     getWeightProgress: builder.query({
       query: () => ({
@@ -80,14 +215,36 @@ export const caloriesApi = apiSlice.injectEndpoints({
         method: "GET"
       })
     }),
-    updateUserHealthDetails: builder.mutation({
-      query: (data) => ({
-        url: "/app/update-userdetails",
-        method: "PATCH",
-        body: data
+    updateUserHealthDetails: builder.mutation<IUpdateUserHealthDetailsResponse,
+      IUpdateUserHealthDetails>({
+        query: (data) => ({
+          url: "/app/update-userdetails",
+          method: "PATCH",
+          body: data
+        }),
+        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+          const patchResult = dispatch(
+            caloriesApi.util.updateQueryData(
+              "getUserHealthDetails",
+              undefined,
+              (draft) => {
+                if (!draft.userHealthDetails) return;
+                if (!draft.userHealthDetails) {
+                  draft.userHealthDetails = { ...arg };
+                } else {
+                  draft.userHealthDetails = { ...draft.userHealthDetails, ...arg };
+                }
+
+              }
+            )
+          );
+          try {
+            await queryFulfilled;
+          } catch {
+            patchResult.undo();
+          }
+        }
       }),
-      invalidatesTags: ["userHealthDetails"]
-    }),
   }),
 });
 
