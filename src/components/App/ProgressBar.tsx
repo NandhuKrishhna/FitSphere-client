@@ -1,7 +1,4 @@
-interface ProgressBarProps {
-  step: number;
-  totalSteps: number;
-}
+import { ProgressBarProps } from "@/types/types";
 
 export default function ProgressBar({ step, totalSteps }: ProgressBarProps) {
   return (

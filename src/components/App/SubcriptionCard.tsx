@@ -1,13 +1,6 @@
+import { SubscriptionCardProps } from "@/types/types";
 import { CheckIcon } from "lucide-react";
 
-type SubscriptionCardProps = {
-  title: string;
-  description: string;
-  price: string;
-  features: string[];
-  highlight?: boolean;
-  onClick?: () => void
-};
 
 const SubscriptionCard = ({ title, description, price, features, highlight, onClick }: SubscriptionCardProps) => {
   return (

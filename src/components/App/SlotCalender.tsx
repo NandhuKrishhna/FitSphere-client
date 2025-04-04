@@ -1,23 +1,5 @@
+import { CalendarProps, Slot } from "@/types/types";
 import React, { useState, useEffect } from "react";
-
-export interface Slot {
-  _id: string;
-  doctorId: string;
-  startTime: string;
-  endTime: string;
-  date: string;
-  consultationType: string;
-  status: string;
-}
-
-interface CalendarProps {
-  slots: {
-    success: boolean;
-    message: string;
-    slots: Slot[];
-  };
-  onSlotClick: (slot: Slot) => void;
-}
 
 const Calendar: React.FC<CalendarProps> = ({
   slots,
@@ -167,56 +149,56 @@ const Calendar: React.FC<CalendarProps> = ({
 
       {/* Modal */}
       {isModalOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div className="bg-gray-900 p-4 rounded-lg text-white w-96">
-      <div className="ml-12">
-        <h3 className="text-lg font-semibold mb-2">
-          Slots for {selectedDate}
-        </h3>
-        {selectedSlots.filter((slot) => slot.status === "available").length > 0 ? (
-          <ul>
-            {selectedSlots
-              .filter((slot) => slot.status === "available") 
-              .map((slot) => (
-                <li
-                  key={slot._id}
-                  className="mb-1 cursor-pointer hover:text-purple-300"
-                  onClick={() => {
-                    onSlotClick(slot);
-                    setIsModalOpen(false);
-                  }}
-                >
-                  {new Date(slot.startTime).toLocaleTimeString("en-US", {
-                    timeZone: "UTC",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}{" "}
-                  -{" "}
-                  {new Date(slot.endTime).toLocaleTimeString("en-US", {
-                    timeZone: "UTC",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}{" "}
-                  ({slot.consultationType})
-                </li>
-              ))}
-          </ul>
-        ) : (
-          <p>No available slots for this date. 😓</p>
-        )}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-gray-900 p-4 rounded-lg text-white w-96">
+            <div className="ml-12">
+              <h3 className="text-lg font-semibold mb-2">
+                Slots for {selectedDate}
+              </h3>
+              {selectedSlots.filter((slot) => slot.status === "available").length > 0 ? (
+                <ul>
+                  {selectedSlots
+                    .filter((slot) => slot.status === "available")
+                    .map((slot) => (
+                      <li
+                        key={slot._id}
+                        className="mb-1 cursor-pointer hover:text-purple-300"
+                        onClick={() => {
+                          onSlotClick(slot);
+                          setIsModalOpen(false);
+                        }}
+                      >
+                        {new Date(slot.startTime).toLocaleTimeString("en-US", {
+                          timeZone: "UTC",
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}{" "}
+                        -{" "}
+                        {new Date(slot.endTime).toLocaleTimeString("en-US", {
+                          timeZone: "UTC",
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}{" "}
+                        ({slot.consultationType})
+                      </li>
+                    ))}
+                </ul>
+              ) : (
+                <p>No available slots for this date. 😓</p>
+              )}
 
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="mt-4 bg-purple-500 hover:bg-red-400 px-2 py-1 rounded-md"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="mt-4 bg-purple-500 hover:bg-red-400 px-2 py-1 rounded-md"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

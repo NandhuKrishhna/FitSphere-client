@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
-import { Review } from "@/types/DoctorDetail";
+import { ReviewModalProps } from "@/types/types";
 
-type ReviewModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  existingReview: Review | null;
-  doctorName: string;
-  isLoading: boolean;
-  onSubmit: (rating: number, reviewText: string) => void;
-};
 
 const ReviewModal: React.FC<ReviewModalProps> = ({
   isOpen,
@@ -22,7 +14,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
-  
+
   useEffect(() => {
     if (existingReview) {
       setRating(existingReview.rating || 0);
@@ -69,11 +61,10 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
                 >
                   <Star
                     size={32}
-                    className={`${
-                      star <= (hoveredRating || rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-600"
-                    } transition-colors`}
+                    className={`${star <= (hoveredRating || rating)
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-600"
+                      } transition-colors`}
                   />
                 </button>
               ))}

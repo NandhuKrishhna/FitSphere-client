@@ -5,17 +5,14 @@ import { setProfilePicture } from "../../redux/slice/Auth_Slice";
 import { useUploadProfilePicMutation } from "../../redux/api/appApi";
 import toast from "react-hot-toast";
 import { ErrorResponse } from "@/hooks/LoginHook";
+import { ProfileHeaderProps } from "@/types/types";
 
-interface ProfileHeaderProps {
-  name?: string;
-  email?: string;
-  profilePicture?: string;
-}
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ 
-  name = "Richard Davis", 
-  email = "user@example.com", 
-  profilePicture = "/avatar.png" 
+
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  name = "Richard Davis",
+  email = "user@example.com",
+  profilePicture = "/avatar.png"
 }) => {
   const dispatch = useDispatch();
   const [uploadProfilePic, { isLoading: uploadLoading }] = useUploadProfilePicMutation();
@@ -36,9 +33,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         dispatch(setProfilePicture(response.profilePicture));
         toast.success("Profile picture updated successfully!");
       } catch (error) {
-         const err = error as ErrorResponse;
-         if(err.data.message) return toast.error(err.data.message);
-         toast.error("Failed to update profile picture!");
+        const err = error as ErrorResponse;
+        if (err.data.message) return toast.error(err.data.message);
+        toast.error("Failed to update profile picture!");
       }
     };
   };

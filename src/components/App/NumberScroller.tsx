@@ -1,13 +1,7 @@
+import { NumberScrollerProps } from "@/types/userHealth.types";
 import React, { useState, useEffect, useRef } from "react";
 
-type NumberScrollerProps = {
-  value: number;
-  onChange: (value: number) => void;
-  min: number;
-  max: number;
-  unit?: string;
-  visibleItems?: number;
-};
+
 
 export default function NumberScroller({
   value,

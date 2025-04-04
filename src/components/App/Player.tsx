@@ -1,15 +1,7 @@
 import ReactPlayer from "react-player";
-import type { SourceProps } from "react-player/base";
 import { User } from "lucide-react";
+import { Props } from "@/types/types";
 
-type Props = {
-  url: string | MediaStream | string[] | SourceProps[] | undefined;
-  muted: boolean;
-  playing: boolean;
-  width?: string;
-  height?: string;
-  showUserIcon?: boolean;
-};
 
 const Player = (props: Props) => {
   const { url, muted, playing, width = "100%", height = "100%", showUserIcon = false } = props;

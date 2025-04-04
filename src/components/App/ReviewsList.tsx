@@ -1,21 +1,16 @@
 import React, { useState } from "react"
 import { Pencil, Trash, ChevronLeft, ChevronRight, Loader } from "lucide-react"
 import RatingStars from "./RatingStars"
-import type { Review } from "@/types/DoctorDetail"
 import { useSelector } from "react-redux"
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 import useDeleteReview from "@/hooks/App/useDeleteReviews"
 import useEditReview from "@/hooks/App/useEditReview"
 import { selectedDoctorId } from "@/redux/slice/appFeatSlice"
 import ReviewModal from "./ReviewModal"
+import { Review, ReviewsListProps } from "@/types/types"
 
-type ReviewsListProps = {
-  reviews: Review[]
-  doctorName: string
 
-}
-
-const ReviewsList: React.FC<ReviewsListProps> = ({ reviews , doctorName}) => {
+const ReviewsList: React.FC<ReviewsListProps> = ({ reviews, doctorName }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
@@ -76,7 +71,7 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ reviews , doctorName}) => {
                   <button onClick={() => openEditModal(review)} className="text-blue-400 hover:text-blue-500">
                     <Pencil size={15} />
                   </button>
-                  <button onClick={() => handleDeleteReview({reviewId: review._id, doctorId: doctorId!})} className="text-red-400 hover:text-red-500">
+                  <button onClick={() => handleDeleteReview({ reviewId: review._id, doctorId: doctorId! })} className="text-red-400 hover:text-red-500">
                     {isDeleteLoading[review._id] ? <Loader className="animate-spin" size={15} /> : <Trash size={15} />}
                   </button>
                 </div>

@@ -2,25 +2,9 @@ import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle } from "lucide-react"
+import { SubscriptionDetailsProps } from "@/types/types"
 
-export interface SubscriptionDetailsProps {
-    subscriptionDetails:
-    | {
-        _id: string
-        userId: string
-        subscriptionId: string
-        startDate: string
-        endDate: string
-        status: string
-        planName: string
-        type: string
-        price: number
-        features: string[]
-    }
-    | null
-    | undefined
-    isLoading: boolean
-}
+
 
 const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionDetails, isLoading }) => {
     if (isLoading || !subscriptionDetails) return null

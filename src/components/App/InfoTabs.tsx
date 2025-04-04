@@ -2,19 +2,15 @@ import type React from "react"
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { menuItems } from "@/utils/UserDoctorDetails"
-import type { MenuItem, DoctorDetails, Review } from "@/types/DoctorDetail"
+import type { MenuItem } from "@/types/DoctorDetail"
 import ReviewsList from "./ReviewsList"
 import ReviewModal from "./ReviewModal"
 import useAddReview from "@/hooks/App/useAddReviews"
+import { InfoTabsProps } from "@/types/doctorAppoitment.types"
+import { useSelector } from "react-redux"
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
 
-type InfoTabsProps = {
-  activeSection: string
-  setActiveSection: (section: string) => void
-  doctorDetails: DoctorDetails
-  reviews: Review[]
-  renderTabContent: boolean
-  doctorName: string
-}
+
 
 const InfoTabs: React.FC<InfoTabsProps> = ({
   activeSection,
@@ -25,8 +21,9 @@ const InfoTabs: React.FC<InfoTabsProps> = ({
   doctorName
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false)
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const { handleAddReview, isAddReview } = useAddReview()
+  const currentUser = useSelector(selectCurrentUser);
 
   const handleOpenReviewModal = () => {
     setIsReviewModalOpen(true)
@@ -37,11 +34,15 @@ const InfoTabs: React.FC<InfoTabsProps> = ({
   }
 
   const handleSubmitReview = (rating: number, reviewText: string) => {
+    if (!currentUser) return
     if (doctorDetails._id) {
       handleAddReview({
         doctorId: doctorDetails._id,
         rating,
-        reviewText
+        reviewText,
+        name: currentUser.name!,
+        profilePicture: currentUser.profilePicture!,
+        userId: currentUser._id!
       })
       handleCloseReviewModal()
     }
@@ -93,7 +94,7 @@ const InfoTabs: React.FC<InfoTabsProps> = ({
                 Add Review
               </button>
             </div>
-            <ReviewsList reviews={reviews} doctorName={doctorName}/>
+            <ReviewsList reviews={reviews} doctorName={doctorName} />
           </div>
         )
       default:
@@ -121,9 +122,8 @@ const InfoTabs: React.FC<InfoTabsProps> = ({
                   setActiveSection(item.id)
                   setMobileMenuOpen(false)
                 }}
-                className={`w-full text-left px-4 py-3 transition-colors ${
-                  activeSection === item.id ? "bg-purple-600 text-white" : "text-gray-300 hover:bg-gray-700"
-                }`}
+                className={`w-full text-left px-4 py-3 transition-colors ${activeSection === item.id ? "bg-purple-600 text-white" : "text-gray-300 hover:bg-gray-700"
+                  }`}
               >
                 {item.label}
               </button>
@@ -137,11 +137,10 @@ const InfoTabs: React.FC<InfoTabsProps> = ({
           <button
             key={item.id}
             onClick={() => setActiveSection(item.id)}
-            className={`w-full text-left px-5 py-3.5 rounded-lg transition-all duration-200 ${
-              activeSection === item.id
-                ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md"
-                : "text-gray-300 hover:bg-gray-800/70 hover:text-white"
-            }`}
+            className={`w-full text-left px-5 py-3.5 rounded-lg transition-all duration-200 ${activeSection === item.id
+              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md"
+              : "text-gray-300 hover:bg-gray-800/70 hover:text-white"
+              }`}
           >
             {item.label}
           </button>

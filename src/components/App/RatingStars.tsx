@@ -1,9 +1,7 @@
 import React from "react";
 import { Star } from "lucide-react";
+import { RatingStarsProps } from "@/types/types";
 
-type RatingStarsProps = {
-  rating: number;
-};
 
 const RatingStars: React.FC<RatingStarsProps> = ({ rating }) => {
   return (
@@ -16,8 +14,8 @@ const RatingStars: React.FC<RatingStarsProps> = ({ rating }) => {
             star <= Math.floor(rating)
               ? "fill-yellow-400 text-yellow-400"
               : star === Math.ceil(rating) && rating % 1 >= 0.5
-              ? "fill-yellow-400 text-yellow-400"
-              : "fill-gray-600 text-gray-600"
+                ? "fill-yellow-400 text-yellow-400"
+                : "fill-gray-600 text-gray-600"
           }
         />
       ))}

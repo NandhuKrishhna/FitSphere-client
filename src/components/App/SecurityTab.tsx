@@ -6,12 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Loader } from "lucide-react";
 import useUpdatePassword from "@/hooks/App/useUpdatePassword";
 import toast from "react-hot-toast";
-
-interface PasswordForm {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
+import { PasswordFieldProps, PasswordForm } from "@/types/types";
 
 const SecurityTab: React.FC = () => {
   const { handleUpdatePassword, isUpdatingPassword } = useUpdatePassword();
@@ -26,12 +21,12 @@ const SecurityTab: React.FC = () => {
       toast.error("Passwords don't match");
       return;
     }
-    
+
     handleUpdatePassword({
       currentPassword: passwordForm.currentPassword,
       newPassword: passwordForm.newPassword,
     });
-    
+
     setPasswordForm({
       currentPassword: "",
       newPassword: "",
@@ -84,12 +79,7 @@ const SecurityTab: React.FC = () => {
   );
 };
 
-interface PasswordFieldProps {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+
 
 const PasswordField: React.FC<PasswordFieldProps> = ({ id, label, value, onChange }) => {
   return (

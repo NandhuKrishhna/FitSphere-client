@@ -1,21 +1,10 @@
-import { useState, useRef, type KeyboardEvent, type ClipboardEvent, useEffect, ReactNode } from "react";
+import { useState, useRef, type KeyboardEvent, type ClipboardEvent, useEffect } from "react";
 import { Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { childVariants, containerVariants } from "../../framer-motion/form-motion";
+import { OTPVerificationLayoutProps } from "@/types/types";
 
-interface OTPVerificationLayoutProps {
-  title?: string;
-  subtitle?: string;
-  onSubmit: (e: React.FormEvent) => void | Promise<void>;
-  otp: string[];
-  setOtp: (otp: string[]) => void;
-  isLoading: boolean;
-  email?: string;
-  handleResendOtp?: (email: string) => Promise<string | undefined>;
-  footerComponent?: ReactNode;
-  submitButtonText?: string;
-  otpLength?: number;
-}
+
 
 const OTPVerificationLayout = ({
   title = "Enter OTP",
@@ -31,7 +20,7 @@ const OTPVerificationLayout = ({
   otpLength = 6,
 }: OTPVerificationLayoutProps) => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(300);
   const [canResend, setCanResend] = useState(false);
 
   useEffect(() => {
@@ -154,9 +143,8 @@ const OTPVerificationLayout = ({
                   Didn't get the code?{" "}
                   <button
                     onClick={handleResend}
-                    className={`${
-                      canResend ? "text-indigo-500 hover:text-indigo-400" : "text-zinc-500 cursor-not-allowed"
-                    } font-medium`}
+                    className={`${canResend ? "text-indigo-500 hover:text-indigo-400" : "text-zinc-500 cursor-not-allowed"
+                      } font-medium`}
                     disabled={!canResend}
                   >
                     Resend code {!canResend && `(${formatTime(timeLeft)})`}

@@ -1,13 +1,8 @@
 import React from "react";
 import { Wallet, CreditCard } from "lucide-react";
+import { PaymentOptionsModalProps } from "@/types/types";
 
-interface PaymentOptionsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelectWallet: () => void;
-  onSelectRazorpay: () => void;
-  amount: number;
-}
+
 
 const PaymentOptionsModal: React.FC<PaymentOptionsModalProps> = ({
   isOpen,
