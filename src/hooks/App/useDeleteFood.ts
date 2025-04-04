@@ -7,13 +7,14 @@ const useDeleteFood = () => {
   const [deleteFoodLog] = useDeleteFoodLogMutation();
   const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>({});
 
-  const handleDeleteFood = async (foodId?: string, date?: string) => {
+  const handleDeleteFood = async (foodId: string | undefined, date: string, mealType: string) => {
     if (!foodId) return;
-    
+
     setLoadingItems((prev) => ({ ...prev, [foodId]: true }));
 
     try {
-      const response = await deleteFoodLog({ foodId, date }).unwrap();
+      const response = await deleteFoodLog({ foodId, date, mealType }).unwrap();
+      console.log(response)
       toast.success(response.message);
     } catch (error) {
       const err = error as ErrorResponse;
@@ -26,7 +27,7 @@ const useDeleteFood = () => {
 
   return {
     handleDeleteFood,
-    loadingItems, 
+    loadingItems,
   };
 };
 

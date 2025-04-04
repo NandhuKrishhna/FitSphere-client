@@ -1,26 +1,32 @@
 import { useState } from "react"
 import { useEditFoodMutation } from "@/redux/api/caloriesApi"
-import type { IFoodItem } from "@/types/food"
 import { toast } from "react-hot-toast"
+import { FoodItem } from "@/types/api/calories-api-types"
 
-const useEditFood = (mealType: string, foodItem: IFoodItem | null, onClose: () => void) => {
+const useEditFood = (
+  mealType: string,
+  foodItem: FoodItem | null,
+  onClose: () => void,
+  selectedDay: string
+) => {
   const [isLoading, setIsLoading] = useState(false)
   const [editFood] = useEditFoodMutation()
 
   const handleEditFood = async (foodId: string) => {
+
     if (!foodItem) return
 
     setIsLoading(true)
     try {
-      const date = new Date().toISOString().split("T")[0]
 
-      await editFood({
+
+      const response = await editFood({
         foodId,
-        date,
+        date: selectedDay,
         foodItem,
         mealType,
       }).unwrap()
-
+      console.log("Response : ", response)
       toast.success("Food updated successfully")
       onClose()
     } catch (error) {

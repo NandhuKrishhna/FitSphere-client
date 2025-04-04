@@ -18,8 +18,10 @@ const useSignUp = () => {
     formState: { errors },
   } = useForm<AuthFormInputs>({ resolver: zodResolver(userRegisterSchema) });
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
+    console.log(data);
     try {
       const res = await signUp(data).unwrap();
+      console.log(res)
       localStorage.setItem("userId", res.response._id);
       localStorage.setItem("userData", JSON.stringify(res.response));
       toast.success(res.message || "Signup successful!");

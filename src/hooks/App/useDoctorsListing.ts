@@ -1,5 +1,6 @@
 import { useDisplayAllDoctorsQuery } from "@/redux/api/appApi";
 import { useState } from "react";
+import useDebounce from "../DebounceHook";
 
 interface Filters {
   gender: string[];
@@ -19,11 +20,12 @@ export const useDoctorsListing = () => {
     language: [],
     experience: 0,
   });
+  const debouncedValue = useDebounce(search, 500)
 
   const { data, error, isLoading } = useDisplayAllDoctorsQuery({
     page,
     limit,
-    search,
+    search: debouncedValue,
     sort,
     ...filters,
   });

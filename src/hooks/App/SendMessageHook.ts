@@ -13,11 +13,12 @@ const useSendMessage = (selectedUserId: string | undefined) => {
     if (!selectedUserId) return;
 
     try {
-      await sendMessages({
+      const response = await sendMessages({
         receiverId: selectedUserId,
         message: message.trim(),
         image
       }).unwrap();
+      console.log(response)
       setMessage("");
     } catch (error) {
       const err = error as ErrorResponse;

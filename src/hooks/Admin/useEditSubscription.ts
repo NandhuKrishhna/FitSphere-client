@@ -1,17 +1,13 @@
 import { useEditSubcriptionMutation } from "@/redux/api/adminApi";
+import { ISubscription } from "@/types/api/admin-api-types";
 import toast from "react-hot-toast";
 import { ErrorResponse } from "react-router-dom";
-export type SubscriptionParams = {
-    type: string,
-    planName: string,
-    price: number,
-    features: string[]
-    id: string
-}
+
 const useEditSubscription = () => {
 
     const [editSubcription, { isLoading: isEditSubscriptionLoading }] = useEditSubcriptionMutation();
-    const handleEditSubscription = async (data: SubscriptionParams) => {
+    const handleEditSubscription = async (data: ISubscription) => {
+        console.log(data);
         try {
             const response = await editSubcription(data).unwrap();
             toast.success(response.message);
