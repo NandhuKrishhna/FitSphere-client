@@ -1,10 +1,6 @@
 import { CircularProgress } from "@/components/App/CircularProgress";
+import { CaloriesCardProps } from "@/types/calories.types";
 
-interface CaloriesCardProps {
-  totalCalories: number;
-  requiredCalories: number;
-  remainingCalories: number;
-}
 
 const CaloriesCard = ({ totalCalories, requiredCalories, remainingCalories }: CaloriesCardProps) => {
   return (

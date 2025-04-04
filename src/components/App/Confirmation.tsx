@@ -4,19 +4,10 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import type { Slot } from "./SlotCalender";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarProps } from "@/types/calories.types";
 
-interface CalendarProps {
-  name?: string;
-  dept?: string;
-  slots?: {
-    success: boolean;
-    message: string;
-    slots: Slot[];
-  };
-  onSlotClick: (slot: Slot) => void;
-}
-
-export default function ConsultationModal({ slots, name, dept, onSlotClick }: CalendarProps) {
+export default function ConsultationModal({
+  slots, name, dept, onSlotClick }: CalendarProps) {
   const timeZone = "Asia/Kolkata";
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
@@ -139,8 +130,8 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                   key={date.isoDate}
                   onClick={() => setSelectedDate(date.isoDate)}
                   className={`flex-1 min-w-0 p-2 md:p-3 rounded-lg border ${selectedDate === date.isoDate
-                      ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-700"
-                      : "border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-700"
+                    ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-700"
+                    : "border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-700"
                     }`}
                 >
                   <div className="text-xs md:text-sm text-purple-600 dark:text-purple-400">{date.day}</div>
@@ -187,8 +178,8 @@ export default function ConsultationModal({ slots, name, dept, onSlotClick }: Ca
                   key={slot._id}
                   variant="outline"
                   className={`justify-start font-normal lg:w-40  text-xs md:text-sm ${selectedSlotId === slot._id
-                      ? "bg-purple-500 text-white hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-800"
-                      : "bg-purple-50/50 hover:bg-purple-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
+                    ? "bg-purple-500 text-white hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-800"
+                    : "bg-purple-50/50 hover:bg-purple-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
                     }`}
                   onClick={() => handleSlotClick(slot)}
                 >

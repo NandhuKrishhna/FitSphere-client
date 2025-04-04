@@ -1,49 +1,12 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import toast from "react-hot-toast";
-
-interface DayInfo {
-  name: string;
-  date: string;
-  dateObj: Date;
-}
-
-interface DaySelectorProps {
-  selectedDay: string;
-  setSelectedDay: (day: string) => void;
-}
+import { DayInfo, DaySelectorProps } from "@/types/calories.types";
+import { generateWeekDays, handleDaySelect } from "@/utils/daySelectorUtils";
+import { isToday } from "date-fns";
 
 export default function DaySelector({ selectedDay, setSelectedDay }: DaySelectorProps) {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(new Date());
   const [days, setDays] = useState<DayInfo[]>([]);
-
-  const generateWeekDays = (startDate: Date): DayInfo[] => {
-    const days = [];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
-
-      days.push({
-        name: dayNames[date.getDay()],
-        date: date.toISOString().split("T")[0],
-        dateObj: new Date(date),
-      });
-    }
-
-    return days;
-  };
-
-  const handleDaySelect = (date: string) => {
-    const currentDate = new Date().toISOString().split("T")[0];
-
-    if (date > currentDate) {
-      return toast.error("Cannot select future date");
-    }
-
-    setSelectedDay(date);
-  };
 
   const handlePreviousWeek = () => {
     const newStart = new Date(currentWeekStart);
@@ -71,11 +34,6 @@ export default function DaySelector({ selectedDay, setSelectedDay }: DaySelector
     setDays(generateWeekDays(weekStart));
   }, []);
 
-  const isToday = (dateString: string) => {
-    const today = new Date().toISOString().split("T")[0];
-    return dateString === today;
-  };
-
   return (
     <div className="relative bg-gradient-to-br from-[#1e1e30] to-[#2a2a40] rounded-xl p-4">
       <div className="flex justify-between items-center">
@@ -88,7 +46,7 @@ export default function DaySelector({ selectedDay, setSelectedDay }: DaySelector
               key={index}
               className={`flex flex-col items-center px-1 ${selectedDay === day.date ? "text-white" : isToday(day.date) ? "text-blue-400" : "text-gray-500"
                 }`}
-              onClick={() => handleDaySelect(day.date)}
+              onClick={() => handleDaySelect(day.date, setSelectedDay)}
             >
               <span className="text-xs">{day.name}</span>
               <div

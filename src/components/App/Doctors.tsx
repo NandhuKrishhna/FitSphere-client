@@ -6,20 +6,9 @@ import { motion } from "framer-motion";
 import { useGetAllRatingsQuery } from "@/redux/api/appApi";
 import { Button } from "@/components/ui/button"
 import { Badge } from "@mui/material";
+import { DoctorCardProps, Rating } from "@/types/DoctorTypes";
 
-type DoctorCardProps = {
-  name: string;
-  experience: string;
-  specialty: string;
-  profilePicture: string;
-  id: string;
-};
 
-type Rating = {
-  doctorId: string;
-  averageRating: number;
-  totalReviews: number;
-};
 
 const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorCardProps) => {
   const dispatch = useDispatch();
@@ -73,10 +62,9 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
                   key={star}
                   size={14}
                   className={`
-                    ${
-                      filled
-                        ? "fill-yellow-400 text-yellow-400"
-                        : halfFilled
+                    ${filled
+                      ? "fill-yellow-400 text-yellow-400"
+                      : halfFilled
                         ? "fill-yellow-400 text-yellow-400 fill-half"
                         : "fill-gray-600 text-gray-600"
                     }
@@ -92,9 +80,9 @@ const DoctorCard = ({ name, experience, specialty, profilePicture, id }: DoctorC
           <div className="bg-purple-500/20 rounded-full inline-block">
             <Badge className="text-indigo-300 text-sm py-1 px-2">{specialty}</Badge>
           </div>
-           
+
         </div>
-          <Button onClick={handleCardClick}
+        <Button onClick={handleCardClick}
           className="w-full mt-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-colors">Book</Button>
       </div>
     </motion.div>

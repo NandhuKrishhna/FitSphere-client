@@ -3,15 +3,9 @@ import { X, Search } from "lucide-react"
 import useSearchFood from "@/hooks/App/useSerachFood"
 import useAddFood from "@/hooks/App/useAddFood"
 import useEditFood from "@/hooks/App/useEditFood"
-import type { IFoodItem } from "@/types/food"
+import type { FoodSearchModalProps, IFoodItem } from "@/types/food"
+import useDebounce from "@/hooks/DebounceHook"
 
-interface FoodSearchModalProps {
-  isOpen: boolean
-  onClose: () => void
-  mealType: string
-  editMode?: boolean
-  foodToEdit?: IFoodItem | null
-}
 
 export const FoodSearchModal = ({
   isOpen,
@@ -19,21 +13,33 @@ export const FoodSearchModal = ({
   mealType,
   editMode = false,
   foodToEdit = null,
+  selectedDay
 }: FoodSearchModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const { searchQuery, setSearchQuery, quantity, setQuantity, searchResults, isLoading } = useSearchFood()
   const [selectedFood, setSelectedFood] = useState<IFoodItem | null>(null)
   const { handleSaveFood, isLoading: addFoodLoading } = useAddFood(
+    selectedDay,
     mealType,
     selectedFood ? { ...selectedFood, quantity: `${quantity}g` } : null,
     onClose,
+    setSearchQuery
   )
   const { handleEditFood, isLoading: editFoodLoading } = useEditFood(
     mealType,
-    selectedFood ? { ...selectedFood, quantity: `${quantity}g` } : null,
+    selectedFood ? {
+      ...selectedFood,
+      quantity: `${quantity}g`,
+      protein: selectedFood.protein ?? 0,
+      carbs: selectedFood.carbs ?? 0,
+      fats: selectedFood.fats ?? 0
+    } : null,
     onClose,
+    selectedDay
   )
   const quantityOptions = [50, 100, 150, 200, 250, 300]
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
 
   const resultsArray = useMemo(() => searchResults || [], [searchResults])
   useEffect(() => {
@@ -47,12 +53,13 @@ export const FoodSearchModal = ({
   }, [editMode, foodToEdit, isOpen, setQuantity, setSearchQuery])
 
   useEffect(() => {
-    if (!editMode || (editMode && searchQuery !== foodToEdit?.name)) {
-      if (searchQuery && searchQuery.length > 2) {
-        setSelectedFood(null)
+    if (!editMode || (editMode && debouncedSearchQuery !== foodToEdit?.name)) {
+      if (debouncedSearchQuery && debouncedSearchQuery.length > 2) {
+        setSelectedFood(null);
       }
     }
-  }, [searchQuery, editMode, foodToEdit?.name])
+  }, [debouncedSearchQuery, editMode, foodToEdit?.name]);
+
 
   useEffect(() => {
     if (selectedFood && resultsArray.length > 0) {

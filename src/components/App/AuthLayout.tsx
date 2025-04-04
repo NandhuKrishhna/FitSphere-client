@@ -1,5 +1,3 @@
-"use client"
-
 import { motion } from "framer-motion"
 import { Eye, EyeOff, Loader, Mail, User } from "lucide-react"
 import { useState } from "react"
@@ -7,39 +5,7 @@ import { Link } from "react-router-dom"
 import PasswordStrengthChecker from "../../components/PasswordStrengthChecker"
 import { childVariants, containerVariants } from "../../framer-motion/form-motion"
 import InputField from "../../components/Input"
-import type { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form"
-
-export interface AuthFormInputs {
-  name?: string
-  email?: string
-  password?: string
-  confirmPassword?: string
-}
-
-export interface AuthForgotPasswordInputs {
-  email: string
-}
-
-interface AuthLayoutProps {
-  title?: string
-  subtitle?: string
-  isSignUp?: boolean
-  resetPassword?: boolean
-  forgotPassword?: boolean
-  onSubmit: () => void
-  register: UseFormRegister<AuthFormInputs>
-  errors: FieldErrors<AuthFormInputs>
-  watch?: UseFormWatch<AuthFormInputs>
-  isLoading: boolean
-  footerQuestion?: string
-  footerLinkText?: string
-  footerLinkPath?: string
-  submitButtonText?: string
-  forgotPasswordURL?: string
-  googleLoginOption?: boolean
-  handleGoogleLogin?: () => void
-
-}
+import { AuthLayoutProps } from "@/types/authentication.type"
 
 const AuthLayout = ({
   title,
@@ -58,9 +24,7 @@ const AuthLayout = ({
   submitButtonText,
   forgotPasswordURL,
   googleLoginOption,
-  handleGoogleLogin
-
-}: AuthLayoutProps) => {
+  handleGoogleLogin }: AuthLayoutProps) => {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
@@ -78,7 +42,7 @@ const AuthLayout = ({
               {subtitle}
             </motion.p>
             <form onSubmit={onSubmit} className="space-y-4">
-              {/* Forgot Password: Only show email input */}
+
               {forgotPassword ? (
                 <motion.div className="space-y-2" variants={childVariants}>
                   <InputField
@@ -92,7 +56,7 @@ const AuthLayout = ({
                 </motion.div>
               ) : resetPassword ? (
                 <>
-                  {/* Reset Password: Only show password & confirm password fields */}
+
                   <motion.div className="space-y-2" variants={childVariants}>
                     <div className="relative">
                       <InputField
@@ -134,7 +98,7 @@ const AuthLayout = ({
                 </>
               ) : (
                 <>
-                  {/* Sign Up Form */}
+
                   {isSignUp && (
                     <motion.div className="space-y-2" variants={childVariants}>
                       <InputField
@@ -147,7 +111,6 @@ const AuthLayout = ({
                     </motion.div>
                   )}
 
-                  {/* Email Input */}
                   <motion.div className="space-y-2" variants={childVariants}>
                     <InputField
                       id="email"
@@ -159,7 +122,6 @@ const AuthLayout = ({
                     {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                   </motion.div>
 
-                  {/* Password Input */}
                   <motion.div className="space-y-2" variants={childVariants}>
                     <div className="relative">
                       <InputField
@@ -187,7 +149,6 @@ const AuthLayout = ({
                     )}
                   </motion.div>
 
-                  {/* Confirm Password for Sign Up */}
                   {isSignUp && (
                     <motion.div className="space-y-2" variants={childVariants}>
                       <div className="relative">

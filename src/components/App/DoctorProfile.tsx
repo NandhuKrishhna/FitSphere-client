@@ -1,14 +1,8 @@
 import React from "react";
 import { BadgeCheck, Calendar } from "lucide-react";
 import RatingStars from "./RatingStars";
-import { DoctorDetails } from "@/types/DoctorDetail";
 import MobileContactInfo from "./MobileContactInfo";
-
-type DoctorProfileProps = {
-  doctorDetails: DoctorDetails;
-  averageRating: number;
-  totalReviews: number;
-};
+import { DoctorProfileProps } from "@/types/DoctorDetail";
 
 const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorDetails, averageRating, totalReviews }) => {
   return (

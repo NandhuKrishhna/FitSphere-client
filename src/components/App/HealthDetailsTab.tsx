@@ -7,47 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Edit, Loader, Save, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import useUpdateDoctorDetails from "@/hooks/DoctorHooks/useUpdateDoctorDetails";
+import { DoctorDetails, DoctorDetailsTabProps } from "@/types/doctorAppoitment.types";
 
-export interface DoctorDetailsResponse {
-  success: boolean;
-  message: string;
-  doctorDetails: DoctorDetails;
-}
 
-export interface DoctorDetails {
-  _id: string;
-  name: string;
-  email: string;
-  isActive: boolean;
-  role: string;
-  status: string;
-  profilePicture: string;
-  details: DoctorAdditionalDetails;
-}
-
-export interface DoctorAdditionalDetails {
-  bio: string;
-  experience: string;
-  consultationFees: string;
-  contactPhoneNumber: string;
-  professionalEmail: string;
-  officeAddress: string;
-  clinicLocations: string;
-  consultationLanguages: string;
-  primarySpecialty: string;
-  medicalLicenseNumber: string;
-  gender: string;
-  professionalTitle: string;
-}
-
-interface DoctorData {
-  doctorDetails: DoctorDetails;
-}
-
-interface DoctorDetailsTabProps {
-  doctorData?: DoctorData;
-  doctorLoading: boolean;
-}
 
 const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorLoading }) => {
   const { handleUpdateDoctorDetails, isUpdatingDetails } = useUpdateDoctorDetails();
