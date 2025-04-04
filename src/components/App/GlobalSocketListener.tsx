@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { NotificationDateType } from "@/pages/Test/ChatContainer";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useToast } from "../ui/toast-container";
 import { getSocket } from "@/lib/socketManager";
@@ -8,6 +7,7 @@ import { useGetAllNotificationQuery } from "@/redux/api/appApi";
 import { useLogout } from "@/hooks/userLogoutHook";
 import { useDoctorLogout } from "@/hooks/DoctorHooks/doctorLogoutHook";
 import { Roles } from "@/utils/Enums";
+import { NotificationDateType } from "@/types/types";
 export type NotificationType = {
     message: string;
 };

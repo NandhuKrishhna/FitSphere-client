@@ -3,6 +3,9 @@ import { useLazyDoctorLogoutQuery } from "../../redux/api/doctorApi";
 import toast from "react-hot-toast";
 import { setLogout } from "../../redux/slice/Auth_Slice";
 import { ErrorResponse } from "react-router-dom";
+import { disconnectSocket } from "@/lib/socketManager";
+import { resetSocketState } from "@/redux/slice/socket.ioSlice";
+import { resetAppState } from "@/redux/slice/appFeatSlice";
 
 
 
@@ -15,7 +18,11 @@ export const useDoctorLogout = () => {
         e?.preventDefault()
         try {
             await doctorLogout({}).unwrap()
-            dispatch(setLogout())
+            dispatch(setLogout());
+            disconnectSocket();
+            dispatch(resetSocketState());
+            dispatch(resetAppState());
+            localStorage.removeItem("accessToken");
             toast.success("Logout Successfull")
         } catch (error) {
             const err = error as ErrorResponse;

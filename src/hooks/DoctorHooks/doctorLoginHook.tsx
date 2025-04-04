@@ -6,8 +6,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useDoctorLoginMutation } from "../../redux/api/doctorApi";
 import { loginSchema } from "../../types/Validations/registerAsDoctorForm";
 import { setCredentials } from "../../redux/slice/Auth_Slice";
-import { AuthFormInputs } from "@/components/App/AuthLayout";
+
 import { connectSocket } from "@/lib/socketManager";
+import { AuthFormInputs } from "@/types/authentication.type";
 
 export const ERRORS = {
   EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email.",
@@ -32,7 +33,7 @@ const useDoctorLoginHook = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await doctorLogin(data).unwrap();
-
+      console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
       connectSocket(res.response._id, dispatch);

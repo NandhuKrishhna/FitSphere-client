@@ -2,10 +2,16 @@ import Header from "@/components/App/Header"
 import Navigation from "@/components/App/Navigation"
 import SubscriptionCard from "@/components/App/SubcriptionCard"
 import { useGetAllSubscriptionPlansQuery } from "@/redux/api/appApi"
-import { SubscriptionPlan } from "../Admin/SubcriptionManagement"
 import { usePurchaseSubscripiton } from "@/hooks/App/use-purchase-subscription"
 import { useToast } from "@/components/ui/toast-container"
-
+export type SubscriptionPlan = {
+  _id: string
+  planName: string
+  type: string
+  price: number
+  features: string[]
+  createdAt: string
+}
 
 const SubscriptionPage = () => {
   const { data: subscriptions } = useGetAllSubscriptionPlansQuery({})
@@ -54,7 +60,7 @@ const SubscriptionPage = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {subscriptions?.response?.map((plan: SubscriptionPlan) => (
+            {subscriptions?.subscriptionPlan.map((plan: SubscriptionPlan) => (
               <SubscriptionCard
                 key={plan._id}
                 title={plan.planName}
