@@ -1,16 +1,7 @@
 import React from "react";
 import ConsultationModal from "../App/Confirmation";
-import { SlotsResponse } from "@/types/DoctorDetail";
-import { Slot } from "./SlotCalender";
 
-type AppointmentSectionProps = {
-  slots: SlotsResponse;
-  doctorName: string;
-  specialty?: string;
-  handleSlotClick: (slot: Slot) => void;
-  handleBookSlot: () => void;
-  isLoading: boolean;
-};
+import { AppointmentSectionProps } from "@/types/appointmentList";
 
 const AppointmentSection: React.FC<AppointmentSectionProps> = ({
   slots,

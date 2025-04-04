@@ -5,61 +5,13 @@ import { Calendar, Clock, CreditCard, Loader, Mail, User, Video, Wallet } from "
 import { Roles } from "@/utils/Enums"
 import useHandleJoinMeeting from "@/hooks/App/useJoinMeeting"
 import { useAppointmentActions } from "@/hooks/App/useAppointmentActions"
+import { AppointmentDetailsModalProps } from "@/types/appointmentList"
+import useAppointmentsDetails from "@/hooks/App/useAppointmentDetailts"
 
-interface Appointment {
-  _id: string
-  consultationType: string
-  date: string
-  paymentStatus: string
-  amount: number
-  status: string
-  meetingId: string
-  paymentMethod: string
-  paymentThrough: string
-  slot: {
-    startTime: string
-    endTime: string
-  }
-  otherUser: {
-    name: string
-    email: string
-    profilePicture: string
-  }
-}
-
-interface AppointmentDetailsModalProps {
-  isOpen: boolean
-  onClose: () => void
-  appointment: Appointment
-  role?: string
-}
-
-export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }: AppointmentDetailsModalProps) {
+export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role, query }: AppointmentDetailsModalProps) {
   const { handleCancelAppointment, isAppointmentCancelLoading } = useAppointmentActions()
-  const { handleJoinMeet, isJoiningMeeting } = useHandleJoinMeeting()
-  if (!appointment) return null
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      timeZoneName: "short",
-    }).format(date)
-  }
-
-  const formatTime = (timeString: string) => {
-    const date = new Date(timeString)
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }).format(date)
-  }
-
+  const { handleJoinMeet, isJoiningMeeting } = useHandleJoinMeeting();
+  const { formatDate, formatTime } = useAppointmentsDetails();
 
 
   return (
@@ -95,7 +47,7 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
                 </span>
                 {appointment.meetingId && appointment.status === "scheduled" && (
                   <Button
-                    onClick={() => handleJoinMeet(appointment?.meetingId)}
+                    onClick={() => handleJoinMeet(appointment.meetingId!)}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2"
                   >
                     {isJoiningMeeting ? <Loader className="animate-spin" /> : "Join Meet"}
@@ -194,7 +146,7 @@ export function AppointmentDetailsDialog({ isOpen, onClose, appointment, role }:
                   className="bg-indigo-500 ml-auto"
                   variant="outline"
                   onClick={async () => {
-                    await handleCancelAppointment(appointment._id);
+                    await handleCancelAppointment(appointment._id, query);
                     onClose();
                   }}
                 >

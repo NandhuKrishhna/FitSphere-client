@@ -1,99 +1,45 @@
-import { useState } from "react"
 import { Search, ArrowDown, ArrowUp, Calendar, Wallet, Check, Info, Video } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, } from "@/components/ui/select"
-import { useGetAppointmentDetailsQuery } from "@/redux/api/appApi"
 import { Pagination } from "@/components/App/TestPagination"
 import { AppointmentDetailsDialog } from "./AppointmentDetailDialog"
-import { useSelector } from "react-redux"
-import { selectCurrentUser } from "@/redux/slice/Auth_Slice"
-import { Roles } from "@/utils/Enums"
 import { formatDate, formatToIndianTime } from "@/utils/useTimeFormatter"
+import { IGetAppointment } from "@/types/api/appointment-api-types"
+import { useAppointments } from "@/hooks/App/useAppointment"
+import { Roles } from '@/utils/Enums'
 
 
-export interface AppointmentQueryParams {
-  page?: number
-  limit?: number
-  search?: string
-  status?: string
-  paymentStatus?: string
-  consultationType?: string
-  sortBy?: string
-  sortOrder?: "asc" | "desc"
-}
-
-interface Appointment {
-  _id: string
-  consultationType: string
-  date: string
-  paymentStatus: string
-  amount: number
-  status: string
-  meetingId: string
-  paymentMethod: string
-  paymentThrough: string
-  slot: {
-    startTime: string
-    endTime: string
-  }
-  otherUser: {
-    name: string
-    email: string
-    profilePicture: string
-  }
-}
 
 export default function AppointmentTable() {
-  const role = useSelector(selectCurrentUser)?.role
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [paymentStatusFilter, setPaymentStatusFilter] = useState<string>("all")
-  const [consultationTypeFilter, setConsultationTypeFilter] = useState<string>("all")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [sortConfig, setSortConfig] = useState<{
-    key: string
-    direction: "asc" | "desc"
-  }>({
-    key: "date",
-    direction: "desc",
-  })
+  const {
+    role,
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    paymentStatusFilter,
+    setPaymentStatusFilter,
+    consultationTypeFilter,
+    setConsultationTypeFilter,
+    currentPage,
+    setCurrentPage,
+    sortConfig,
+    requestSort,
+    selectedAppointment,
+    isModalOpen,
+    setIsModalOpen,
+    appointments,
+    totalPages,
+    totalItems,
+    isLoading,
+    isFetching,
+    error,
+    handleViewDetails,
+    queryParams
+  } = useAppointments()
 
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const queryParams: AppointmentQueryParams = {
-    page: currentPage,
-    limit: 5,
-    sortBy: sortConfig.key,
-    sortOrder: sortConfig.direction,
-  }
-  if (searchTerm) queryParams.search = searchTerm
-  if (statusFilter !== "all") queryParams.status = statusFilter
-  if (paymentStatusFilter !== "all") queryParams.paymentStatus = paymentStatusFilter
-  if (consultationTypeFilter !== "all") queryParams.consultationType = consultationTypeFilter
-
-  const { data, isLoading, isFetching, error } = useGetAppointmentDetailsQuery(queryParams)
-
-  const appointments = data?.data || []
-  const totalPages = data?.meta?.totalPages || 1
-  const totalItems = data?.meta?.total || 0
-
-  const requestSort = (key: string) => {
-    let direction: "asc" | "desc" = "asc"
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc"
-    }
-    setSortConfig({ key, direction })
-  }
-
-
-
-  const handleViewDetails = (appointment: Appointment) => {
-    setSelectedAppointment(appointment)
-    setIsModalOpen(true)
-  }
 
   return (
     <>
@@ -268,7 +214,7 @@ export default function AppointmentTable() {
                   </thead>
                   <tbody>
                     {appointments.length > 0 ? (
-                      appointments.map((appointment: Appointment) => (
+                      appointments.map((appointment: IGetAppointment) => (
                         <tr
                           key={appointment._id}
                           className="border-t border-gray-800 hover:bg-gray-800 transition-colors"
@@ -368,6 +314,7 @@ export default function AppointmentTable() {
           onClose={() => setIsModalOpen(false)}
           appointment={selectedAppointment}
           role={role}
+          query={queryParams}
         />
       )}
     </>
