@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userRegisterSchema } from "../../types/Validations/registerAsDoctorForm";
 import { useDoctorSignUpMutation } from "../../redux/api/doctorApi";
 import { setCredentials } from "../../redux/slice/Auth_Slice";
-import { AuthFormInputs } from "@/components/App/AuthLayout";
+import { AuthFormInputs } from "@/types/authentication.type";
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;

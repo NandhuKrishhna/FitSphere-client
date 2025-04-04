@@ -27,6 +27,7 @@ export interface ICancelledAppointmentResponse {
 
 export interface IAppointmentApiResponse {
     success: boolean;
+    message: string;
     data: IGetAppointment[];
     meta: {
         total: number;

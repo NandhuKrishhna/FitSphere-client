@@ -29,7 +29,12 @@ const DoctorDashboardPage = () => {
   return (
     <div className="flex flex-col lg:flex-row items-start justify-center gap-4 lg:w-[80%] mx-auto">
       <div className="w-full lg:w-1/2 mt-9">
-        <SlotList slots={slots} isLoading={isSlotsLoading} onCancel={cancelSlot} isCancelLoading={isCancelLoading} />
+        <SlotList
+          slots={slots}
+          isLoading={isSlotsLoading}
+          onCancel={(slotId) => cancelSlot({ slotId })}
+          isCancelLoading={isCancelLoading}
+        />
       </div>
       <div className="w-full lg:w-1/2 mb-10">
         <ConsultationCalendar

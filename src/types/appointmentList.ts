@@ -1,6 +1,5 @@
-import { Slot } from "@/components/App/SlotCalender";
 import { IGetAppointment } from "./api/appointment-api-types";
-import { SlotsResponse } from "./DoctorDetail";
+import { Slot, SlotsResponse } from "./DoctorDetail";
 
 interface Doctor {
   name: string;

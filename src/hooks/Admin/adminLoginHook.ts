@@ -2,11 +2,11 @@ import { useDispatch } from "react-redux";
 import { ErrorResponse, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { setCredentials } from "../../redux/slice/Auth_Slice";
-import { AuthFormInputs } from "@/components/App/AuthLayout";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAdminLoginMutation } from "@/redux/api/adminApi";
 import { loginSchema } from "@/types/Validations/registerAsDoctorForm";
+import { AuthFormInputs } from "@/types/authentication.type";
 const useAdminLoginHook = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

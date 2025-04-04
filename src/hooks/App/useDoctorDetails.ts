@@ -13,8 +13,8 @@ import toast from "react-hot-toast";
 import { Order, RazorpayResponse } from "../../types/Payments";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { useNavigate } from "react-router-dom";
-import { Slot } from "../../components/App/SlotCalender";
 import { ErrorResponse } from "../LoginHook";
+import { Slot } from "@/types/DoctorDetail";
 
 export const useDoctorDetails = () => {
   const doctorId = useSelector((state: RootState) => state.appFeat.selectedDoctorId);

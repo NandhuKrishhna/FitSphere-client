@@ -1,5 +1,6 @@
-import AuthLayout, { AuthFormInputs } from "@/components/App/AuthLayout";
+import AuthLayout from "@/components/App/AuthLayout";
 import useForgotPasswordHook from "@/hooks/enterForgotPasswordHook";
+import { AuthFormInputs } from "@/types/authentication.type";
 import { UseFormRegister } from "react-hook-form";
 
 const ForgotPasswordPage = () => {

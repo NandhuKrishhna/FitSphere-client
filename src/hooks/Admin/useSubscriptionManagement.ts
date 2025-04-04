@@ -20,7 +20,8 @@ const useSubscriptionManagement = () => {
     const [currentPlan, setCurrentPlan] = useState<ISubscription | null>(null)
     const [isEditing, setIsEditing] = useState(false)
 
-    const [formData, setFormData] = useState<Omit<ISubscription, "_id">>({
+    const [formData, setFormData] = useState<ISubscription>({
+        _id: '',
         planName: "",
         type: "basic",
         price: 0,
@@ -32,6 +33,7 @@ const useSubscriptionManagement = () => {
 
     const resetForm = () => {
         setFormData({
+            _id: '',
             planName: "",
             type: "basic",
             price: 0,
@@ -51,6 +53,7 @@ const useSubscriptionManagement = () => {
     const handleEdit = (plan: ISubscription) => {
         setIsEditing(true)
         setFormData({
+            _id: plan._id,
             planName: plan.planName,
             type: plan.type,
             price: plan.price,
@@ -106,8 +109,8 @@ const useSubscriptionManagement = () => {
         if (isEditing && currentPlan) {
 
             handleEditSubscription({
+                ...formData,
                 _id: currentPlan._id,
-                ...formData
             });
         } else {
 

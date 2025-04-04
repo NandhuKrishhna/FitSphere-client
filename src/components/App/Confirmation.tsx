@@ -2,9 +2,9 @@ import { useState, useMemo, useEffect } from "react";
 import { format, toZonedTime } from "date-fns-tz";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import type { Slot } from "./SlotCalender";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CalendarProps } from "@/types/calories.types";
+import { Slot } from "@/types/DoctorDetail";
 
 export default function ConsultationModal({
   slots, name, dept, onSlotClick }: CalendarProps) {

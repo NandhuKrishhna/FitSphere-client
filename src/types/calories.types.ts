@@ -1,4 +1,5 @@
-import { Slot } from "@/components/App/SlotCalender";
+import { Slot } from "./DoctorDetail";
+
 
 export interface Ingredient {
   id: number;

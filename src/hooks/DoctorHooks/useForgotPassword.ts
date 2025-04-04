@@ -2,10 +2,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthForgotPasswordInputs } from "@/components/App/AuthLayout";
 import { emailScheme } from "@/types/Validations/registerAsDoctorForm";
 import { useForgotPasswordMutation } from "@/redux/api/doctorApi";
 import { Roles } from "@/utils/Enums";
+import { AuthForgotPasswordInputs } from "@/types/authentication.type";
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;

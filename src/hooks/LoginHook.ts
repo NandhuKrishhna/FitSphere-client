@@ -7,7 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { loginSchema } from "../types/Validations/registerAsDoctorForm";
 import { setCredentials } from "../redux/slice/Auth_Slice";
 import { connectSocket } from "@/lib/socketManager";
-import { AuthFormInputs } from "@/components/App/AuthLayout";
+import { AuthFormInputs } from "@/types/authentication.type";
 export const ERRORS = {
   EMAIL_VERIFICATION_REQUIRED: "Please verify your email. A verification code has been sent to your email.",
 };

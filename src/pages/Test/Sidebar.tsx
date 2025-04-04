@@ -6,7 +6,7 @@ import { selectOnlineUsers, selectSelectedUser, setSelectedUser } from "@/redux/
 import { getSocket } from "@/lib/socketManager";
 import SidebarSkeleton from "./SidebarSkeleton";
 import { AvatarDemo } from "@/components/App/Avatar";
-import { SelectedUser } from "@/types/ChatTypes";
+import { ISidebarUsers } from "@/types/api/chat-api-types";
 
 const ChatSideBar = () => {
   const { data, isLoading, refetch } = useGetSidebarUsersQuery(undefined);
@@ -95,10 +95,11 @@ const ChatSideBar = () => {
 
       <div className="overflow-y-auto w-full py-3">
         {filteredUsers.length > 0 ? (
-          filteredUsers.map((user: SelectedUser) => (
+          filteredUsers.map((user: ISidebarUsers) => (
             <button
               key={user?.doctorDetails?._id}
-              onClick={() => dispatch(setSelectedUser(user))}
+              onClick={() =>
+                dispatch(setSelectedUser({ ...user, lastMessage: user.lastMessage ?? '' }))}
               className={`w-full p-3 flex items-center justify-between gap-3 hover:bg-base-300 transition-colors ${user.doctorDetails?._id === selectedUserId ? "bg-base-200" : ""
                 }`}
             >

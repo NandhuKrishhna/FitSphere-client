@@ -224,7 +224,7 @@ export const adminApi = apiSlice.injectEndpoints({
         }
       }
     }),
-    deleteSubcription: builder.mutation<void, string>({
+    deleteSubcription: builder.mutation<{ success: boolean, message: string }, string>({
       query: (id) => ({
         url: `/admin/delete-subscription-plan/${id}`,
         method: "DELETE",

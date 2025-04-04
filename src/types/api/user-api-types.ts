@@ -6,15 +6,15 @@ export interface IGetUserHealthDetails {
     userHealthDetails: HealthDetails
 };
 export interface IUpdateUserHealthDetails {
-    age: number;
-    gender: string;
-    height: number;
-    weight: number;
-    activityLevel: string;
-    goal: string;
-    targetWeight: number;
-    weeksToGoal: number;
-    targetDailyCalories: number;
+    age?: number;
+    gender?: string;
+    height?: number;
+    weight?: number;
+    activityLevel?: string;
+    goal?: string;
+    targetWeight?: number;
+    weeksToGoal?: number;
+    targetDailyCalories?: number;
 };
 export interface IUpdateUserHealthDetailsResponse {
     success: boolean;

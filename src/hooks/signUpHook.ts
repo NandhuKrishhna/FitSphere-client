@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { userRegisterSchema } from "../types/Validations/registerAsDoctorForm";
 import { ErrorResponse } from "../types/userTypes";
 import { useSignUpMutation } from "../redux/api/apiSlice";
-import { AuthFormInputs } from "@/components/App/AuthLayout";
+import { AuthFormInputs } from "@/types/authentication.type";
 
 const useSignUp = () => {
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
-import AuthLayout, { AuthFormInputs } from "@/components/App/AuthLayout";
+import AuthLayout from "@/components/App/AuthLayout";
 import useDoctorForgotPasswordHook from "@/hooks/DoctorHooks/useForgotPassword";
+import { AuthFormInputs } from "@/types/authentication.type";
 import { UseFormRegister } from "react-hook-form";
 
 const DoctorForgotPasswordPage = () => {

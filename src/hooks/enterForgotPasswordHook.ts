@@ -4,8 +4,8 @@ import { useResetPasswordMutation } from "../redux/api/apiSlice";
 import { emailScheme } from "../types/Validations/registerAsDoctorForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthForgotPasswordInputs } from "@/components/App/AuthLayout";
 import { Roles } from "@/utils/Enums";
+import { AuthForgotPasswordInputs } from "@/types/authentication.type";
 interface ErrorResponse {
   data: {
     errors?: Array<{ path: string; message: string }>;
