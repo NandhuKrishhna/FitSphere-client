@@ -1,22 +1,10 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, addDays, startOfWeek, isSameDay, parseISO } from "date-fns";
+import { ICalendarProps } from "@/types/types";
 
-interface Slot {
-  _id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: string;
-}
 
-interface CalendarProps {
-  selectedMonth: string;
-  onMonthChange: (month: string) => void;
-  slots?: Slot[];
-}
-
-export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: CalendarProps) {
+export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: ICalendarProps) {
   const [weekStart, setWeekStart] = useState(startOfWeek(new Date()));
   const [isMonthDropdownOpen, setIsMonthDropdownOpen] = useState(false);
 
@@ -119,9 +107,8 @@ export default function Calendar({ selectedMonth, onMonthChange, slots = [] }: C
         {days.map((day, index) => (
           <div
             key={index}
-            className={`flex flex-col items-center justify-center text-black rounded-full w-12 h-12 relative ${
-              day.isSelected ? "bg-yellow-300" : "bg-white"
-            }`}
+            className={`flex flex-col items-center justify-center text-black rounded-full w-12 h-12 relative ${day.isSelected ? "bg-yellow-300" : "bg-white"
+              }`}
           >
             <span className="text-sm font-semibold">{day.num}</span>
             <span className="text-xs">{day.day}</span>

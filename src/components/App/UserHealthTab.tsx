@@ -6,27 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Edit, Loader, Save, X } from "lucide-react";
 import useUpdateUserHealthDetails from "@/hooks/App/useUpdateHealthDetails";
+import { HealthDetails } from "@/types/userHealth.types";
+import { HealthDetailsTabProps } from "@/types/types";
 
-interface HealthDetails {
-  age: number;
-  gender: string;
-  height: number;
-  weight: number;
-  activityLevel: string;
-  goal: string;
-  targetWeight: number;
-  weeksToGoal: number;
-  targetDailyCalories?: number;
-}
-
-interface HealthData {
-  userHealthDetails: HealthDetails;
-}
-
-interface HealthDetailsTabProps {
-  healthData?: HealthData;
-  healthLoading: boolean;
-}
 
 const UserHealthDetailsTab: React.FC<HealthDetailsTabProps> = ({ healthData, healthLoading }) => {
   const { handleUpdateUserHealthDetails, isUpdatingUser } = useUpdateUserHealthDetails();

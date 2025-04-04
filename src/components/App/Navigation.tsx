@@ -162,14 +162,14 @@ export default function Navigation() {
         <LayoutList className="w-5 h-5" />
         <span className="text-xs mt-1">Appointments</span>
       </Link>
-
+      {/* 
       <Link
         to="/transactions"
         className={`flex flex-col items-center p-2 ${getLinkClass("/transactions")}`}
       >
         <ClipboardList className="w-5 h-5" />
         <span className="text-xs mt-1">Transaction</span>
-      </Link>
+      </Link> */}
     </nav>
   );
 }

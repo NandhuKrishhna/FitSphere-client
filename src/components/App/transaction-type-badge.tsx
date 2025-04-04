@@ -1,10 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 
-interface TransactionStatusBadgeProps {
-  status: string
-}
-
-export function TransactionStatusBadge({ status }: TransactionStatusBadgeProps) {
+export function TransactionStatusBadge({ status }: { status: string }) {
   let badgeStyles = ""
 
   switch (status) {

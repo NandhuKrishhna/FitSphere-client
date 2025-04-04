@@ -1,5 +1,3 @@
-import type React from "react"
-import { useState } from "react"
 import { PlusCircle, Pencil, Trash2, X, Check, Loader } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -26,130 +24,38 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useGetAllSubcriptionQuery } from "@/redux/api/adminApi"
 import Header from "@/components/App/Header"
 import Navigation from "@/components/App/Navigation"
-import useCreateSubscription from "@/hooks/Admin/useCreateSubscription"
-import useEditSubscription from "@/hooks/Admin/useEditSubscription"
-import useDeleteSubcription from "@/hooks/Admin/useDeleteSubscription"
+import { ISubscription } from "@/types/api/admin-api-types"
+import useSubscriptionManagement from "@/hooks/Admin/useSubscriptionManagement"
 
-type PlanType = "basic" | "premium" | "enterprise" | "custom"
-
-export interface SubscriptionPlan {
-    _id: string
-    planName: string
-    type: PlanType
-    price: number
-    features: string[]
-}
-
+export type PlanType = "basic" | "premium" | "enterprise"
 export default function SubscriptionManagement() {
-    const { data: subscriptionPlans } = useGetAllSubcriptionQuery({})
-    const { handleAddSubscription, isAddSubscriptionLoading } = useCreateSubscription();
-    const { handleEditSubscription, isEditSubscriptionLoading } = useEditSubscription();
-    const { handleDeleteSubscription, isDeleteSubscriptionLoading } = useDeleteSubcription();
+    const {
+        subscriptionPlans,
+        isAddSubscriptionLoading,
+        isEditSubscriptionLoading,
+        isDeleteSubscriptionLoading,
+        isFormOpen,
+        isDeleteDialogOpen,
+        currentPlan,
+        isEditing,
+        formData,
+        featureInput,
+        handleCreate,
+        handleEdit,
+        handleDeleteClick,
+        handleDelete,
+        addFeature,
+        removeFeature,
+        handleInputChange,
+        handleTypeChange,
+        handleSave,
+        setIsFormOpen,
+        setIsDeleteDialogOpen,
+        setFeatureInput
 
-    const [isFormOpen, setIsFormOpen] = useState(false)
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-    const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan | null>(null)
-    const [isEditing, setIsEditing] = useState(false)
-
-    const [formData, setFormData] = useState<Omit<SubscriptionPlan, "_id">>({
-        planName: "",
-        type: "basic",
-        price: 0,
-        features: [],
-    })
-
-    const [featureInput, setFeatureInput] = useState("")
-
-
-    const resetForm = () => {
-        setFormData({
-            planName: "",
-            type: "basic",
-            price: 0,
-            features: [],
-        })
-        setFeatureInput("")
-    }
-
-
-    const handleCreate = () => {
-        setIsEditing(false)
-        resetForm()
-        setIsFormOpen(true)
-    }
-
-
-    const handleEdit = (plan: SubscriptionPlan) => {
-        setIsEditing(true)
-        setFormData({
-            planName: plan.planName,
-            type: plan.type,
-            price: plan.price,
-            features: [...plan.features],
-        })
-        setCurrentPlan(plan)
-        setIsFormOpen(true)
-    }
-
-    const handleDeleteClick = (plan: SubscriptionPlan) => {
-        setCurrentPlan(plan)
-        setIsDeleteDialogOpen(true)
-    }
-
-    const handleDelete = (id: string | undefined) => {
-        if (!id) return;
-        handleDeleteSubscription(id)
-    }
-    const addFeature = () => {
-        if (featureInput.trim()) {
-            setFormData({
-                ...formData,
-                features: [...formData.features, featureInput.trim()],
-            })
-            setFeatureInput("")
-        }
-    }
-    const removeFeature = (index: number) => {
-        const updatedFeatures = [...formData.features]
-        updatedFeatures.splice(index, 1)
-        setFormData({
-            ...formData,
-            features: updatedFeatures,
-        })
-    }
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData({
-            ...formData,
-            [name]: name === "price" ? Number.parseFloat(value) || 0 : value,
-        })
-    }
-
-    const handleTypeChange = (value: string) => {
-        setFormData({
-            ...formData,
-            type: value as PlanType,
-        })
-    }
-
-
-    const handleSave = () => {
-        if (isEditing && currentPlan) {
-
-            handleEditSubscription({
-                id: currentPlan._id,
-                ...formData
-            });
-        } else {
-
-            handleAddSubscription(formData);
-        }
-        setIsFormOpen(false)
-        resetForm()
-    }
+    } = useSubscriptionManagement();
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -165,7 +71,7 @@ export default function SubscriptionManagement() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {subscriptionPlans?.response.map((plan: SubscriptionPlan) => (
+                    {subscriptionPlans?.subscriptionPlan.map((plan: ISubscription) => (
                         <Card key={plan._id} className="overflow-hidden border-indigo-800 bg-gray-900">
                             <CardHeader className="bg-gray-800">
                                 <div className="flex justify-between items-start">

@@ -7,29 +7,7 @@ import { ArrowUpRight, Wallet } from "lucide-react"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
-export type TotalEarningsProps = {
-  selectedView: string
-  onViewChange: (view: string) => void
-}
-
-type Transaction = {
-  amount: number
-  createdAt: string
-  currency: string
-  description: string
-  role: string
-  status: string
-  type: string
-  updatedAt: string
-  userId: string
-  walletId: string
-  _id: string
-}
-
-type ChartDataItem = {
-  date: string
-  amount: number
-}
+import { ChartDataItem, TotalEarningsProps, Transaction } from "@/types/Slot"
 
 export default function TotalEarnings({ selectedView, onViewChange }: TotalEarningsProps) {
   const user = useSelector(selectCurrentUser)

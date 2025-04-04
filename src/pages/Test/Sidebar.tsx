@@ -9,7 +9,7 @@ import { AvatarDemo } from "@/components/App/Avatar";
 import { SelectedUser } from "@/types/ChatTypes";
 
 const ChatSideBar = () => {
-  const { data, isLoading, refetch } = useGetSidebarUsersQuery({});
+  const { data, isLoading, refetch } = useGetSidebarUsersQuery(undefined);
   const dispatch = useDispatch();
   const onlineUsers = useSelector(selectOnlineUsers);
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);

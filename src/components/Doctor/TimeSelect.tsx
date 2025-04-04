@@ -1,11 +1,7 @@
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { TimeSelectProps } from "@/types/Slot";
 
-interface TimeSelectProps {
-  label?: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: string[];
-}
+
 
 const TimeSelect: React.FC<TimeSelectProps> = ({ label, value, onChange, options }) => {
   return (

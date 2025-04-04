@@ -12,18 +12,9 @@ import { TransactionStatusBadge } from "./transaction-type-badge"
 import { Pagination } from "./TestPagination"
 import { Transaction } from "@/types/transaction"
 import { formatDate } from "@/utils/useTimeFormatter"
+import { PaymentType, TransactionQueryParams } from "@/types/types"
+import useDebounce from "@/hooks/DebounceHook"
 
-type PaymentType = "slot_booking" | "cancel_appointment" | "subscription" | "refund";
-export interface TransactionQueryParams {
-  page?: number
-  limit?: number
-  search?: string
-  type?: string
-  status?: string
-  paymentType?: string
-  sortBy?: string
-  sortOrder?: "asc" | "desc"
-}
 
 export default function TransactionTable() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -47,7 +38,8 @@ export default function TransactionTable() {
     sortBy: sortConfig.key,
     sortOrder: sortConfig.direction,
   }
-  if (searchTerm) queryParams.search = searchTerm
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  if (debouncedSearchTerm) queryParams.search = debouncedSearchTerm
   if (typeFilter !== "all") queryParams.type = typeFilter
   if (statusFilter !== "all") queryParams.status = statusFilter
   if (paymentTypeFilter !== "all") queryParams.paymentType = paymentTypeFilter;

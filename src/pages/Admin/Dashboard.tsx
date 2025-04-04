@@ -4,15 +4,8 @@ import { useAdminDashboardQuery } from "@/redux/api/adminApi"
 import Header from "@/components/App/Header"
 import Navigation from "@/components/App/Navigation"
 import { AvatarDemo } from "@/components/App/Avatar"
+import { TopDoctor } from "@/types/admin.types"
 
-interface TopDoctor {
-    _id: string
-    name: string
-    email: string
-    profilePicture: string
-    averageRating: number
-    totalReviews: number
-}
 
 const AdminDashboard: React.FC = () => {
     const { data: dashboardData, isLoading } = useAdminDashboardQuery({})

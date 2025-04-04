@@ -1,15 +1,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Calendar, CreditCard, Mail, User, Wallet } from "lucide-react"
-import { Transaction } from "@/types/transaction"
+import { TransactionDetailsModalProps } from "@/types/transaction"
 
-interface TransactionDetailsModalProps {
-  isOpen: boolean
-  onClose: () => void
-  transaction: Transaction
-}
 
-export function TransactionDetailsModal({ isOpen, onClose, transaction }: TransactionDetailsModalProps) {
+export function TransactionDetailsModal({ isOpen, onClose, transaction, }: TransactionDetailsModalProps) {
   if (!transaction) return null
 
   const formatDate = (dateString: string) => {

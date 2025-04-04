@@ -18,7 +18,7 @@ export default function DoctorProfilePage() {
   return (
     <div className="min-h-screen bg-black to-purple-900 p-4 md:p-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Left Column */}
+
         <div className="flex flex-col gap-4">
           <div className="bg-zinc-600 rounded-xl p-5">
             <ReviewsRatings id={user?._id} />
@@ -28,7 +28,7 @@ export default function DoctorProfilePage() {
           </div>
         </div>
 
-        {/* Right Column - Profile and Edit Options */}
+
         <div className="lg:col-span-2">
           <Tabs defaultValue="profile" className="w-full">
             <TabsList className="grid grid-cols-3 mb-4">
@@ -37,19 +37,16 @@ export default function DoctorProfilePage() {
               <TabsTrigger value="change-password">Change Password</TabsTrigger>
             </TabsList>
 
-            {/* Profile Tab */}
+
             <TabsContent value="profile">
               <div className="rounded-xl overflow-hidden">
                 {doctorDetails && <DoctorProfile doctorDetails={doctorDetails} />}
               </div>
             </TabsContent>
 
-            {/* Edit Profile Tab - Using UpdateDoctorProfile component with doctorDetails */}
             <TabsContent value="edit-profile">
               {doctorDetails && <DoctorDetailsTab doctorData={doctorDetails} doctorLoading={isLoading} />}
             </TabsContent>
-
-            {/* Change Password Tab */}
             <TabsContent value="change-password">
               <SecurityTab />
             </TabsContent>

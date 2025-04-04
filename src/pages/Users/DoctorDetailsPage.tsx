@@ -38,7 +38,8 @@ const DoctorDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
-  const { data: reviewsData } = useGetReviewsQuery(doctorId);
+  const { data: reviewsData } = useGetReviewsQuery(doctorId ?? "", { skip: !doctorId });
+  console.log(reviewsData)
   const reviews = reviewsData?.response?.reviews || [];
   const averageRating = reviewsData?.response?.averageRating || 0;
   const totalReviews = reviewsData?.response?.totalReviews || 0;

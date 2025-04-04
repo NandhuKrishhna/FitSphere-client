@@ -1,19 +1,8 @@
 import ProgressBar from "@/components/App/ProgressBar"
-import type { ReactNode } from "react"
 import { motion } from "framer-motion"
+import { PageLayoutProps } from "@/types/types"
 
-type PageLayoutProps = {
-  children: ReactNode
-  title: string
-  subtitle?: string
-  step: number
-  totalSteps: number
-  backAction?: () => void
-  nextAction?: () => void
-  nextDisabled?: boolean
-  nextLabel?: string
-  hideNext?: boolean
-}
+
 
 export default function PageLayout({
   children,

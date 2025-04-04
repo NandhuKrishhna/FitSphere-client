@@ -1,12 +1,7 @@
 import { Button } from "@/components/ui/button"
+import { PaginationProps } from "@/types/types"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-  isLoading?: boolean
-}
 
 export function Pagination({ currentPage, totalPages, onPageChange, isLoading = false }: PaginationProps) {
   const getPageNumbers = () => {

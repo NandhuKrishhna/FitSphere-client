@@ -1,15 +1,9 @@
 import React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { IPaginationProps } from "@/types/types"
 
-interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  totalItems: number
-  itemsPerPage: number
-  onPageChange: (page: number) => void
-}
 
-const Pagination: React.FC<PaginationProps> = ({
+const Pagination: React.FC<IPaginationProps> = ({
   currentPage,
   totalPages,
   totalItems,

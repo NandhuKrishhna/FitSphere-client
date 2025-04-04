@@ -2,16 +2,8 @@ import { addWeeks, addMonths, startOfToday, format } from "date-fns";
 import { Repeat, Calendar } from "lucide-react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { RecurringSlotProps } from "@/types/types";
 
-interface RecurringSlotProps {
-  enableRecurring: boolean;
-  setEnableRecurring: React.Dispatch<React.SetStateAction<boolean>>;
-  recurrenceType: "daily" | "weekly" | "monthly";
-  setRecurrenceType: React.Dispatch<React.SetStateAction<"daily" | "weekly" | "monthly">>;
-  recurrenceEndDate: Date | null;
-  setRecurrenceEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
-  selectedDate: Date | null;
-}
 
 export default function RecurringSlot({
   enableRecurring,
@@ -32,7 +24,6 @@ export default function RecurringSlot({
           <span className="text-sm font-medium text-gray-300">Make this a recurring slot</span>
         </div>
 
-        {/* Custom checkbox instead of Switch component */}
         <label className="relative inline-flex items-center cursor-pointer">
           <input
             type="checkbox"
@@ -109,8 +100,8 @@ export default function RecurringSlot({
             {recurrenceType === "daily"
               ? "every day"
               : recurrenceType === "weekly"
-              ? `every ${format(selectedDate || startOfToday(), "EEEE")}`
-              : `on the ${format(selectedDate || startOfToday(), "do")} of each month`}{" "}
+                ? `every ${format(selectedDate || startOfToday(), "EEEE")}`
+                : `on the ${format(selectedDate || startOfToday(), "do")} of each month`}{" "}
             until {format(recurrenceEndDate || defaultEndDate, "PPP")}.
           </div>
         </div>

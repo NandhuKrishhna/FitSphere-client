@@ -16,8 +16,9 @@ export default function HomePageTest() {
   const [foodLogs, setFoodLogs] = useState<FoodLogResponse | null>(null)
   const { data: foodLog } = useGetUserFoodLogsDetailsQuery(
     { date: selectedDay },
-    { skip: !selectedDay, refetchOnMountOrArgChange: true },
+    { skip: !selectedDay, refetchOnMountOrArgChange: false },
   )
+  console.log(foodLog)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [selectedMealType, setSelectedMealType] = useState("")
@@ -125,6 +126,7 @@ export default function HomePageTest() {
           handleOpenEditFoodModal={handleOpenEditFoodModal}
           handleDeleteFood={handleDeleteFood}
           loadingItems={loadingItems}
+
         />
       </main>
 
@@ -134,6 +136,7 @@ export default function HomePageTest() {
         mealType={selectedMealType}
         editMode={isEditMode}
         foodToEdit={selectedFoodItem}
+        selectedDay={selectedDay}
       />
 
       <CongratulationsAnimation isVisible={showCongrats} onClose={() => setShowCongrats(false)} />

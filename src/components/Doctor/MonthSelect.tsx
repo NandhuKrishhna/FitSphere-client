@@ -1,10 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MonthSelectProps } from "@/types/types";
 import { format } from "date-fns";
-
-type MonthSelectProps = {
-  selectedDate: Date;
-  onChange: (value: string) => void;
-};
 
 const MonthSelect: React.FC<MonthSelectProps> = ({ selectedDate, onChange }) => {
   const selectedYear = selectedDate.getFullYear();

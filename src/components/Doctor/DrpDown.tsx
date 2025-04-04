@@ -1,11 +1,7 @@
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { DropdownProps } from "@/types/types";
 
-interface DropdownProps<T> {
-  title: string;
-  options: { label: string; value: T }[];
-  onChange: (value: T) => void;
-  className?: string;
-}
+
 
 const Dropdown = <T extends string>({ title, options, onChange, className }: DropdownProps<T>) => {
   return (

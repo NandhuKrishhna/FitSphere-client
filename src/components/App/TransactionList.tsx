@@ -1,25 +1,7 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
 import TransactionItem from "./TransactionItem"
-
-
-interface Transaction {
-  _id: string
-  description: string
-  createdAt: string
-  amount: number
-  type: string
-  status: string
-  currency: string
-}
-
-interface TransactionListProps {
-  transactions: Transaction[]
-  searchQuery: string
-  filterStatus: string | null
-  currency: string
-  clearFilters: () => void
-}
+import { TransactionListProps } from "@/types/types"
 
 const TransactionList: React.FC<TransactionListProps> = ({
   transactions,

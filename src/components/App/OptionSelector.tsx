@@ -1,18 +1,4 @@
-import React from "react";
-
-type Option<T extends string> = {
-  id: T;
-  title: string;
-  description?: string;
-  icon?: React.ReactNode;
-};
-
-type OptionSelectorProps<T extends string> = {
-  options: Option<T>[];
-  selectedValue: T | null;
-  onChange: (value: T) => void;
-  layout?: "grid" | "flex";
-};
+import { OptionSelectorProps } from "@/types/types";
 
 export default function OptionSelector<T extends string>({
   options,
@@ -30,17 +16,15 @@ export default function OptionSelector<T extends string>({
           onClick={() => onChange(option.id)}
           className={`
             transition-all duration-300 cursor-pointer
-            ${
-              layout === "grid"
-                ? "flex flex-col p-4 rounded-xl"
-                : "flex flex-col items-center justify-center p-8 rounded-xl"
+            ${layout === "grid"
+              ? "flex flex-col p-4 rounded-xl"
+              : "flex flex-col items-center justify-center p-8 rounded-xl"
             }
-            ${
-              selectedValue === option.id
-                ? layout === "flex"
-                  ? "bg-purple-600 shadow-lg scale-105"
-                  : "bg-purple-600 shadow-lg border-2 border-yellow-300"
-                : layout === "flex"
+            ${selectedValue === option.id
+              ? layout === "flex"
+                ? "bg-purple-600 shadow-lg scale-105"
+                : "bg-purple-600 shadow-lg border-2 border-yellow-300"
+              : layout === "flex"
                 ? "bg-purple-800 hover:bg-purple-700"
                 : "bg-purple-800 hover:bg-purple-700 border-2 border-transparent"
             }
@@ -50,9 +34,8 @@ export default function OptionSelector<T extends string>({
             <div className={selectedValue === option.id ? "text-yellow-300" : "text-white"}>{option.icon}</div>
           )}
           <span
-            className={`${layout === "flex" ? "mt-4" : ""} ${option.icon ? "mt-4" : ""} text-xl font-semibold ${
-              selectedValue === option.id ? "text-yellow-300" : "text-white"
-            }`}
+            className={`${layout === "flex" ? "mt-4" : ""} ${option.icon ? "mt-4" : ""} text-xl font-semibold ${selectedValue === option.id ? "text-yellow-300" : "text-white"
+              }`}
           >
             {option.title}
           </span>

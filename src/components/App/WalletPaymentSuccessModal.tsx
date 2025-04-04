@@ -1,12 +1,6 @@
 import React from "react";
 import { Check } from "lucide-react";
-
-interface SuccessModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  doctorName: string;
-  amount: number;
-}
+import { SuccessModalProps } from "@/types/types";
 
 const WalletPaymentSuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, doctorName, amount }) => {
   if (!isOpen) return null;

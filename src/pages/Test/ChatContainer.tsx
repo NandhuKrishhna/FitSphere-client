@@ -9,22 +9,8 @@ import ChatHeader from "./ChatHeader";
 import { useGetMessagesQuery } from "@/redux/api/chatApi";
 import { getSocket } from "@/lib/socketManager";
 import ImagePreviewModal from "@/components/ImagePreview";
-export type MessageType = {
-  createdAt: string,
-  isRead: false,
-  message: string,
-  receiverId: string,
-  senderId: string,
-  _id: string,
-  image?: string
-}
+import { IMessage } from "@/types/api/chat-api-types";
 
-export type NotificationDateType = {
-  data: {
-    name: string,
-    profilePicture: string
-  }
-}
 
 const ChatContainer = () => {
   const selectedUser = useSelector(selectSelectedUser);
@@ -32,11 +18,10 @@ const ChatContainer = () => {
   const messageEndRef = useRef<HTMLDivElement>(null);
   const authUser = useSelector(selectCurrentUser)
   const { data: messages, isLoading: isMessageLoading, refetch } = useGetMessagesQuery({
-    receiverId: selectedUser?.doctorDetails._id,
+    receiverId: selectedUser?.doctorDetails?._id ?? ''
   })
   const socket = getSocket();
-
-
+  console.log(messages)
   useEffect(() => {
     if (!socket) return;
 
@@ -50,8 +35,6 @@ const ChatContainer = () => {
       socket.off("newMessage", handleNewMessage);
     };
   }, [socket, refetch]);
-
-
 
 
   useEffect(() => {
@@ -81,7 +64,7 @@ const ChatContainer = () => {
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages?.messages?.map((message: MessageType) => (
+        {messages?.messages?.map((message: IMessage) => (
           <div
             key={message._id}
             className={`chat ${message.senderId === authUser?._id ? "chat-end" : "chat-start"}`}

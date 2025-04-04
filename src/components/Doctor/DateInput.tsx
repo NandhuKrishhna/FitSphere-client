@@ -1,11 +1,8 @@
+import { DatePickerInputProps } from "@/types/types";
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-type DatePickerInputProps = {
-  date: string;
-  setDate: (date: string) => void;
-};
 
 const DatePickerInput: React.FC<DatePickerInputProps> = ({ date, setDate }) => {
   return (

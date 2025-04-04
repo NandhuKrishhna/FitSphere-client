@@ -7,11 +7,8 @@ import useConsultationCalenderHook from "@/hooks/DoctorHooks/consultationCalende
 import TimeSelect from "./TimeSelect";
 import MonthSelect from "./MonthSelect";
 import DateSelector from "./DateSelector";
+import { RecurrencePattern } from "@/types/types";
 
-type RecurrencePattern = {
-  type: "daily" | "weekly" | "monthly";
-  endDate: Date;
-};
 
 export default function ConsultationCalendar({
   selectedDate,
@@ -90,8 +87,8 @@ export default function ConsultationCalendar({
           <Button
             variant={consultationType === "audio" ? "default" : "outline"}
             className={`rounded-lg flex gap-2 flex-1 ${consultationType === "audio"
-                ? "bg-purple-600 hover:bg-purple-700 text-white"
-                : "bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-200"
+              ? "bg-purple-600 hover:bg-purple-700 text-white"
+              : "bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-200"
               }`}
             onClick={() => setConsultationType("audio")}
           >
@@ -101,8 +98,8 @@ export default function ConsultationCalendar({
           <Button
             variant={consultationType === "video" ? "default" : "outline"}
             className={`rounded-lg flex gap-2 flex-1 ${consultationType === "video"
-                ? "bg-purple-600 hover:bg-purple-700 text-white"
-                : "bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-200"
+              ? "bg-purple-600 hover:bg-purple-700 text-white"
+              : "bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-200"
               }`}
             onClick={() => setConsultationType("video")}
           >

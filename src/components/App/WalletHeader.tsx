@@ -1,9 +1,6 @@
+import { WalletHeaderProps } from "@/types/types"
 import React from "react"
 
-interface WalletHeaderProps {
-  balance: number
-  currency: string
-}
 
 export const WalletHeader: React.FC<WalletHeaderProps> = ({ balance, currency }) => {
   return (

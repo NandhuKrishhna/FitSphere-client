@@ -1,5 +1,3 @@
-import { useState } from "react"
-import { useApproveRequestMutation, useGetNotificationQuery, useRejectRequestMutation } from "../../redux/api/adminApi"
 import { formatDistanceToNow } from "date-fns"
 import {
   User,
@@ -19,69 +17,34 @@ import {
   Filter,
 } from "lucide-react"
 import type { Notification } from "../../types/auth.types"
-import toast from "react-hot-toast"
 import { FaVenus } from "react-icons/fa"
 import NotificationsSkeleton from "../../components/skeleton/NotificationSkeleton"
 import Header from "@/components/App/Header"
 import Navigation from "@/components/App/Navigation"
+import useNotification from "@/hooks/Admin/useNotification"
 
 const NotificationPage = () => {
-  const { data, isLoading, isError } = useGetNotificationQuery({})
-  const [rejectRequest, { isLoading: isRejecting }] = useRejectRequestMutation()
-  const [approveRequest, { isLoading: isApproving }] = useApproveRequestMutation()
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
-  const [isOpen, setIsOpen] = useState(false)
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
-  const [rejectionReason, setRejectionReason] = useState("")
-  const [filter, setFilter] = useState("all") // "all" or "unread"
-
-  const handleNotificationClick = (notification: Notification) => {
-    setSelectedNotification(notification)
-  }
-
-  const handleCloseDetails = () => {
-    setSelectedNotification(null)
-  }
-
-  const handleApprove = async (userId: string) => {
-    if (selectedNotification) {
-      try {
-        await approveRequest({ id: selectedNotification.userId, userId }).unwrap()
-        toast.success("Request approved successfully")
-        setIsOpen(false)
-        setSelectedNotification(null)
-      } catch (error) {
-        console.error("Error approving request:", error)
-      }
-    }
-  }
-
-  const handleReject = async (userId: string) => {
-    if (selectedNotification && rejectionReason.trim()) {
-      try {
-        await rejectRequest({ id: selectedNotification.userId, userId, reason: rejectionReason }).unwrap()
-        toast.success("Request rejected and email sent successfully")
-        setIsRejectModalOpen(false)
-        setIsOpen(false)
-        setRejectionReason("")
-        setSelectedNotification(null)
-      } catch (error) {
-        console.error("Error rejecting request:", error)
-      }
-    } else {
-      toast.error("Please enter a rejection reason")
-    }
-  }
-
-  const filteredNotifications = Array.isArray(data?.notification?.notification)
-    ? filter === "all"
-      ? data.notification.notification
-      : data.notification.notification.filter((notif: Notification) => !notif.read)
-    : []
-
-  const unreadCount = Array.isArray(data?.notification?.notification)
-    ? data.notification.notification.filter((notif: Notification) => !notif.read).length
-    : 0
+  const {
+    isLoading,
+    isError,
+    isRejecting,
+    isApproving,
+    selectedNotification,
+    isOpen,
+    setIsOpen,
+    isRejectModalOpen,
+    setIsRejectModalOpen,
+    rejectionReason,
+    setRejectionReason,
+    handleNotificationClick,
+    handleCloseDetails,
+    handleApprove,
+    handleReject,
+    filteredNotifications,
+    unreadCount,
+    setFilter,
+    filter
+  } = useNotification();
 
   if (isLoading) return <NotificationsSkeleton />
   if (isError)
@@ -383,7 +346,7 @@ const NotificationPage = () => {
                 </button>
                 <button
                   className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg text-white font-medium transition-colors"
-                  onClick={() => handleApprove(selectedNotification.userId)}
+                  onClick={() => handleApprove()}
                   disabled={isApproving}
                 >
                   {isApproving ? (

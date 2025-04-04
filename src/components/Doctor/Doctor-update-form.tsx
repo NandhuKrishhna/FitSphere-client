@@ -7,37 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Edit, Loader, Save, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import useUpdateDoctorDetails from "@/hooks/DoctorHooks/useUpdateDoctorDetails";
+import { DoctorAdditionalDetails, DoctorDetailsTabProps, FormFieldProps } from "@/types/DoctorTypes";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 
-export interface DoctorAdditionalDetails {
-  bio: string;
-  experience: string;
-  consultationFees: string;
-  contactPhoneNumber: string;
-  professionalEmail: string;
-  officeAddress: string;
-  clinicLocations: string;
-  consultationLanguages: string;
-  primarySpecialty: string;
-  medicalLicenseNumber: string;
-  gender: string;
-  professionalTitle: string;
-}
 
-interface DoctorData {
-  doctorDetails: {
-    details: DoctorAdditionalDetails;
-  };
-}
-
-interface DoctorDetailsTabProps {
-  doctorData?: DoctorData;
-  doctorLoading: boolean;
-}
 
 const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorLoading }) => {
+  const currentUser = useSelector(selectCurrentUser);
   const { handleUpdateDoctorDetails, isUpdatingDetails } = useUpdateDoctorDetails();
   const [editingDoctor, setEditingDoctor] = useState(false);
   const [doctorForm, setDoctorForm] = useState<DoctorAdditionalDetails>({
+    doctorId: "",
     bio: "",
     experience: "",
     consultationFees: "",
@@ -59,12 +40,16 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
   }, [doctorData, doctorForm.bio]);
 
   const handleSave = () => {
-    setDoctorForm((prev) => {
-      handleUpdateDoctorDetails(prev);
-      return prev;
+    if (!currentUser?._id) return;
+
+    handleUpdateDoctorDetails({
+      ...doctorForm,
+      doctorId: currentUser._id,
     });
+
     setEditingDoctor(false);
   };
+
 
   return (
     <Card className="bg-zinc-900 border-zinc-800">
@@ -116,9 +101,8 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -235,15 +219,6 @@ const DoctorDetailsTab: React.FC<DoctorDetailsTabProps> = ({ doctorData, doctorL
   );
 };
 
-export interface FormFieldProps {
-  id: string;
-  label: string;
-  type: string;
-  value: number | string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled: boolean;
-  step?: string;
-}
 
 export const FormField: React.FC<FormFieldProps> = ({ id, label, type, value, onChange, disabled, step }) => {
   return (

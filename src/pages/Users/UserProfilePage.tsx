@@ -16,7 +16,7 @@ const UserProfilePage: React.FC = () => {
   const auth = useSelector(selectCurrentUser)
 
   // Queries
-  const { data: healthData, isLoading: healthLoading } = useGetUserHealthDetailsQuery({})
+  const { data: healthData, isLoading: healthLoading } = useGetUserHealthDetailsQuery(undefined)
   const { data: weightData, isLoading: weightLoading } = useGetWeightProgressQuery({})
   const { data: subscriptionDetails, isLoading: subscriptionLoading } = useGetSubscriptionDetailsQuery({})
 

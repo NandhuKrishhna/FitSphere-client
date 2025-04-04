@@ -1,38 +1,8 @@
+import { IGetDoctorProfileResponse } from "@/types/api/doctor-api-types";
 import { Phone, Mail, MessageSquare } from "lucide-react";
-type DoctorDetailsResponse = {
-  success: boolean;
-  message: string;
-  doctorDetails: {
-    _id: string;
-    name: string;
-    email: string;
-    isActive: boolean;
-    role: string;
-    status: string;
-    profilePicture: string;
-    details: {
-      _id: string;
-      doctorId: string;
-      bio: string;
-      experience: string;
-      consultationFees: string;
-      contactPhoneNumber: string;
-      professionalEmail: string;
-      officeAddress: string;
-      clinicLocations: string;
-      consultationLanguages: string;
-      primarySpecialty: string;
-      medicalLicenseNumber: string;
-      profilePicture: string;
-      gender: string;
-      professionalTitle: string;
-      __v: number;
-      education: string;
-    };
-  };
-};
 
-export default function DoctorProfile({ doctorDetails: doc }: { doctorDetails: DoctorDetailsResponse }) {
+
+export default function DoctorProfile({ doctorDetails: doc }: { doctorDetails: IGetDoctorProfileResponse }) {
   return (
     <div className="flex flex-col h-full">
       <div className="bg-black p-4 rounded-t-xl flex justify-center">

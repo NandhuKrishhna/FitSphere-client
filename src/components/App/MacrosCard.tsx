@@ -1,11 +1,4 @@
-interface MacrosCardProps {
-  totalProtein: number;
-  totalCarbs: number;
-  totalFats: number;
-  proteinPercentage: number;
-  carbsPercentage: number;
-  fatsPercentage: number;
-}
+import { MacrosCardProps } from "@/types/food";
 
 export default function MacrosCard({
   totalProtein,

@@ -12,21 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
-import { WalletTransactionQuery } from "@/types/wallet.types"
+import { TransactionFiltersProps } from "@/types/types"
 
-interface TransactionFiltersProps {
-  searchQuery: string
-  filterStatus: string | null
-  sortConfig: {
-    key: string | null
-    direction: "asc" | "desc"
-  }
-  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onFilterChange: (status: string | null) => void
-  onSortChange: (key: string) => void
-  onClearFilters: () => void
-  setQueryParams: React.Dispatch<React.SetStateAction<WalletTransactionQuery>>
-}
+
 
 const TransactionFilters: React.FC<TransactionFiltersProps> = ({
   searchQuery,

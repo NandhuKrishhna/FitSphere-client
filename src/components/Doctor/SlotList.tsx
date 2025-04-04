@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
-import type { Slot } from "../../types/Slot";
+import type { Slot, SlotListProps } from "../../types/Slot";
 import SlotItem from "./SlotItems";
 import { Button } from "../../components/ui/button";
 import Dropdown from "./DrpDown";
 import DatePickerInput from "./DateInput";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type SlotListProps = {
-  slots: Slot[];
-  isLoading: boolean;
-  onCancel?: (slotId: string) => void;
-  isCancelLoading?: boolean;
-};
+
 
 const SlotList = ({ slots, isLoading }: SlotListProps) => {
   const [filteredSlots, setFilteredSlots] = useState<Slot[]>([]);

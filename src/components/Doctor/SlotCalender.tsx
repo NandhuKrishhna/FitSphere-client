@@ -1,18 +1,10 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDate } from "@/types/Slot";
+import { SlotCalendarProps } from "@/types/types";
 
-export type CalendarDate = {
-  date: number;
-  month: number;
-  year: number;
-  isCurrentMonth: boolean;
-};
 
-type CalendarProps = {
-  onDateSelect: (date: CalendarDate) => void;
-};
-
-const Calendar = ({ onDateSelect }: CalendarProps) => {
+const Calendar = ({ onDateSelect }: SlotCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(null);
 
@@ -34,7 +26,6 @@ const Calendar = ({ onDateSelect }: CalendarProps) => {
     const days = getDaysInMonth(date);
     const grid = [];
 
-    // Previous month's days
     for (let i = firstDay - 1; i >= 0; i--) {
       grid.push({
         date: prevMonthDays - i,
@@ -43,8 +34,6 @@ const Calendar = ({ onDateSelect }: CalendarProps) => {
         isCurrentMonth: false,
       });
     }
-
-    // Current month's days
     days.forEach((day) => {
       grid.push({
         date: day,

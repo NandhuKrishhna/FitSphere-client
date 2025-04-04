@@ -1,5 +1,7 @@
-import AuthLayout, { AuthFormInputs } from "@/components/App/AuthLayout";
+
+import AuthLayout from "@/components/App/AuthLayout";
 import useSetNewPasswordDoctor from "@/hooks/DoctorHooks/useSetNewPassword";
+import { AuthFormInputs } from "@/types/authentication.type";
 
 import { UseFormRegister, UseFormWatch } from "react-hook-form";
 

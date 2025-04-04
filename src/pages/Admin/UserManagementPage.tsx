@@ -1,125 +1,50 @@
-import { useState } from "react"
 import { Search, ArrowDown, ArrowUp, Shield, UserCheck, Ban, Loader } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
-import { useGetAllUsersQuery } from "@/redux/api/adminApi"
-import Pagination from "@/components/App/Pagination"
 import Header from "@/components/App/Header"
 import Navigation from "@/components/App/Navigation"
 import { AvatarDemo } from "@/components/App/Avatar"
 import { UserInfo } from "@/types/userTypes"
-import useBlockUnblockUser from "@/hooks/Admin/Block_UnBlockUserHook"
+import useUserManagement from "@/components/App/UserManagement"
+import useAdminUserManagement from "@/hooks/Admin/useManagement"
+import { Pagination } from "@/components/App/TestPagination"
 
-// useBlockUsersMutation,
-//   useUnblockUsersMutation,
-const UserStatusBadge = ({ status }: { status: string }) => {
-  const getStatusColor = () => {
-    switch (status) {
-      case "active":
-        return "bg-green-500/20 text-green-500 border-green-500/30"
-      case "blocked":
-        return "bg-red-500/20 text-red-500 border-red-500/30"
-      case "pending":
-        return "bg-yellow-500/20 text-yellow-500 border-yellow-500/30"
-      default:
-        return "bg-gray-500/20 text-gray-500 border-gray-500/30"
-    }
-  }
 
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor()}`}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
-  )
-}
 
-// User Role Badge component
-const UserRoleBadge = ({ role }: { role: string }) => {
-  const getRoleColor = () => {
-    switch (role) {
-      case "admin":
-        return "bg-purple-500/20 text-purple-500 border-purple-500/30"
-      case "moderator":
-        return "bg-blue-500/20 text-blue-500 border-blue-500/30"
-      case "user":
-        return "bg-indigo-500/20 text-indigo-500 border-indigo-500/30"
-      default:
-        return "bg-gray-500/20 text-gray-500 border-gray-500/30"
-    }
-  }
-
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getRoleColor()}`}>
-      {role.charAt(0).toUpperCase() + role.slice(1)}
-    </span>
-  )
-}
-
-export interface UserQueryParams {
-  page?: number
-  limit?: number
-  search?: string
-  status?: string
-  role?: string
-  isVerfied?: string
-  sortBy?: string
-  sortOrder?: "asc" | "desc"
-}
 
 export default function UserManagement() {
+  const { UserRoleBadge, UserStatusBadge } = useUserManagement();
+  const {
+    users,
+    totalUsers,
+    totalPages,
+    verifiedUsers,
+    activeUsers,
+    blockedUsers,
+    chartData,
+    COLORS,
+    requestSort,
+    handleBlock,
+    handleUnblock,
+    isblocking,
+    isunblocking,
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    verificationFilter,
+    setVerificationFilter,
+    currentPage,
+    setCurrentPage,
+    isLoading,
+    error,
+    sortConfig,
+    queryParams
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [verificationFilter, setVerificationFilter] = useState<string>("all")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [sortConfig, setSortConfig] = useState<{
-    key: string
-    direction: "asc" | "desc"
-  }>({
-    key: "name",
-    direction: "asc",
-  })
-
-  const queryParams: UserQueryParams = {
-    page: currentPage,
-    limit: 5,
-    sortBy: sortConfig.key,
-    sortOrder: sortConfig.direction,
-  }
-
-  if (searchTerm) queryParams.search = searchTerm
-  if (statusFilter !== "all") queryParams.status = statusFilter
-  if (verificationFilter !== "all") queryParams.isVerfied = verificationFilter === "verfied" ? "true" : "false"
-
-  const { data, isLoading, error } = useGetAllUsersQuery(queryParams);
-  const { handleBlock, handleUnblock, isblocking, isunblocking } = useBlockUnblockUser();
-
-  const users = data?.users?.users || []
-  const totalUsers = data?.users?.totalUsers || 0
-  const totalPages = data?.users?.totalPages || 1
-  const verifiedUsers = data?.users?.verifiedUsers || 0
-  const activeUsers = data?.users?.activeUsers || 0
-  const blockedUsers = data?.users?.blockedUsers || 0
-
-  const chartData = [
-    { name: "Verified", value: verifiedUsers, fill: "#6366f1" },
-    { name: "Unverified", value: totalUsers - verifiedUsers, fill: "#f97316" },
-    { name: "Active", value: activeUsers, fill: "#22c55e" },
-    { name: "Blocked", value: blockedUsers, fill: "#ef4444" },
-  ]
-
-  const COLORS = ["#6366f1", "#f97316", "#22c55e", "#ef4444"]
-
-  const requestSort = (key: string) => {
-    let direction: "asc" | "desc" = "asc"
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc"
-    }
-    setSortConfig({ key, direction })
-  }
+  } = useAdminUserManagement();
 
   return (
     <div className="min-h-screen bg-slate-500">
@@ -383,8 +308,8 @@ export default function UserManagement() {
                                 size="sm"
                                 onClick={() =>
                                   user.status === "active"
-                                    ? handleBlock(user._id, user.role)
-                                    : handleUnblock(user._id, user.role)
+                                    ? handleBlock(user._id, user.role, queryParams)
+                                    : handleUnblock(user._id, user.role, queryParams)
                                 }
                                 className={
                                   user.status === "active"
