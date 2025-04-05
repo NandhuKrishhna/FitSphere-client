@@ -76,6 +76,7 @@ export const apiSlice = createApi({
     "subcription",
     "transactions",
     "subscriptionPlan",
+    "notifications"
   ],
   keepUnusedDataFor: 60,
   endpoints: () => ({}),

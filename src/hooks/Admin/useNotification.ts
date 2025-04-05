@@ -12,7 +12,7 @@ const useNotification = () => {
     const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
     const [rejectionReason, setRejectionReason] = useState("")
     const [filter, setFilter] = useState("all")
-
+    console.log("Notification data:", data)
     const handleNotificationClick = (notification: Notification) => {
         setSelectedNotification(notification)
     }
@@ -51,14 +51,15 @@ const useNotification = () => {
         }
     }
 
-    const filteredNotifications = Array.isArray(data?.notification?.notification)
+    const filteredNotifications = data?.notification
         ? filter === "all"
-            ? data.notification.notification
-            : data.notification.notification.filter((notif: Notification) => !notif.read)
+            ? data.notification
+            : data.notification.filter((notif: Notification) => !notif.read)
         : []
 
-    const unreadCount = Array.isArray(data?.notification?.notification)
-        ? data.notification.notification.filter((notif: Notification) => !notif.read).length
+    // And for unreadCount:
+    const unreadCount = data?.notification
+        ? data.notification.filter((notif: Notification) => !notif.read).length
         : 0
     return {
         data,

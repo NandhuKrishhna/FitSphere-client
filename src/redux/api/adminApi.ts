@@ -64,7 +64,7 @@ export const adminApi = apiSlice.injectEndpoints({
         url: "/admin/notification",
         method: "GET",
       }),
-      providesTags: ["notification"],
+      providesTags: ["notifications"],
     }),
     approveRequest: builder.mutation<IApproveDoctorResponse, { id: string }>({
       query: (data) => ({
@@ -72,22 +72,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
-          adminApi.util.updateQueryData("getAllDoctors", undefined, (draft) => {
-            if (!draft.doctors?.doctors) return;
-            const doctorIndex = draft.doctors.doctors.findIndex((doctor) => doctor._id === id.id);
-            if (doctorIndex !== -1) {
-              draft.doctors.doctors[doctorIndex].isApproved = true;
-            }
-          })
-        )
-        try {
-          await queryFulfilled;
-        } catch {
-          patchResult.undo();
-        }
-      }
+      invalidatesTags: ["notifications", "doctors"],
     }),
     rejectRequest: builder.mutation({
       query: (data) => ({
@@ -95,7 +80,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["notification"],
+      invalidatesTags: ["notifications"],
     }),
     doctorManagement: builder.query({
       query: () => ({

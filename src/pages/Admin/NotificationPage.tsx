@@ -43,7 +43,7 @@ const NotificationPage = () => {
     filteredNotifications,
     unreadCount,
     setFilter,
-    filter
+    filter,
   } = useNotification();
 
   if (isLoading) return <NotificationsSkeleton />
