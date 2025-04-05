@@ -31,8 +31,10 @@ const useLoginHook = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await login(data).unwrap();
+      console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
+      localStorage.setItem("accessToken", res.response.accessToken);
       connectSocket(res.response._id, dispatch);
       navigate("/home");
     } catch (err) {

@@ -5,6 +5,8 @@ import { setLogout } from "../redux/slice/Auth_Slice";
 import { disconnectSocket } from "@/lib/socketManager";
 import { resetSocketState } from "@/redux/slice/socket.ioSlice";
 import { resetAppState } from "@/redux/slice/appFeatSlice";
+import { apiSlice } from "@/redux/api/EntryApiSlice";
+import { persistor } from "@/redux/store";
 
 export const useLogout = () => {
   const dispatch = useDispatch();
@@ -18,8 +20,9 @@ export const useLogout = () => {
       disconnectSocket();
       dispatch(resetSocketState());
       dispatch(resetAppState());
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("signupInProgress");
+      localStorage.clear();
+      dispatch(apiSlice.util.resetApiState());
+      await persistor.purge();
       toast.success("Logout Successfull");
     } catch (error) {
       console.log(error);

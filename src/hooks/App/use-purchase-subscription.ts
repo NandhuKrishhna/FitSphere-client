@@ -92,6 +92,7 @@ export const usePurchaseSubscripiton = () => {
             }
             initPay(order);
         } catch (error) {
+            console.log(error);
             const err = error as ErrorResponse;
             if (err.data.message) return toast.error(err.data.message);
             toast.error("Something went wrong. Please try again.");

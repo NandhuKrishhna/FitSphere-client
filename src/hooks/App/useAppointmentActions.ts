@@ -3,6 +3,7 @@ import { IGetAppointment } from "@/types/api/appointment-api-types";
 import { AppointmentQueryParams } from "@/types/appointmentList";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { ErrorResponse } from "react-router-dom";
 
 export const useAppointmentActions = () => {
   const [cancelAppointment, { isLoading: isAppointmentCancelLoading }] = useCancelAppointmentMutation();
@@ -13,8 +14,9 @@ export const useAppointmentActions = () => {
     try {
       await cancelAppointment({ appointmentId, queryParams: query }).unwrap();
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to cancel appointment");
+      const err = error as ErrorResponse;
+      if (err?.data?.message) return toast.error(err.data.message);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 

@@ -20,8 +20,10 @@ const useAdminLoginHook = () => {
   const onSubmit: SubmitHandler<AuthFormInputs> = async (data: AuthFormInputs) => {
     try {
       const res = await login(data).unwrap();
+      console.log(res);
       toast.success(res.message);
       dispatch(setCredentials({ ...res.response }));
+      localStorage.setItem("accessToken", res.response.accessToken);
       navigate("/admin/users-management");
     } catch (err) {
       const error = err as ErrorResponse;

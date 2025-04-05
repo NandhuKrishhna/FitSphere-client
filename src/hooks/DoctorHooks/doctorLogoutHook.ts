@@ -6,6 +6,8 @@ import { ErrorResponse } from "react-router-dom";
 import { disconnectSocket } from "@/lib/socketManager";
 import { resetSocketState } from "@/redux/slice/socket.ioSlice";
 import { resetAppState } from "@/redux/slice/appFeatSlice";
+import { apiSlice } from "@/redux/api/EntryApiSlice";
+import { persistor } from "@/redux/store";
 
 
 
@@ -22,7 +24,9 @@ export const useDoctorLogout = () => {
             disconnectSocket();
             dispatch(resetSocketState());
             dispatch(resetAppState());
-            localStorage.removeItem("accessToken");
+            localStorage.clear();
+            dispatch(apiSlice.util.resetApiState());
+            await persistor.purge();
             toast.success("Logout Successfull")
         } catch (error) {
             const err = error as ErrorResponse;

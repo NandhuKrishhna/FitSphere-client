@@ -3,6 +3,11 @@ import toast from "react-hot-toast";
 import { useLazyAdminLogoutQuery } from "../../redux/api/adminApi";
 import { setLogout } from "../../redux/slice/Auth_Slice";
 import { ErrorResponse } from "../LoginHook";
+import { resetSocketState } from "@/redux/slice/socket.ioSlice";
+import { disconnectSocket } from "@/lib/socketManager";
+import { resetAppState } from "@/redux/slice/appFeatSlice";
+import { apiSlice } from "@/redux/api/EntryApiSlice";
+import { persistor } from "@/redux/store";
 
 
 
@@ -15,8 +20,13 @@ export const useAdminLogout = () => {
         e.preventDefault()
         try {
             await adminLogin({}).unwrap()
-            localStorage.removeItem("accessToken");
-            dispatch(setLogout())
+            dispatch(setLogout());
+            disconnectSocket();
+            dispatch(resetSocketState());
+            dispatch(resetAppState());
+            localStorage.clear();
+            dispatch(apiSlice.util.resetApiState());
+            await persistor.purge();
             toast.success("Logout Successfull")
         } catch (error) {
             const err = error as ErrorResponse;
