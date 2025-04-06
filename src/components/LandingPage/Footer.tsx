@@ -32,18 +32,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Links Section */}
-        <div className="mb-8 md:mb-0">
-          <h3 className="text-lg font-semibold text-gray-800">Useful Links</h3>
-          <ul className="mt-4 space-y-2">
-            <li><a href="#" className="text-gray-600 hover:text-gray-800">Track Calories</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-gray-800">Book Doctors</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-gray-800">Fitness Tips</a></li>
-
-          </ul>
-        </div>
-
-        {/* Subscribe Section */}
         <div>
           <p className="mt-2 text-gray-600">
             Get the latest fitness tips and updates right in your inbox.

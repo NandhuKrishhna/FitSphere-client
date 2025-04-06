@@ -48,11 +48,10 @@ export default function BodyComposition() {
               {cards.map((card, index) => (
                 <div
                   key={index}
-                  className={`p-6 rounded-2xl ${
-                    index === 0
-                      ? "bg-black text-white hover:bg-slate-800"
-                      : "bg-gray-100 hover:bg-slate-200"
-                  }`}
+                  className={`p-6 rounded-2xl ${index === 0
+                    ? "bg-black text-white hover:bg-slate-800"
+                    : "bg-gray-100 hover:bg-slate-200"
+                    }`}
                 >
                   <div className="mb-4">{card.icon}</div>
                   <h3 className="mb-2 font-semibold">{card.title}</h3>
@@ -65,9 +64,9 @@ export default function BodyComposition() {
           <div className="relative flex justify-center">
             <div className="relative w-[320px] hidden md:block">
               <img
-                src="https://res.cloudinary.com/dzsdfw5vx/image/upload/v1737128844/original-ca0dcb4ce2f3e133dacd60ba48aa9df8-removebg-preview_mnxrco.png"
+                src="https://res.cloudinary.com/dzsdfw5vx/image/upload/v1743934637/Screenshot_2025-04-06_154600-Photoroom_berczk.png"
                 alt="FitSphere App Interface"
-                className="w-full rounded-[40px] shadow-xl"
+                className="w-full rounded-[40px]"
               />
             </div>
           </div>
