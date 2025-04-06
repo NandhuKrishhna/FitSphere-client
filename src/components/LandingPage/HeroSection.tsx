@@ -65,7 +65,7 @@ export default function HeroSection() {
         <div className="hidden md:block max-w-[800px]:hidden">
           <div className="relative h-[600px] w-[300px]">
             <img
-              src="https://res.cloudinary.com/dzsdfw5vx/image/upload/v1737121301/Screenshot_2025-01-17_190918-removebg-preview_wcmmqb.png"
+              src="https://res.cloudinary.com/dzsdfw5vx/image/upload/v1743947184/Screenshot_2025-04-06_191409-Photoroom_vsfbt7.png"
               alt="FitSphere App Interface"
               className="h-full w-full object-contain"
             />
