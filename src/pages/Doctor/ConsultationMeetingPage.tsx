@@ -44,6 +44,21 @@ export default function MeetingPage() {
     navigate(navigateTo);
   };
 
+  const handleStartNewMeeting = () => {
+    if (!user) {
+      console.error("User data is missing");
+      return;
+    }
+
+    if (!newMeetId?.trim()) {
+      console.error("New Meeting ID is invalid:", newMeetId);
+      return;
+    }
+
+    const navigateTo = user.role === Roles.USER ? `/consultation/${newMeetId}` : `/doctor/consultation/${newMeetId}`;
+    navigate(navigateTo);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#121212] text-white">
       {user?.role === "user" && (
@@ -101,7 +116,7 @@ export default function MeetingPage() {
               </button>
             </div>
             <p className="text-sm text-black italic">Copy the Meeting ID and share it with participants. </p>
-            <Button className="mt-4 w-full" onClick={handleJoinMeet}>
+            <Button className="mt-4 w-full" onClick={handleStartNewMeeting}>
               Start Meeting
             </Button>
           </div>
