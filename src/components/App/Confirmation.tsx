@@ -91,15 +91,7 @@ export default function ConsultationModal({
     );
   }
 
-  if (!slots.success) {
-    return (
-      <Card className="w-full bg-white dark:bg-gray-800 dark:border-gray-700">
-        <CardContent className="h-32 flex items-center justify-center">
-          <div className="text-red-500">{slots.message || "Failed to load slots"}</div>
-        </CardContent>
-      </Card>
-    );
-  }
+
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
