@@ -14,6 +14,8 @@ import { Transaction } from "@/types/transaction"
 import { formatDate } from "@/utils/useTimeFormatter"
 import { PaymentType, TransactionQueryParams } from "@/types/types"
 import useDebounce from "@/hooks/DebounceHook"
+import { TableSkeleton } from "../skeleton/TableSkeleton"
+
 
 
 export default function TransactionTable() {
@@ -160,7 +162,7 @@ export default function TransactionTable() {
           <div className="rounded-md border border-gray-800 overflow-hidden bg-gray-900">
             <div className="overflow-x-auto">
               {isLoading ? (
-                <div className="p-8 text-center text-gray-400">Loading transactions...</div>
+                <TableSkeleton />
               ) : error ? (
                 <div className="p-8 text-center text-red-400">Error loading transactions. Please try again.</div>
               ) : (

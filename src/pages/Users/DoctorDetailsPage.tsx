@@ -17,6 +17,7 @@ import useCreateConversation from "@/hooks/App/useCreateConversation";
 import { selectCurrentUser } from "@/redux/slice/Auth_Slice";
 import { selectedDoctorId } from "@/redux/slice/appFeatSlice";
 import { setUsers } from "@/redux/slice/socket.ioSlice";
+import AppointmentSectionSkeleton from "@/components/skeleton/AppointmentSelection";
 
 const DoctorDetailsPage: React.FC = () => {
   const {
@@ -33,6 +34,7 @@ const DoctorDetailsPage: React.FC = () => {
     isWalletSuccessModalOpen,
     handleSuccessModalClose,
     refetch,
+    isSlotLoading
   } = useDoctorDetails();
   const doctorId = useSelector(selectedDoctorId)
   const navigate = useNavigate();
@@ -100,14 +102,17 @@ const DoctorDetailsPage: React.FC = () => {
           <DoctorProfile doctorDetails={doctorDetails} averageRating={averageRating} totalReviews={totalReviews} />
 
           <div className="hidden md:block md:w-[440px] shrink-0">
-            <AppointmentSection
-              slots={slots || []}
-              doctorName={doctorDetails.name}
-              specialty={doctorDetails.details?.primarySpecialty}
-              handleSlotClick={handleSlotClick}
-              handleBookSlot={handleBookSlot}
-              isLoading={isBookLoading || isWalletLoading}
-            />
+            {isSlotLoading
+              ? <AppointmentSectionSkeleton />
+              : <AppointmentSection
+                slots={slots || []}
+                doctorName={doctorDetails.name}
+                specialty={doctorDetails.details?.primarySpecialty}
+                handleSlotClick={handleSlotClick}
+                handleBookSlot={handleBookSlot}
+                isLoading={isBookLoading || isWalletLoading}
+              />
+            }
           </div>
         </div>
 

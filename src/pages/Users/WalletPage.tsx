@@ -61,9 +61,6 @@ export default function WalletPage() {
 
 
 
-
-  if (isLoading) return <WalletSkeleton />
-
   if (error) {
     return (
       <div className="min-h-screen bg-black py-8 px-4 sm:px-6 lg:px-8">
@@ -129,44 +126,51 @@ export default function WalletPage() {
 
       <div className="max-w-3xl mt-10 mx-auto px-4">
         <div className="bg-zinc-800 shadow-xl lg:rounded-lg overflow-hidden">
-          <WalletHeader balance={balance} currency={currency} />
+          {isLoading ? (
+            <WalletSkeleton />
+          ) : (
+            <>
+              <WalletHeader balance={balance} currency={currency} />
 
-          <div className="px-4 py-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <h3 className="text-lg leading-6 font-medium text-white">Transaction History</h3>
+              <div className="px-4 py-5 sm:p-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <h3 className="text-lg leading-6 font-medium text-white">Transaction History</h3>
 
-              <TransactionFilters
-                searchQuery={searchQuery}
-                filterStatus={filterStatus}
-                sortConfig={sortConfig}
-                onSearchChange={handleSearchChange}
-                onFilterChange={setFilterStatus}
-                onSortChange={handleSort}
-                onClearFilters={clearFilters}
-                setQueryParams={setQueryParams}
-              />
-            </div>
+                  <TransactionFilters
+                    searchQuery={searchQuery}
+                    filterStatus={filterStatus}
+                    sortConfig={sortConfig}
+                    onSearchChange={handleSearchChange}
+                    onFilterChange={setFilterStatus}
+                    onSortChange={handleSort}
+                    onClearFilters={clearFilters}
+                    setQueryParams={setQueryParams}
+                  />
+                </div>
 
-            <TransactionList
-              transactions={transactions}
-              searchQuery={searchQuery}
-              filterStatus={filterStatus}
-              currency={currency}
-              clearFilters={clearFilters}
-            />
+                <TransactionList
+                  transactions={transactions}
+                  searchQuery={searchQuery}
+                  filterStatus={filterStatus}
+                  currency={currency}
+                  clearFilters={clearFilters}
+                />
 
-            {totalTransactions > 0 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalItems={totalTransactions}
-                itemsPerPage={ITEMS_PER_PAGE}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </div>
+                {totalTransactions > 0 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalTransactions}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
   )
+
 }

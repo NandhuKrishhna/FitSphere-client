@@ -10,11 +10,15 @@ import MacrosCard from "@/components/App/MacrosCard"
 import DaySelector from "@/components/App/DaySelector"
 import MealList from "@/components/App/MealsList"
 import CongratulationsAnimation from "@/components/App/CongratulationsAnimation"
+import CaloriesCardSkeleton from "@/components/skeleton/CaloriesCardSkeleton "
+import MacrosCardSkeleton from "@/components/skeleton/MacrosCardSkeleton"
+import DaySelectorSkeleton from "@/components/skeleton/DaySelectorSkeleton"
+import MealListSkeleton from "@/components/skeleton/MealListSkeleton"
 
 export default function HomePageTest() {
   const [selectedDay, setSelectedDay] = useState<string>(new Date().toISOString().split("T")[0])
   const [foodLogs, setFoodLogs] = useState<FoodLogResponse | null>(null)
-  const { data: foodLog } = useGetUserFoodLogsDetailsQuery(
+  const { data: foodLog, isLoading: isFoodLoading } = useGetUserFoodLogsDetailsQuery(
     { date: selectedDay },
     { skip: !selectedDay, refetchOnMountOrArgChange: false },
   )
@@ -101,33 +105,45 @@ export default function HomePageTest() {
       <Navigation />
       <main className="max-w-4xl mx-auto px-6 py-6 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CaloriesCard
-            totalCalories={totalCalories}
-            requiredCalories={requiredCalories}
-            remainingCalories={remainingCalories}
-          />
-          <MacrosCard
-            totalProtein={totalProtein}
-            totalCarbs={totalCarbs}
-            totalFats={totalFats}
-            proteinPercentage={proteinPercentage}
-            carbsPercentage={carbsPercentage}
-            fatsPercentage={fatsPercentage}
-          />
+          {isFoodLoading ? <CaloriesCardSkeleton /> :
+            <CaloriesCard
+              totalCalories={totalCalories}
+              requiredCalories={requiredCalories}
+              remainingCalories={remainingCalories}
+            />
+          }
+          {isFoodLoading
+            ? <MacrosCardSkeleton />
+            : <MacrosCard
+              totalProtein={totalProtein}
+              totalCarbs={totalCarbs}
+              totalFats={totalFats}
+              proteinPercentage={proteinPercentage}
+              carbsPercentage={carbsPercentage}
+              fatsPercentage={fatsPercentage}
+            />
+          }
         </div>
+        {isFoodLoading
+          ? <DaySelectorSkeleton />
+          : <DaySelector
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+          />
+        }
+        {isFoodLoading
+          ? <MealListSkeleton />
+          : <MealList
+            mealTypes={mealTypes}
+            meals={foodLogs?.response?.meals}
+            selectedDay={selectedDay}
+            handleOpenAddFoodModal={handleOpenAddFoodModal}
+            handleOpenEditFoodModal={handleOpenEditFoodModal}
+            handleDeleteFood={handleDeleteFood}
+            loadingItems={loadingItems}
 
-        <DaySelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-
-        <MealList
-          mealTypes={mealTypes}
-          meals={foodLogs?.response?.meals}
-          selectedDay={selectedDay}
-          handleOpenAddFoodModal={handleOpenAddFoodModal}
-          handleOpenEditFoodModal={handleOpenEditFoodModal}
-          handleDeleteFood={handleDeleteFood}
-          loadingItems={loadingItems}
-
-        />
+          />
+        }
       </main>
 
       <FoodSearchModal

@@ -4,9 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 const WalletSkeleton: React.FC = () => {
   return (
     <div className="min-h-screen pb-10 bg-[#121212] text-white">
-      {/* Header and Navigation placeholders */}
-      <div className="h-16 w-full bg-zinc-900"></div>
-      <div className="h-16 w-full bg-zinc-800 mb-10"></div>
 
       <div className="max-w-3xl mt-10 mx-auto px-4">
         <div className="bg-zinc-800 shadow-xl lg:rounded-lg overflow-hidden">

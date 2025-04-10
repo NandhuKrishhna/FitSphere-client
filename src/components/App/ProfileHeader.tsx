@@ -69,6 +69,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           />
         </label>
       </div>
+      {uploadLoading ? <p className="text-indigo-400">Uploading...</p> : ""}
       <h1 className="text-2xl font-bold text-white mt-4">{name}</h1>
       <p className="text-indigo-300">{email}</p>
     </div>

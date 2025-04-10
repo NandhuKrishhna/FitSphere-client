@@ -10,6 +10,7 @@ import Navigation from "@/components/App/Navigation"
 import { AvatarDemo } from "@/components/App/Avatar"
 import { Doctor } from "@/types/api/admin-api-types"
 import useDoctorManagement from "@/hooks/Admin/useDoctorManagement"
+import { TableSkeleton } from "@/components/skeleton/TableSkeleton"
 
 export default function DoctorManagement() {
   const {
@@ -181,7 +182,7 @@ export default function DoctorManagement() {
             <div className="rounded-md border border-gray-800 overflow-hidden bg-gray-900">
               <div className="overflow-x-auto">
                 {isLoading ? (
-                  <div className="p-8 text-center text-gray-400">Loading doctors...</div>
+                  <TableSkeleton />
                 ) : error ? (
                   <div className="p-8 text-center text-red-400">Error loading doctors. Please try again.</div>
                 ) : (

@@ -6,6 +6,7 @@ import { OverviewTabProps } from "@/types/types";
 import WeightProgressChart from "./WeightProgressChart";
 import ProfileInfoCard from "./ProfileInfoCard";
 import HealthSummaryCard from "./HealthSummaryCard";
+import SubscriptionDetailsSkeleton from "../skeleton/SubscriptionDetailsSkeleton";
 
 
 const OverviewTab: React.FC<OverviewTabProps> = ({
@@ -36,8 +37,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       </Button>
       {subscriptionDetails && (
         <div className="col-span-1 md:col-span-2">
-
-          <SubscriptionDetails subscriptionDetails={subscriptionDetails} isLoading={subscriptionLoading} />
+          {subscriptionLoading
+            ? <SubscriptionDetailsSkeleton />
+            : <SubscriptionDetails subscriptionDetails={subscriptionDetails} isLoading={subscriptionLoading} />
+          }
         </div>
       )}
       <WeightProgressChart

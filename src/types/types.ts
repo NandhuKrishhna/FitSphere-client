@@ -195,7 +195,7 @@ export interface SubscriptionDetailsProps {
     }
     | null
     | undefined
-    isLoading: boolean
+    isLoading?: boolean
 };
 
 export interface PaginationProps {

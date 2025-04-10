@@ -11,6 +11,7 @@ import { UserInfo } from "@/types/userTypes"
 import useUserManagement from "@/components/App/UserManagement"
 import useAdminUserManagement from "@/hooks/Admin/useManagement"
 import { Pagination } from "@/components/App/TestPagination"
+import { TableSkeleton } from "@/components/skeleton/TableSkeleton"
 
 
 
@@ -164,7 +165,7 @@ export default function UserManagement() {
             <div className="rounded-md border border-gray-800 overflow-hidden bg-gray-900">
               <div className="overflow-x-auto">
                 {isLoading ? (
-                  <div className="p-8 text-center text-gray-400">Loading users...</div>
+                  <TableSkeleton />
                 ) : error ? (
                   <div className="p-8 text-center text-red-400">Error loading users. Please try again.</div>
                 ) : (
