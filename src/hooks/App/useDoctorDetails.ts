@@ -25,7 +25,7 @@ export const useDoctorDetails = () => {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [bookSlots, { isLoading: isBookLoading }] = useBookSlotsMutation();
   const { data } = useDoctorDetailsQuery({ doctorId });
-  const { data: slots, refetch } = useGetAllSlotDetailsQuery({ doctorId });
+  const { data: slots, refetch, isLoading: isSlotLoading } = useGetAllSlotDetailsQuery({ doctorId });
   const [verifyPayment] = useVerifyPaymentMutation();
   const [handleFailedPayment] = useHandleFailedPaymentMutation();
   const [isWalletSuccessModalOpen, setIsWalletSuccessModalOpen] = useState(false);
@@ -189,6 +189,7 @@ export const useDoctorDetails = () => {
     isWalletLoading,
     isWalletSuccessModalOpen,
     handleSuccessModalClose,
-    refetch
+    refetch,
+    isSlotLoading
   };
 };

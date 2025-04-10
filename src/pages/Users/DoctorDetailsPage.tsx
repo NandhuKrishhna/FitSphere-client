@@ -32,7 +32,7 @@ const DoctorDetailsPage: React.FC = () => {
     isWalletLoading,
     isWalletSuccessModalOpen,
     handleSuccessModalClose,
-    refetch
+    refetch,
   } = useDoctorDetails();
   const doctorId = useSelector(selectedDoctorId)
   const navigate = useNavigate();

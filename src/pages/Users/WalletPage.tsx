@@ -58,7 +58,7 @@ export default function WalletPage() {
       sortOrder: sortConfig.direction || undefined,
     }))
   }, [searchQuery, filterStatus, sortConfig])
-  
+
 
 
 
@@ -121,12 +121,12 @@ export default function WalletPage() {
   return (
     <div className="min-h-screen pb-10 bg-[#121212] text-white">
       {role === Roles.USER && (
-        <> 
-        <Header />
-      <Navigation />
+        <>
+          <Header />
+          <Navigation />
         </>
       )}
-     
+
       <div className="max-w-3xl mt-10 mx-auto px-4">
         <div className="bg-zinc-800 shadow-xl lg:rounded-lg overflow-hidden">
           <WalletHeader balance={balance} currency={currency} />
