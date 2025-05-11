@@ -28,7 +28,7 @@ const AuthLayout = ({
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-500 to-black">
+    <div className="min-h-screen flex items-center justify-center [background-image:linear-gradient(0deg,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom_right,rgba(107,114,128,1),black)] [background-size:10px_10px,10px_10px,auto]">
       <motion.div className="w-full max-w-md mx-4" variants={containerVariants} initial="hidden" animate="visible">
         <motion.div
           className="bg-zinc-900 rounded-xl border border-zinc-800 text-white shadow-lg overflow-hidden"
