@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import { selectSelectedUser } from "@/redux/slice/socket.ioSlice"
