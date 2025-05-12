@@ -10,9 +10,10 @@ import { getSocket } from "@/lib/socketManager"
 import type { IMessage } from "@/types/api/chat-api-types"
 import { cn } from "@/lib/utils"
 import ChatHeader from "./ChatHeader"
-import { MessageSkeleton } from "@/components/App/MessageSkeleton"
 import MessageInput from "./MessageInput"
 import ImagePreviewModal from "@/components/ImagePreview"
+import MessageSkeleton from "@/components/App/MessageSkeleton"
+
 
 const ChatContainer = () => {
   const selectedUser = useSelector(selectSelectedUser)
