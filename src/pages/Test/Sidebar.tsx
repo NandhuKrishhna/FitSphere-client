@@ -1,131 +1,149 @@
-import { Users, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useGetSidebarUsersQuery } from "@/redux/api/chatApi";
-import { selectOnlineUsers, selectSelectedUser, setSelectedUser } from "@/redux/slice/socket.ioSlice";
-import { getSocket } from "@/lib/socketManager";
-import SidebarSkeleton from "./SidebarSkeleton";
-import { AvatarDemo } from "@/components/App/Avatar";
-import { ISidebarUsers } from "@/types/api/chat-api-types";
+"use client"
 
-const ChatSideBar = () => {
-  const { data, isLoading, refetch } = useGetSidebarUsersQuery(undefined);
-  const dispatch = useDispatch();
-  const onlineUsers = useSelector(selectOnlineUsers);
-  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const socket = getSocket();
-  const selectedUserId = useSelector(selectSelectedUser)?.doctorDetails?._id;
+import { Users, Search, UserCheck } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useGetSidebarUsersQuery } from "@/redux/api/chatApi"
+import { selectOnlineUsers, selectSelectedUser, setSelectedUser } from "@/redux/slice/socket.ioSlice"
+import { getSocket } from "@/lib/socketManager"
+import { AvatarDemo } from "@/components/App/Avatar"
+import type { ISidebarUsers } from "@/types/api/chat-api-types"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import SidebarSkeleton from "./SidebarSkeleton"
+import { Switch } from "@/components/ui/switch"
 
+
+const Sidebar = () => {
+  const { data, isLoading, refetch } = useGetSidebarUsersQuery(undefined)
+  const dispatch = useDispatch()
+  const onlineUsers = useSelector(selectOnlineUsers)
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const socket = getSocket()
+  const selectedUserId = useSelector(selectSelectedUser)?.doctorDetails?._id
 
   useEffect(() => {
     socket?.on("newMessage", () => {
-      refetch();
-    });
+      refetch()
+    })
 
     return () => {
-      socket?.off("newMessage");
-    };
-  }, [socket, refetch]);
+      socket?.off("newMessage")
+    }
+  }, [socket, refetch])
+
   useEffect(() => {
     if (selectedUserId) {
-      refetch();
+      refetch()
     }
-  }, [selectedUserId]);
+  }, [selectedUserId])
 
-  const sortedUsers = data?.users ? [...data.users] : [];
+  const sortedUsers = data?.users ? [...data.users] : []
 
   if (selectedUserId) {
-    const index = sortedUsers.findIndex((user) => user.doctorDetails?._id === selectedUserId);
+    const index = sortedUsers.findIndex((user) => user.doctorDetails?._id === selectedUserId)
     if (index !== -1) {
-      const [selected] = sortedUsers.splice(index, 1);
-      sortedUsers.unshift(selected);
+      const [selected] = sortedUsers.splice(index, 1)
+      sortedUsers.unshift(selected)
     }
   }
-  const filteredUsers = sortedUsers.filter((user) => {
-    const meetsOnlineFilter = showOnlineOnly ? onlineUsers.includes(user.doctorDetails?._id) : true;
 
+  const filteredUsers = sortedUsers.filter((user) => {
+    const meetsOnlineFilter = showOnlineOnly ? onlineUsers.includes(user.doctorDetails?._id) : true
     const meetsSearchFilter = searchTerm
       ? user.doctorDetails?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-      : true;
+      : true
 
-    return meetsOnlineFilter && meetsSearchFilter;
-  });
+    return meetsOnlineFilter && meetsSearchFilter
+  })
 
-  if (isLoading) return <SidebarSkeleton />;
+  if (isLoading) return <SidebarSkeleton />
 
   return (
-    <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
-      <div className="border-b border-base-300 w-full p-5">
+    <aside className="h-full w-20 lg:w-80 border-r border-slate-700/50 flex flex-col transition-all duration-200 bg-slate-900/40">
+      <div className="border-b border-slate-700/50 w-full p-5">
         <div className="flex items-center gap-2">
-          <Users className="size-6 text-indigo-400" />
-          <span className="font-medium text-indigo-400 hidden lg:block">Contacts</span>
+          <div className="bg-violet-500/10 p-2 rounded-lg">
+            <Users className="size-5 text-violet-400" />
+          </div>
+          <span className="font-medium text-violet-300 hidden lg:block">Contacts</span>
         </div>
 
         {/* Search input - visible in both mobile and desktop */}
-        <div className="mt-3 relative hidden lg:block">
-          <div className="flex items-center w-full border border-base-300 rounded-md overflow-hidden">
-            <input
+        <div className="mt-4 relative hidden lg:block">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-slate-400" />
+            <Input
               type="text"
               placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-1 px-3 bg-transparent text-sm focus:outline-none text-white"
+              className="w-full pl-10 bg-slate-800/50 border-slate-700 text-slate-200 placeholder:text-slate-500 focus-visible:ring-violet-500"
             />
-            <button className="p-2 bg-base-300">
-              <Search className="size-4 text-indigo-400" />
-            </button>
           </div>
         </div>
 
         {/* Online filters - visible only on desktop */}
-        <div className="mt-3 hidden lg:flex items-center gap-2">
-          <label className="cursor-pointer flex items-center gap-2">
-            <input
-              type="checkbox"
+        <div className="mt-4 hidden lg:flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="online-mode"
               checked={showOnlineOnly}
-              onChange={(e) => setShowOnlineOnly(e.target.checked)}
-              className="checkbox checkbox-sm"
+              onCheckedChange={setShowOnlineOnly}
+              className="data-[state=checked]:bg-violet-500"
             />
-            <span className="text-sm text-indigo-400">Show online only</span>
-          </label>
-          <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
+            <Label htmlFor="online-mode" className="text-sm text-slate-300">
+              Show online only
+            </Label>
+          </div>
+          <Badge variant="outline" className="text-xs text-violet-300 border-violet-500/30 bg-violet-500/10">
+            {onlineUsers.length - 1} online
+          </Badge>
         </div>
       </div>
 
-      <div className="overflow-y-auto w-full py-3">
+      <div className="overflow-y-auto w-full py-3 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user: ISidebarUsers) => (
             <button
               key={user?.doctorDetails?._id}
-              onClick={() =>
-                dispatch(setSelectedUser({ ...user, lastMessage: user.lastMessage ?? '' }))}
-              className={`w-full p-3 flex items-center justify-between gap-3 hover:bg-base-300 transition-colors ${user.doctorDetails?._id === selectedUserId ? "bg-base-200" : ""
+              onClick={() => dispatch(setSelectedUser({ ...user, lastMessage: user.lastMessage ?? "" }))}
+              className={`w-full p-3 flex items-center justify-between gap-3 hover:bg-slate-800/50 transition-colors ${user.doctorDetails?._id === selectedUserId ? "bg-slate-800/80 border-l-2 border-violet-500" : ""
                 }`}
             >
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <AvatarDemo image={user.doctorDetails?.profilePicture} name={user.doctorDetails?.name} />
                   {onlineUsers.includes(user.doctorDetails?._id) && (
-                    <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
+                    <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-slate-900" />
                   )}
                 </div>
 
                 <div className="hidden lg:block text-left min-w-0">
-                  <div className="font-medium text-white truncate">{user.doctorDetails?.name || "Unknown"}</div>
-                  <p className="text-sm text-zinc-400 truncate">{user.lastMessage?.slice(0, 30) || "No messages yet"}</p>
+                  <div className="font-medium text-slate-200 truncate flex items-center gap-1">
+                    {user.doctorDetails?.name || "Unknown"}
+                    {onlineUsers.includes(user.doctorDetails?._id) && <UserCheck className="size-3 text-green-500" />}
+                  </div>
+                  <p className="text-sm text-slate-400 truncate">
+                    {user.lastMessage?.slice(0, 30) || "No messages yet"}
+                  </p>
                 </div>
               </div>
             </button>
           ))
         ) : (
-          <div className="text-center text-zinc-500 py-4">
-            {searchTerm ? "No users found matching your search" : "No users found"}
+          <div className="text-center text-slate-500 py-8 px-4">
+            <div className="bg-slate-800/50 rounded-lg p-6 border border-slate-700/50">
+              <Search className="size-8 text-slate-500 mx-auto mb-2" />
+              <p className="text-slate-400">{searchTerm ? "No users found matching your search" : "No users found"}</p>
+            </div>
           </div>
         )}
       </div>
     </aside>
-  );
-};
+  )
+}
 
-export default ChatSideBar;
+export default Sidebar
